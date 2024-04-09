@@ -25,15 +25,19 @@ for elem in base_data[1:]:
     request_data["status"].append(elem[3])
     request_data["time_taken"].append(elem[6])
 
-print(base_data[3])
-print(request_data['rack'][2])
+# print(base_data[3])
+# print(request_data['rack'][2])
 
 data = []
 headings = ("Rack", "System SN.", "Status", "Time Taken")
 # for i in range(len(request_data["system_sn"])):
-data = [request_data["rack"], request_data["system_sn"], request_data["status"], request_data["time_taken"]]
-    # print(i)
-# data = [['testing', 1, 2, 3], [2, 3, 4, 5], ['hello', 'tedsf', 0, 3], [3, 5, 33, 232]]
+# data = [request_data["rack"], request_data["system_sn"][2], request_data["status"][2], request_data["time_taken"][2]]
+#     # print(i)
+data = [[request_data['rack'][2], request_data["system_sn"][2], request_data["status"][2], request_data["time_taken"][2]]]
+
+for i in data:
+    for cell in i:
+        print(cell)
 
 
 # print(data[0][0])
