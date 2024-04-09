@@ -4,7 +4,24 @@
 
 
 {% block body %}
-
-<h1>Home</h1>
-
+<div class="container">
+    <table class="table table-hover tbl">
+        <thead>
+            <tr>
+                {% for head in headings %}
+                <th scope="col">{{ head }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for cell in row %}
+                <td scope="row">{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
