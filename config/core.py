@@ -3,19 +3,18 @@ from bs4 import BeautifulSoup
 
 
 class Source:
-    def __init__(self):
-        self.header = ""
-        self.url = ""
+    def __init__(self, header, url):
+        self.header = header
+        self.url = url
 
-
-    def request_data(self, url: str, header: str):
+    def request_data(self):
         """
-        Search and isolate data table from the RackBurn Webpage. 
+        Search and isolate data table from the RackBurn Webpage.
         url: Rack Burn URL
         header: Http header
         Return: List table
         """
-        respond = requests.get(url, header)
+        respond = requests.get(self.url, self.header)
         if not respond:
             respond.raise_for_status()
         else:
