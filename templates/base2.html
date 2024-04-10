@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{% block head %}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <script defer src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</head>
+
+<body>
+  <nav>
+    <input type="checkbox" id="sidebar-active">
+    <label for="sidebar-active" class="open-sidebar-button">
+      <img src="{{ url_for('static', filename='images/list.svg') }}">
+    </label>
+
+    <label for="sidebar-active" id="overlay"></label>
+    <div class="link-container">
+      <label for="sidebar-active" class="close-sidebar-button">
+        <img src="{{ url_for('static', filename='images/x.svg') }}">
+      </label>
+
+      <a class="home-link" href="#">Utilities</a>
+      <a href="#">Live</a>
+      <a href="#">Functional Test Log</a>
+      <a href="#">Rack Burn Log</a>
+    </div>
+  </nav>
+
+  {% block body %}
+
+  {% endblock %}
+</body>
+
+</html>
