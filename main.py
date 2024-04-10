@@ -2,68 +2,29 @@ from flask import Flask, redirect, url_for, render_template, request
 from config.core import Source
 
 
-app = Flask(__name__)
-
-
 header = {
-        "User-Agent": "MMozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/122.0.0.0 Safari/537.36",
-        "Accept-Language": "en-US,en;q=0.9"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+                    " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1"
+        "Accept-Language: en-US,en;q=0.9"
         }
 url = "http://10.43.251.42/input_output?model=Supermicro"
 
-#
-# smc = Source(url, header)
-# base_data = smc.request_data()
-#
-#
-# request_data = {"rack": [], "system_sn": [], "status": [], "time_taken": []}
 
-
-# print(base_data[1])
-
-
-# Data from the Server
-# for elem in base_data[1:]:
-#     request_data["rack"].append(elem[0])
-#     request_data["system_sn"].append(elem[1])
-#     request_data["status"].append(elem[3])
-#     request_data["time_taken"].append(elem[6])
-
-# print(base_data[3])
-# print(request_data['rack'][2])
-
+smc = Source(url=url, header=header)
+base_data = smc.request_data()  # assigned the data into the base_data variable
 headings = ("Rack", "System SN.", "Status", "Time Taken")
-# for i in range(len(request_data["system_sn"])):
-# data = [request_data["rack"], request_data["system_sn"][2], request_data["status"][2], request_data["time_taken"][2]]
-#     # print(i)
-# data = [[request_data['rack'][2], request_data["system_sn"][2], request_data["status"][2], request_data["time_taken"][2]]]
-data = (['testing', 1, 2, 3],
-        ['hello', 4, 6, 5],
-        ['world', 10, 9, 8])
-
-# for i in data:
-#     for cell in i:
-#         print(cell)
 
 
-# print(data[0][0])
-
-# with open("list.txt", 'r') as f:
-#     file_list = [i.strip("\n") for i in f]
+app = Flask(__name__)
 
 
-# for sn in file_list:
-#     if sn in request_data["system_sn"]:
-#         idx = request_data["system_sn"].index(sn)
-#         data = [[request_data["rack"][idx], sn, request_data["status"][idx], request_data["time_taken"][idx]]]
-#     else:
-#         data = [[None, None, None, None]]
-
-
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("index.html", headings=headings, data=data)
+    if request.method == "POST":
+        serial_number_list = [request.form.get("serial_numbers")]
+        for i in serial_number_list:
+            print(i.strip("\n"))
+    return render_template("index.html", headings=headings, data=base_data[0:10])
 
 
 if __name__ == "__main__":

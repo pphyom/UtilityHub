@@ -1,11 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
+from operator import itemgetter
 
 
 class Source:
-    def __init__(self, header, url):
-        self.header = header
+    def __init__(self, url: str, header: dict):
         self.url = url
+        self.header = header
 
     def request_data(self):
         """
@@ -18,6 +19,7 @@ class Source:
         if not respond:
             respond.raise_for_status()
         else:
+            temp = []
             data_table = []
             soup = BeautifulSoup(respond.text, "html.parser")
             table = soup.find("table", attrs={"id": "heckintable"})
@@ -25,5 +27,9 @@ class Source:
                 rows = []
                 for cell in row.find_all("td"):
                     rows.append(cell.text)
-                data_table.append(rows)
+                temp.append(rows)
+            
+            # Sliced unnecessary columns from the original table
+            for elem in range(1, len(temp)):
+                data_table.append(itemgetter(0, 1, 3, 6)(temp[elem]))
             return data_table
