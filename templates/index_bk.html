@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block head %} Home {% endblock %}
+
+
+{% block body %}
+
+<div class="tbl">
+    <div class="row">
+        <!-- SN input modal -->
+        <div class="col-4">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Input Serial Numbers
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <p class="modal-title" id="exampleModalLabel">Insert serial numbers line by line.</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                <div class="mb-3">
+                                    <textarea class="form-control" id="message-text" name="serial_numbers"></textarea>
+                                    <input type="submit" class="btn btn-dark" value="Insert">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Table -->
+        <div class="col-8 table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        {% for head in headings %}
+                        <th scope="col">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        {% for cell in row %}
+                        <td scope="row">{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
