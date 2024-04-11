@@ -8,33 +8,58 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>{% block head %}{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
   <script defer src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </head>
 
 <body>
-  <nav>
-    <input type="checkbox" id="sidebar-active">
-    <label for="sidebar-active" class="open-sidebar-button">
-      <img src="{{ url_for('static', filename='images/list.svg') }}">
-    </label>
+  <div class="wrapper">
+    <aside id="sidebar">
+      <div class="d-flex">
+        <button id="toggle-btn" type="button">
+          <i class="bi bi-grid-1x2-fill"></i>
+        </button>
+        <div class="sidebar-logo">
+          <p>Utilities</p>
+        </div>
+      </div>
 
-    <label for="sidebar-active" id="overlay"></label>
-    <div class="link-container">
-      <label for="sidebar-active" class="close-sidebar-button">
-        <img src="{{ url_for('static', filename='images/x.svg') }}">
-      </label>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">
+            <i class="bi bi-cast"></i>
+            <span>Live</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">
+            <i class="bi bi-braces"></i>
+            <span>Function Test Logs</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">
+            <i class="bi bi-code-square"></i>
+            <span>Rack Burn Logs</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
 
-      <a class="home-link" href="#">Utilities</a>
-      <a href="#">Live</a>
-      <a href="#">Functional Test Log</a>
-      <a href="#">Rack Burn Log</a>
-    </div>
-  </nav>
 
-  {% block body %}
+    {% block body %}
 
-  {% endblock %}
+    {% endblock %}
+  </div>
+
+  <script>
+    const hamBurger = document.querySelector(".toggle-btn");
+
+    hamBurger.addEventListener("click", function () {
+      document.querySelector("#sidebar").classList.toggle("expand");
+    });
+  </script>
 </body>
 
 </html>
