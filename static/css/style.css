@@ -5,6 +5,11 @@
     padding: 0;
 }
 
+:root {
+    --btn-hover: #f6d51f;
+    --main-color: #fff;
+}
+
 a {
     text-decoration: none;
 }
@@ -53,12 +58,16 @@ body {
     background-color: transparent;
     cursor: pointer;
     border: 0;
-    padding: 1rem 1.5rem;
+    margin: 1rem 1rem;
 }
 
 #toggle-btn i {
     font-size: 1.5rem;
-    color: #fff;
+    color: var(--main-color);
+}
+
+#toggle-btn i:hover {
+    color: var(--btn-hover);
 }
 
 .sidebar-logo {
@@ -67,7 +76,7 @@ body {
 
 .sidebar-logo p {
     margin: auto 0;
-    color: #FFF;
+    color: var(--main-color);
     font-size: 1.15rem;
     font-weight: 600;
 }
@@ -83,8 +92,8 @@ body {
 }
 
 a.sidebar-link {
-    padding: .625rem 1.325rem;
-    color: #FFF;
+    padding: .625rem 1.3rem;
+    color: var(--main-color);
     display: block;
     font-size: 1rem;
     white-space: nowrap;
@@ -99,7 +108,7 @@ a.sidebar-link {
 
 a.sidebar-link:hover {
     background-color: rgba(255, 255, 255, .075);
-    border-left: 3px solid #3b7ddd;
+    border-left: 3px solid var(--btn-hover);
 }
 
 .sidebar-item {
