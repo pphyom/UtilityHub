@@ -9,9 +9,9 @@ header = {
 url = "http://10.43.251.42/input_output?model=Supermicro"
 
 
-smc = Source(url=url, header=header)
-base_data = smc.request_data()  # assigned the data into the base_data variable
-headings = ("Rack", "System SN.", "Status", "Time Taken")
+# smc = Source(url=url, header=header)
+# base_data = smc.request_data()  # assigned the data into the base_data variable
+# headings = ("Rack", "System SN.", "Status", "Time Taken")
 
 
 app = Flask(__name__)
@@ -27,7 +27,7 @@ def index():
             count += 1
             return i
     else:
-        return render_template("index.html", headings=headings, data=base_data[0:10])
+        return render_template("index.html")#, headings=headings, data=base_data[0:10])
 
 # @app.route("/")
 # def home():
