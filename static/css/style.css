@@ -1,3 +1,5 @@
+/* Sidebar */
+
 ::after,
 ::before {
     box-sizing: border-box;
@@ -8,6 +10,7 @@
 :root {
     --btn-hover: #f6d51f;
     --main-color: #fff;
+    --theme-color: #0e2238;
 }
 
 a {
@@ -44,7 +47,7 @@ body {
     min-width: 70px;
     z-index: 1000;
     transition: all .25s ease-in-out;
-    background-color: #0e2238;
+    background-color: var(--theme-color);
     display: flex;
     flex-direction: column;
 }
@@ -149,3 +152,6 @@ a.sidebar-link:hover {
     transform: rotate(45deg);
     transition: all .2s ease-out;
 }
+
+/* Sidebar */
+

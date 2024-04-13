@@ -20,10 +20,14 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        serial_number_list = [request.form.get("serial_numbers")]
-        for i in serial_number_list:
-            print(i.strip("\n"))
-    return render_template("index.html", headings=headings, data=base_data[0:10])
+        input_list = [request.form["serial_num"]]   # retrieved from text input box
+        count = 0
+        for i in input_list:
+            print(i.strip(" "))
+            count += 1
+            return i
+    else:
+        return render_template("index.html", headings=headings, data=base_data[0:10])
 
 # @app.route("/")
 # def home():
