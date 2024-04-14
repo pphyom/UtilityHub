@@ -20,12 +20,10 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        input_list = [request.form["serial_num"]]   # retrieved from text input box
-        count = 0
-        for i in input_list:
-            print(i.strip(" "))
-            count += 1
-            return i
+        input_list = request.form["serial_num"].split(" ")   # retrieved from text input box
+        input_list = [sn for sn in input_list if sn != ""]
+        # print(input_list)
+        return input_list
     else:
         return render_template("index.html")#, headings=headings, data=base_data[0:10])
 
