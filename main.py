@@ -23,13 +23,9 @@ def index():
         input_list = request.form["serial_num"].split(" ")   # retrieved from text input box
         input_list = [sn for sn in input_list if sn != ""]
         # print(input_list)
-        return input_list
+        return render_template("index.html", inputItems = input_list)
     else:
         return render_template("index.html")#, headings=headings, data=base_data[0:10])
-
-# @app.route("/")
-# def home():
-#     return render_template("index.html")
 
 
 if __name__ == "__main__":

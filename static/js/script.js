@@ -10,7 +10,7 @@ sidebar.addEventListener("click", function() {
 });
 
 
-// copy data from modal textbox to textbox
+// copy data from modal textarea to textbox
 function passData() {
     secondaryTextbox = secondaryTextbox.value.split("\n")
     primaryTextbox.value = secondaryTextbox.join(" ");
