@@ -27,6 +27,12 @@ def index():
             for sn_list in base_data:
                 if sn in sn_list[0]:
                     data.append([idx+1] + sn_list)
+        
+        # Sort items per conditions
+        data.sort(key=lambda item: 
+                  (item[2]=="WARNING", 
+                   item[2]=="FAIL", 
+                   item[2]=="PASS"), reverse=True)
 
         return render_template("index.html", headings=headings, data=data, cond=CONDITIONS)
     
