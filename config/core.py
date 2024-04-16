@@ -19,17 +19,23 @@ class Source:
         if not respond:
             respond.raise_for_status()
         else:
-            temp = []
-            data_table = []
+            temp: list = []
+            data_tuple: list = []
+            data_list: list = []
             soup = BeautifulSoup(respond.text, "html.parser")
+            # Scraping html table from the url
             table = soup.find("table", attrs={"id": "heckintable"})
             for row in table.find_all("tr"):
-                rows = []
+                rows: list = []
                 for cell in row.find_all("td"):
                     rows.append(cell.text)
                 temp.append(rows)
             
             # Sliced unnecessary columns from the original table
             for elem in range(1, len(temp)):
-                data_table.append(itemgetter(0, 1, 3, 6)(temp[elem]))
-            return data_table
+                data_tuple.append(itemgetter(1, 3, 0, 6)(temp[elem]))
+
+            for elem in data_tuple:
+                data_list.append(list(elem))
+
+            return data_list
