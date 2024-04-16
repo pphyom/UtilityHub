@@ -11,6 +11,11 @@
     --btn-hover: #f6d51f;
     --main-color: #fff;
     --theme-color: #0e2238;
+    --font-green: #006b21;
+    --bg-green: #86e49d;
+    --font-red: #b30021;
+    --bg-red: #d893a3;
+    --bg-blue: #6fcaea;
 }
 
 a {
@@ -155,3 +160,58 @@ a.sidebar-link:hover {
 
 /* Sidebar */
 
+/* Badges */
+
+.status {
+    min-width: 9rem;
+}
+
+.status.warning {
+    background-color: var(--btn-hover);
+}
+
+.status.running {
+    background-color: var(--bg-blue);
+    color: var(--theme-color);
+}
+
+.status.fail {
+    background-color: var(--bg-red);
+    color: var(--font-red);
+}
+
+.status.pass {
+    background-color: var(--bg-green);
+    color: var(--font-green);
+}
+
+/* Badges */
+
+/* Table customization */
+
+.table-wrapper {
+    height: 67vh;
+    border-radius: .2rem;
+    overflow: auto;
+    text-align: center;
+}
+
+.table-wrapper::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    border-radius: .5rem;
+    background-color: #0004;
+    visibility: hidden;
+}
+
+.table-wrapper:hover::-webkit-scrollbar-thumb {
+    visibility: visible;
+}
+
+.card-header i, thead tr i {
+    font-size: 1.2rem;
+    padding-right: .5rem;
+}

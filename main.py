@@ -11,8 +11,8 @@ url = "http://10.43.251.42/input_output?model=Supermicro"
 
 smc = Source(url=url, header=header)
 base_data = smc.request_data()  # assigned the data into the base_data variable
-headings = ("Location", "System SN", "Status", "Rack", "Time Taken")
-
+headings = ("Location", "System SN", "Status", "Rack", "Time Gap")
+CONDITIONS = ("WARNING", "FAIL", "PASS")
 
 app = Flask(__name__)
 
@@ -28,7 +28,7 @@ def index():
                 if sn in sn_list[0]:
                     data.append([idx+1] + sn_list)
 
-        return render_template("index.html", headings=headings, data=data)
+        return render_template("index.html", headings=headings, data=data, cond=CONDITIONS)
     
     else:
         return render_template("index.html")
