@@ -1,10 +1,7 @@
 
-const sidebar = document.querySelector("#toggle-btn");
-let primaryTextbox = document.querySelector("#primary-textbox")
-let secondaryTextbox = document.querySelector("#secondary-textbox")
-
-
 // navigation sidebar
+const sidebar = document.querySelector("#toggle-btn");
+
 sidebar.addEventListener("click", function() {
     document.querySelector("#sidebar").classList.toggle("expand");
 });
@@ -12,12 +9,19 @@ sidebar.addEventListener("click", function() {
 
 // copy data from modal textarea to textbox
 function passData() {
+    let primaryTextbox = document.querySelector("#primary-textbox")
+    let secondaryTextbox = document.querySelector("#secondary-textbox")
     secondaryTextbox = secondaryTextbox.value.split("\n")
     primaryTextbox.value = secondaryTextbox.join(" ");
 }
 
 
-// full screen
-function toggleFullScreen(id) {
-    document.getElementById(id).requestFullscreen()
+// FULL SCREEN
+var isFullscreen = false
+var page = document.getElementById("full-screen");
+
+function toggleFS () {
+    isFullscreen ? document.exitFullscreen?.() : 
+    page.requestFullscreen?.(), 
+    (isFullscreen = !isFullscreen)
 }
