@@ -51,43 +51,56 @@
                 </div>
             </div><!-- Row End -->
 
-            <div class="card mb-4">
+            <div id="full-screen" class="card mb-4">
                 <div class="card-header bg-custom text-white">
                     <i class="bi bi-hdd-rack-fill"></i>
                     <span>Racks</span>
+                    <i id="toggle-fs" class="bi bi-arrows-fullscreen float-end" onclick="toggleFullScreen('full-screen')"></i>
                 </div>
 
                 <div class="card-body">
                     <!-- OFFLINE TABLE -->
-                    <!--<table class="table table-striped table-hover">
-                        <thead>
-                            <tr class="highlight">
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                        </tbody>
-                    </table>-->
+                    <table class="table table-hover table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">Account</th>
+                          <th scope="col">Due Date</th>
+                          <th scope="col">Amount</th>
+                          <th scope="col">Period</th>
+                            <th scope="col">Second Period</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td data-label="Account">Visa - 3412</td>
+                          <td data-label="Due Date">04/01/2016</td>
+                          <td data-label="Amount">$1,190</td>
+                          <td data-label="Period">03/01/2016 - 03/31/2016</td>
+                            <td data-label="New Col">New Data</td>
+                        </tr>
+                        <tr>
+                          <td scope="row" data-label="Account">Visa - 6076</td>
+                          <td data-label="Due Date">03/01/2016</td>
+                          <td data-label="Amount">$2,443</td>
+                          <td data-label="Period">02/01/2016 - 02/29/2016</td>
+                            <td data-label="New Col">New Data</td>
+                        </tr>
+                        <tr>
+                          <td scope="row" data-label="Account">Corporate AMEX</td>
+                          <td data-label="Due Date">03/01/2016</td>
+                          <td data-label="Amount">$1,181</td>
+                          <td data-label="Period">02/01/2016 - 02/29/2016</td>
+                            <td data-label="New Col">New Data</td>
+                        </tr>
+                        <tr>
+                          <td scope="row" data-label="Account">Visa - 3412</td>
+                          <td data-label="Due Date">02/01/2016</td>
+                          <td data-label="Amount">$842</td>
+                          <td data-label="Period">01/01/2016 - 01/31/2016</td>
+                            <td data-label="New Col">New Data</td>
+                        </tr>
+                      </tbody>
+                    </table>
                     <!-- OFFLINE TABLE -->
                     <div class="table-wrapper">
                         <table class="table table-hover table-striped">

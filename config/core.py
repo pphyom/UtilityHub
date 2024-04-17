@@ -8,7 +8,7 @@ class Source:
         self.url = url
         self.header = header
 
-    def request_data(self):
+    def live_data(self):
         """
         Search and isolate data table from the RackBurn Webpage.
         url: Rack Burn URL

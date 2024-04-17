@@ -15,3 +15,9 @@ function passData() {
     secondaryTextbox = secondaryTextbox.value.split("\n")
     primaryTextbox.value = secondaryTextbox.join(" ");
 }
+
+
+// full screen
+function toggleFullScreen(id) {
+    document.getElementById(id).requestFullscreen()
+}
