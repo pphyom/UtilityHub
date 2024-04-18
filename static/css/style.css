@@ -211,7 +211,8 @@ a.sidebar-link:hover {
     visibility: visible;
 }
 
-.card-header i, thead tr i {
+.card-header i,
+thead tr i {
     font-size: 1.2rem;
     padding-right: .5rem;
 }
@@ -219,40 +220,40 @@ a.sidebar-link:hover {
 /*  Responsive Table  */
 
 @media screen and (max-width: 900px) {
-  table {
-    border: 0;
-  }
+    table {
+        border: 0;
+    }
 
-  table thead {
-    visibility: collapse;
-  }
+    table thead {
+        visibility: collapse;
+    }
 
-  table tr {
-    border-bottom: 3px solid #ddd;
-    display: block;
-    margin-bottom: .625em;
-  }
+    table tr {
+        border-bottom: 3px solid #ddd;
+        display: block;
+        margin-bottom: .625em;
+    }
 
-  table td {
-    border-bottom: 1px solid #ddd;
-    display: block;
-    text-align: right;
-  }
+    table td {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        text-align: right;
+    }
 
-  table td::before {
-    /*
+    table td::before {
+        /*
     * aria-label has no advantage, it won't be read inside a table
     content: attr(aria-label);
     */
-    content: attr(data-label);
-    float: left;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
 
-  table td:last-child {
-    border-bottom: 0;
-  }
+    table td:last-child {
+        border-bottom: 0;
+    }
 }
 
 /*  Fullscreen Table height adjustment  */
@@ -263,10 +264,41 @@ a.sidebar-link:hover {
         overflow: auto;
         text-align: center;
     }
-  }
+}
 
 
 /* Expand button */
 #toggle-fs {
     cursor: pointer;
 }
+/* 
+.fsmode {
+    transition: 150ms;
+    padding: none;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .fsmode:hover {
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+.fsmode:not(.is-active) .full-screen--close {
+    display: none;
+}
+
+.fsmode.is-active .full-screen--open {
+    display: none;
+}
+
+.full-screen--close {
+    display: none
+}
+
+:fullscreen .full-screen--open {
+    display: none;
+}
+
+:fullscreen .full-screen--close {
+    display: block;
+} */

@@ -25,3 +25,38 @@ function toggleFS () {
     page.requestFullscreen?.(), 
     (isFullscreen = !isFullscreen)
 }
+
+// Full Screen
+
+// const wrapper = document.getElementById("full-screen");
+// const fullscreenButton = document.querySelector(".fsmode");
+
+// fullscreenButton.addEventListener("click", function () {
+//     if (document.fullscreenElement) {
+//       document.exitFullscreen()
+//     } else {
+//       if (wrapper.webkitSupportsFullscreen) {
+//         wrapper.webkitEnterFullscreen()
+//       } else {
+//         wrapper.requestFullscreen()
+//       }
+//     }
+//   });
+
+//   fullscreenButton.addEventListener("click", () => {
+//     if (document.fullscreenElement) {
+//       document
+//         .exitFullscreen()
+//         .then(() => fullscreenButton.classList.remove("is-active"));
+//     } else {
+//       if (wrapper.webkitSupportsFullscreen) {
+//         wrapper
+//           .webkitEnterFullscreen()
+//           .then(() => fullscreenButton.classList.add("is-active"));
+//       } else {
+//         wrapper
+//           .requestFullscreen()
+//           .then(() => fullscreenButton.classList.add("is-active"));
+//       }
+//     }
+//   });

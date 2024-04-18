@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block head %} Rburn Logs {% endblock %}
+
+{% block body %}
+<div class="main">
+    <table data-toggle="table" data-search="true" data-show-columns="true">
+        <thead>
+            <tr>
+                <th data-field="name">Name</th>
+                <th data-field="star">Stars</th>
+                <th data-field="forks">Forks</th>
+                <th data-field="description">Description</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            <tr>
+                <td data-label="Account">Visa - 3412</td>
+                <td data-label="Due Date">04/01/2016</td>
+                <td data-label="Amount">$1,190</td>
+                <td data-label="New Col">New Data</td>
+            </tr>
+            <tr>
+                <td scope="row" data-label="Account">Visa - 6076</td>
+                <td data-label="Due Date">03/01/2016</td>
+                <td data-label="Amount">$2,443</td>
+                <td data-label="New Col">New Data</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

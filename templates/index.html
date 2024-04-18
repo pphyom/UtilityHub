@@ -55,99 +55,103 @@
                 <div class="card-header bg-custom text-white">
                     <i class="bi bi-hdd-rack-fill"></i>
                     <span>Racks</span>
+                    <!-- <button class="fsmode" title="Enter full screen mode">
+                        <i class="bi bi-arrows-fullscreen float-end full-screen--open"></i>
+                        <i class="bi bi-fullscreen-exit float-end full-screen--close"></i>
+                    </button> -->
                     <i id="toggle-fs" class="bi bi-arrows-fullscreen float-end" onclick="toggleFS()"></i>
                 </div>
 
                 <div class="card-body">
                     <!-- OFFLINE TABLE -->
-                    <!--<table class="table table-hover table-striped">
-                      <thead>
-                        <tr>
-                          <th scope="col">Account</th>
-                          <th scope="col">Due Date</th>
-                          <th scope="col">Amount</th>
-                          <th scope="col">Period</th>
-                            <th scope="col">Second Period</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td data-label="Account">Visa - 3412</td>
-                          <td data-label="Due Date">04/01/2016</td>
-                          <td data-label="Amount">$1,190</td>
-                          <td data-label="Period">03/01/2016 - 03/31/2016</td>
-                            <td data-label="New Col">New Data</td>
-                        </tr>
-                        <tr>
-                          <td scope="row" data-label="Account">Visa - 6076</td>
-                          <td data-label="Due Date">03/01/2016</td>
-                          <td data-label="Amount">$2,443</td>
-                          <td data-label="Period">02/01/2016 - 02/29/2016</td>
-                            <td data-label="New Col">New Data</td>
-                        </tr>
-                        <tr>
-                          <td scope="row" data-label="Account">Corporate AMEX</td>
-                          <td data-label="Due Date">03/01/2016</td>
-                          <td data-label="Amount">$1,181</td>
-                          <td data-label="Period">02/01/2016 - 02/29/2016</td>
-                            <td data-label="New Col">New Data</td>
-                        </tr>
-                        <tr>
-                          <td scope="row" data-label="Account">Visa - 3412</td>
-                          <td data-label="Due Date">02/01/2016</td>
-                          <td data-label="Amount">$842</td>
-                          <td data-label="Period">01/01/2016 - 01/31/2016</td>
-                            <td data-label="New Col">New Data</td>
-                        </tr>
-                      </tbody>
-                    </table>-->
+                    <!-- <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Account</th>
+                                <th scope="col">Due Date</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Period</th>
+                                <th scope="col">Second Period</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Account">Visa - 3412</td>
+                                <td data-label="Due Date">04/01/2016</td>
+                                <td data-label="Amount">$1,190</td>
+                                <td data-label="Period">03/01/2016 - 03/31/2016</td>
+                                <td data-label="New Col">New Data</td>
+                            </tr>
+                            <tr>
+                                <td scope="row" data-label="Account">Visa - 6076</td>
+                                <td data-label="Due Date">03/01/2016</td>
+                                <td data-label="Amount">$2,443</td>
+                                <td data-label="Period">02/01/2016 - 02/29/2016</td>
+                                <td data-label="New Col">New Data</td>
+                            </tr>
+                            <tr>
+                                <td scope="row" data-label="Account">Corporate AMEX</td>
+                                <td data-label="Due Date">03/01/2016</td>
+                                <td data-label="Amount">$1,181</td>
+                                <td data-label="Period">02/01/2016 - 02/29/2016</td>
+                                <td data-label="New Col">New Data</td>
+                            </tr>
+                            <tr>
+                                <td scope="row" data-label="Account">Visa - 3412</td>
+                                <td data-label="Due Date">02/01/2016</td>
+                                <td data-label="Amount">$842</td>
+                                <td data-label="Period">01/01/2016 - 01/31/2016</td>
+                                <td data-label="New Col">New Data</td>
+                            </tr>
+                        </tbody>
+                    </table> -->
                     <!-- OFFLINE TABLE -->
                     <div class="table-wrapper">
                         <table class="table table-hover table-striped">
                             <thead class="sticky-top table-light">
                                 <tr>
-                                {% for head in headings %}
+                                    {% for head in headings %}
                                     {% if head == headings[0] %}
-                                        <th scope="col"><i class="bi bi-geo-alt-fill"></i>{{ head }}</th>
+                                    <th scope="col"><i class="bi bi-geo-alt-fill"></i>{{ head }}</th>
                                     {% elif head == headings[1] %}
-                                        <th scope="col"><i class="bi bi-upc"></i>{{ head }}</th>
+                                    <th scope="col"><i class="bi bi-upc"></i>{{ head }}</th>
                                     {% elif head == headings[2] %}
-                                        <th scope="col"><i class="bi bi-info-square-fill"></i>{{ head }}</th>
+                                    <th scope="col"><i class="bi bi-info-square-fill"></i>{{ head }}</th>
                                     {% elif head == headings[3] %}
-                                        <th scope="col"><i class="bi bi-hdd-rack"></i>{{ head }}</th>
+                                    <th scope="col"><i class="bi bi-hdd-rack"></i>{{ head }}</th>
                                     {% elif head == headings[4] %}
-                                        <th scope="col"><i class="bi bi-stopwatch-fill"></i>{{ head }}</th>
+                                    <th scope="col"><i class="bi bi-stopwatch-fill"></i>{{ head }}</th>
                                     {% else %}
                                     <th scope="col"><i class="bi bi-journal-code"></i>{{ head }}</th>
                                     {% endif %}
-                                {% endfor %}
+                                    {% endfor %}
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for row in data %}
                                 <tr>
                                     {% for cell in row %}
-                                        {% if row.index(cell) == 2 %}   <!-- If the column 2 -->
-                                            {% if cell == cond[0] %}
-                                                <td scope="row">
-                                                    <span class="badge status warning text-dark">{{ cell }}</span>
-                                                </td>
-                                            {% elif cell == cond[1] %}
-                                                <td scope="row">
-                                                    <span class="badge status fail">{{ cell }}</span>
-                                                </td>
-                                            {% elif cell == cond[2] %}
-                                                <td scope="row">
-                                                    <span class="badge status pass">{{ cell }}</span>
-                                                </td>
-                                            {% else %}
-                                                <td scope="row">
-                                                    <span class="badge status running">{{ cell }}</span>
-                                                </td>
-                                            {% endif %}
-                                        {% else %}
-                                            <td scope="row">{{ cell }}</td>
-                                        {% endif %}
+                                    {% if row.index(cell) == 2 %} <!-- If the column 2 -->
+                                    {% if cell == cond[0] %}
+                                    <td scope="row">
+                                        <span class="badge status warning text-dark">{{ cell }}</span>
+                                    </td>
+                                    {% elif cell == cond[1] %}
+                                    <td scope="row">
+                                        <span class="badge status fail">{{ cell }}</span>
+                                    </td>
+                                    {% elif cell == cond[2] %}
+                                    <td scope="row">
+                                        <span class="badge status pass">{{ cell }}</span>
+                                    </td>
+                                    {% else %}
+                                    <td scope="row">
+                                        <span class="badge status running">{{ cell }}</span>
+                                    </td>
+                                    {% endif %}
+                                    {% else %}
+                                    <td scope="row">{{ cell }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 {% endfor %}
