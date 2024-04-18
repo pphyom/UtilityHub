@@ -12,7 +12,7 @@ url = "http://10.43.251.42/input_output?model=Supermicro"
 
 smc = Source(url=url, header=header)
 base_data = smc.live_data()  # assigned the data into the base_data variable
-headings = ("Location", "System SN", "Status", "Rack", "Time Gap")
+headings = ("Location", "System SN", "Status", "Rack", "Time Gap", "Log")
 CONDITIONS = ("WARNING", "FAIL", "PASS")
 
 app = Flask(__name__)
