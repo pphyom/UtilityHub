@@ -2,7 +2,7 @@
 // navigation sidebar
 const sidebar = document.querySelector("#toggle-btn");
 
-sidebar.addEventListener("click", function() {
+sidebar.addEventListener("click", function () {
     document.querySelector("#sidebar").classList.toggle("expand");
 });
 
@@ -17,46 +17,35 @@ function passData() {
 
 
 // FULL SCREEN
-var isFullscreen = false
-var page = document.getElementById("full-screen");
+// var isFullscreen = false
+// var page = document.getElementById("fullscreen-wrapper");
 
-function toggleFS () {
-    isFullscreen ? document.exitFullscreen?.() : 
-    page.requestFullscreen?.(), 
-    (isFullscreen = !isFullscreen)
-}
+// function toggleFS () {
+//     isFullscreen ? document.exitFullscreen?.() : 
+//     page.requestFullscreen?.(), 
+//     (isFullscreen = !isFullscreen)
+// }
+
 
 // Full Screen
+const fullscreenWrapper = document.getElementById("fullscreen-wrapper");
+const fullscreenButton = document.querySelector(".full-screen");
 
-// const wrapper = document.getElementById("full-screen");
-// const fullscreenButton = document.querySelector(".fsmode");
 
-// fullscreenButton.addEventListener("click", function () {
-//     if (document.fullscreenElement) {
-//       document.exitFullscreen()
-//     } else {
-//       if (wrapper.webkitSupportsFullscreen) {
-//         wrapper.webkitEnterFullscreen()
-//       } else {
-//         wrapper.requestFullscreen()
-//       }
-//     }
-//   });
-
-//   fullscreenButton.addEventListener("click", () => {
-//     if (document.fullscreenElement) {
-//       document
-//         .exitFullscreen()
-//         .then(() => fullscreenButton.classList.remove("is-active"));
-//     } else {
-//       if (wrapper.webkitSupportsFullscreen) {
-//         wrapper
-//           .webkitEnterFullscreen()
-//           .then(() => fullscreenButton.classList.add("is-active"));
-//       } else {
-//         wrapper
-//           .requestFullscreen()
-//           .then(() => fullscreenButton.classList.add("is-active"));
-//       }
-//     }
-//   });
+fullscreenButton.addEventListener("click", () => {
+    if (document.fullscreenElement) {
+        document
+            .exitFullscreen()
+            .then(() => fullscreenButton.classList.remove("is-active"));
+    } else {
+        if (fullscreenWrapper.webkitSupportsFullscreen) {
+            fullscreenWrapper
+                .webkitEnterFullscreen()
+                .then(() => fullscreenButton.classList.add("is-active"));
+        } else {
+            fullscreenWrapper
+                .requestFullscreen()
+                .then(() => fullscreenButton.classList.add("is-active"));
+        }
+    }
+});

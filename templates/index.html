@@ -51,15 +51,17 @@
                 </div>
             </div><!-- Row End -->
 
-            <div id="full-screen" class="card mb-4">
+            <div id="fullscreen-wrapper" class="card mb-4">
                 <div class="card-header bg-custom text-white">
                     <i class="bi bi-hdd-rack-fill"></i>
                     <span>Racks</span>
-                    <!-- <button class="fsmode" title="Enter full screen mode">
-                        <i class="bi bi-arrows-fullscreen float-end full-screen--open"></i>
-                        <i class="bi bi-fullscreen-exit float-end full-screen--close"></i>
-                    </button> -->
-                    <i id="toggle-fs" class="bi bi-arrows-fullscreen float-end" onclick="toggleFS()"></i>
+                    <div class="float-end">
+                        <button class="full-screen py-0">
+                            <i class="bi bi-arrows-fullscreen full-screen--open text-white p-0"></i>
+                            <i class="bi bi-fullscreen-exit full-screen--close text-white p-0"></i>
+                        </button>
+                    </div>
+                    <!-- <i id="toggle-fs" class="bi bi-arrows-fullscreen float-end" onclick="toggleFS()"></i> -->
                 </div>
 
                 <div class="card-body">
@@ -107,23 +109,36 @@
                     </table> -->
                     <!-- OFFLINE TABLE -->
                     <div class="table-wrapper">
+                        {% if not data %}
+                            <div class="landing-page py-5">
+                                <li>
+                                    <i class="bi bi-graph-up-arrow p-5"></i>
+                                    <i class="bi bi-server p-5"></i>
+                                    <i class="bi bi-pc p-5"></i>
+                                    <i class="bi bi-hdd-rack-fill p-5"></i>
+                                    <i class="bi bi-globe-americas p-5"></i>
+                                </li>
+                                <hr>
+                                <li><h2>NO DATA FOUND</h2></li>
+                            </div>
+                        {% else %}
                         <table class="table table-hover table-striped">
                             <thead class="sticky-top table-light">
                                 <tr>
                                     {% for head in headings %}
-                                    {% if head == headings[0] %}
-                                    <th scope="col"><i class="bi bi-geo-alt-fill"></i>{{ head }}</th>
-                                    {% elif head == headings[1] %}
-                                    <th scope="col"><i class="bi bi-upc"></i>{{ head }}</th>
-                                    {% elif head == headings[2] %}
-                                    <th scope="col"><i class="bi bi-info-square-fill"></i>{{ head }}</th>
-                                    {% elif head == headings[3] %}
-                                    <th scope="col"><i class="bi bi-hdd-rack"></i>{{ head }}</th>
-                                    {% elif head == headings[4] %}
-                                    <th scope="col"><i class="bi bi-stopwatch-fill"></i>{{ head }}</th>
-                                    {% else %}
-                                    <th scope="col"><i class="bi bi-journal-code"></i>{{ head }}</th>
-                                    {% endif %}
+                                        {% if head == headings[0] %}
+                                        <th scope="col"><i class="bi bi-geo-alt-fill"></i>{{ head }}</th>
+                                        {% elif head == headings[1] %}
+                                        <th scope="col"><i class="bi bi-upc"></i>{{ head }}</th>
+                                        {% elif head == headings[2] %}
+                                        <th scope="col"><i class="bi bi-info-square-fill"></i>{{ head }}</th>
+                                        {% elif head == headings[3] %}
+                                        <th scope="col"><i class="bi bi-hdd-rack"></i>{{ head }}</th>
+                                        {% elif head == headings[4] %}
+                                        <th scope="col"><i class="bi bi-stopwatch-fill"></i>{{ head }}</th>
+                                        {% else %}
+                                        <th scope="col"><i class="bi bi-journal-code"></i>{{ head }}</th>
+                                        {% endif %}
                                     {% endfor %}
                                 </tr>
                             </thead>
@@ -131,31 +146,39 @@
                                 {% for row in data %}
                                 <tr>
                                     {% for cell in row %}
-                                    {% if row.index(cell) == 2 %} <!-- If the column 2 -->
-                                    {% if cell == cond[0] %}
-                                    <td scope="row">
-                                        <span class="badge status warning text-dark">{{ cell }}</span>
-                                    </td>
-                                    {% elif cell == cond[1] %}
-                                    <td scope="row">
-                                        <span class="badge status fail">{{ cell }}</span>
-                                    </td>
-                                    {% elif cell == cond[2] %}
-                                    <td scope="row">
-                                        <span class="badge status pass">{{ cell }}</span>
-                                    </td>
-                                    {% else %}
-                                    <td scope="row">
-                                        <span class="badge status running">{{ cell }}</span>
-                                    </td>
-                                    {% endif %}
-                                    {% else %}
-                                    <td scope="row">{{ cell }}</td>
-                                    {% endif %}
+                                        {% if row.index(cell) == 2 %} <!-- If the column 2, display badges -->
+                                            {% if cell == cond[0] %}
+                                            <td scope="row">
+                                                <span class="badge status warning text-dark">{{ cell }}</span>
+                                            </td>
+                                            {% elif cell == cond[1] %}
+                                            <td scope="row">
+                                                <span class="badge status fail">{{ cell }}</span>
+                                            </td>
+                                            {% elif cell == cond[2] %}
+                                            <td scope="row">
+                                                <span class="badge status pass">{{ cell }}</span>
+                                            </td>
+                                            {% else %}
+                                            <td scope="row">
+                                                <span class="badge status running">{{ cell }}</span>
+                                            </td>
+                                            {% endif %}
+
+                                        {% elif row.index(cell) == 5 %}
+                                        <td scope="row">
+                                            <span>
+                                                <a href="{{ b23rburn + cell }}" target="_blank"><i class="bi bi-file-text-fill"></i></a>
+                                            </span>
+                                        </td>
+                                        {% else %}
+                                        <td scope="row">{{ cell }}</td>
+                                        {% endif %}
                                     {% endfor %}
                                 </tr>
                                 {% endfor %}
                             </tbody>
+                            {% endif %}
                         </table>
                     </div>
                 </div>

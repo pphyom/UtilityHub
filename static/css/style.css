@@ -1,5 +1,4 @@
 /* Sidebar */
-
 ::after,
 ::before {
     box-sizing: border-box;
@@ -160,8 +159,8 @@ a.sidebar-link:hover {
 
 /* Sidebar */
 
-/* Badges */
 
+/* Badges */
 .status {
     min-width: 9rem;
 }
@@ -188,7 +187,6 @@ a.sidebar-link:hover {
 /* Badges */
 
 /* Table customization */
-
 .table-wrapper {
     height: 67vh;
     border-radius: .2rem;
@@ -217,8 +215,9 @@ thead tr i {
     padding-right: .5rem;
 }
 
-/*  Responsive Table  */
+/* Table customization */
 
+/*  Responsive Table  */
 @media screen and (max-width: 900px) {
     table {
         border: 0;
@@ -256,6 +255,8 @@ thead tr i {
     }
 }
 
+/*  Responsive Table  */
+
 /*  Fullscreen Table height adjustment  */
 @media all and (display-mode: fullscreen) {
     .table-wrapper {
@@ -266,29 +267,21 @@ thead tr i {
     }
 }
 
+/*  Fullscreen Table height adjustment  */
 
-/* Expand button */
-#toggle-fs {
-    cursor: pointer;
-}
-/* 
-.fsmode {
+/* Fullscreen button */
+.full-screen {
+    opacity: 70%;
     transition: 150ms;
-    padding: none;
-    outline: none;
+    background-color: var(--theme-color);
+    border-color: var(--main-color);
+    border-radius: 15%;
     cursor: pointer;
-  }
-  
-  .fsmode:hover {
-    background-color: rgba(255, 255, 255, 1);
-  }
-
-.fsmode:not(.is-active) .full-screen--close {
-    display: none;
 }
 
-.fsmode.is-active .full-screen--open {
-    display: none;
+.full-screen:hover {
+    opacity: 100%;
+    border-radius: 40%;
 }
 
 .full-screen--close {
@@ -301,4 +294,25 @@ thead tr i {
 
 :fullscreen .full-screen--close {
     display: block;
-} */
+}
+
+/* Fullscreen button */
+
+/* Misc */
+.landing-page i {
+    font-size: 5rem;
+    opacity: 30%;
+}
+
+.landing-page li h2 {
+    padding-top: 2%;
+    text-align: center;
+    letter-spacing: 2.5rem;
+    opacity: 30%;
+}
+
+@media screen and (max-width: 1060px) {
+    .landing-page li h2 {
+        display: none;
+    }
+}
