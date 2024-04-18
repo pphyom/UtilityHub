@@ -110,17 +110,7 @@
                     <!-- OFFLINE TABLE -->
                     <div class="table-wrapper">
                         {% if not data %}
-                            <div class="landing-page py-5">
-                                <li>
-                                    <i class="bi bi-graph-up-arrow p-5"></i>
-                                    <i class="bi bi-server p-5"></i>
-                                    <i class="bi bi-pc p-5"></i>
-                                    <i class="bi bi-hdd-rack-fill p-5"></i>
-                                    <i class="bi bi-globe-americas p-5"></i>
-                                </li>
-                                <hr>
-                                <li><h2>NO DATA FOUND</h2></li>
-                            </div>
+                            {% include "nodata.html" %}
                         {% else %}
                         <table class="table table-hover table-striped">
                             <thead class="sticky-top table-light">
@@ -149,11 +139,19 @@
                                         {% if row.index(cell) == 2 %} <!-- If the column 2, display badges -->
                                             {% if cell == cond[0] %}
                                             <td scope="row">
-                                                <span class="badge status warning text-dark">{{ cell }}</span>
+                                                <span class="badge status warning text-dark">
+                                                    <a class="text-decoration-none text-muted" 
+                                                    href="{{ b23rburn + row[5] + '/Failure-Records-Full.txt' }}" 
+                                                    target="_blank">{{ cell }}</i></a>
+                                                </span>
                                             </td>
                                             {% elif cell == cond[1] %}
                                             <td scope="row">
-                                                <span class="badge status fail">{{ cell }}</span>
+                                                <span class="badge status fail">
+                                                    <a class="text-decoration-none text-muted" 
+                                                    href="{{ b23rburn + row[5] + '/Failure-Records-Full.txt' }}" 
+                                                    target="_blank">{{ cell }}</i></a>
+                                                </span>
                                             </td>
                                             {% elif cell == cond[2] %}
                                             <td scope="row">
@@ -186,7 +184,5 @@
         </div><!-- Container Fluid End -->
     </main>
 </div>
-
-
 
 {% endblock %}

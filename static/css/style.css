@@ -188,7 +188,7 @@ a.sidebar-link:hover {
 
 /* Table customization */
 .table-wrapper {
-    height: 67vh;
+    height: 65vh;
     border-radius: .2rem;
     overflow: auto;
     text-align: center;
