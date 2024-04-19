@@ -9,7 +9,6 @@ class Source:
         self.header = header
     
     url_server42 = "http://10.43.251.42"
-    
 
     def live_data(self):
         """
