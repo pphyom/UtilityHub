@@ -280,7 +280,7 @@ thead tr i {
 }
 
 .full-screen:hover {
-    opacity: 100%;
+    opacity: 80%;
     border-radius: 40%;
 }
 
@@ -299,20 +299,17 @@ thead tr i {
 /* Fullscreen button */
 
 /* Misc */
-.landing-page i {
-    font-size: 5rem;
-    opacity: 30%;
+.landing-page ul li {
+    display: inline;
+    font-size: 5vw;
 }
 
-.landing-page li h2 {
-    padding-top: 2%;
-    text-align: center;
-    letter-spacing: 2.5rem;
-    opacity: 30%;
+.landing-page p {
+    letter-spacing: 2vw;
 }
 
-@media screen and (max-width: 1060px) {
-    .landing-page li h2 {
+@media screen and (max-width: 910px) {
+    .landing-page ul li {
         display: none;
     }
 }
