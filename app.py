@@ -1,19 +1,19 @@
 from flask import Flask, redirect, url_for, render_template, request
-from config.core import Source
-import time
+from config.core import *
+
 
 header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
                   " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1"
                   "Accept-Language: en-US,en;q=0.9"
 }
-url = "http://10.43.251.42/input_output?model=Supermicro"
+url23 = "http://10.43.251.42/input_output?model=Supermicro"
 
 
-smc = Source(url=url, header=header)
+smc = Source(url=url23, header=header)
 base_data = smc.live_data()  # assigned the data into the base_data variable
-headings = ("Location", "System SN", "Status", "Rack", "Time Gap", "Log")
-CONDITIONS = ("WARNING", "FAIL", "PASS")
+headings = DATA_["headings"]
+conditions = DATA_["conditions"]
 b23rburn = smc.url_server42
 
 
@@ -41,11 +41,10 @@ def index():
                    item[2] == "PASS"), reverse=True)
     
         return render_template("index.html", 
-                               headings=headings, 
-                               data=data, 
-                               cond=CONDITIONS,
-                               b23rburn=b23rburn)
-    
+                               data=data,
+                               headings=headings,
+                               b23rburn=b23rburn,
+                               cond=conditions)
     else:
         return render_template( "index.html")
 
