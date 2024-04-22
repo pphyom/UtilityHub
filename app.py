@@ -45,8 +45,14 @@ def index():
                                headings=headings,
                                b23rburn=b23rburn,
                                cond=conditions)
-    else:
-        return render_template( "index.html")
+    return render_template("index.html")
+
+
+@app.route("/rburn_log")
+def rburn_log():
+    return render_template("rburn_log.html")
+
+
 
 
 if __name__ == "__main__":
