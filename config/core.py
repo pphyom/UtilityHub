@@ -13,7 +13,6 @@ class Source:
     def __init__(self, url: str, header: dict):
         self.url = url
         self.header = header
-        
     
     url_server42 = "http://10.43.251.42"
 

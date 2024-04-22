@@ -4,8 +4,8 @@ from config.core import *
 
 header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
-                  " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1"
-                  "Accept-Language: en-US,en;q=0.9"
+                  " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1",
+    "Accept-Language": "en-US,en;q=0.9",
 }
 url23 = "http://10.43.251.42/input_output?model=Supermicro"
 
@@ -24,11 +24,11 @@ app = Flask(__name__)
 def index():
     if request.method == "POST":
         # retrieved from text input box
-        input_list = request.form["serial_num"].split(" ")
+        input_list = request.form.get("serial_num").split(" ")
         # remove all empty items in the list
         input_list = [sn for sn in input_list if sn != ""]
+        
         data: list = []
-    
         for idx, sn in enumerate(input_list):
             for sn_list in base_data:
                 if sn in sn_list[0]:
