@@ -12,10 +12,11 @@ url23 = "http://10.43.251.42/input_output?model=Supermicro"
 
 smc = Source(url=url23, header=header)
 base_data = smc.live_data()  # assigned the data into the base_data variable
-headings = DATA_["headings"]
+headings = DATA_["live_headings"]
+rburn_headings = DATA_["rburn_headings"]
 conditions = DATA_["conditions"]
 b23rburn = smc.url_server42
-
+temp = ("WARNING", "FAIL", "PASS")
 
 app = Flask(__name__)
 
@@ -23,17 +24,16 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        # retrieved from text input box
-        input_list = request.form.get("serial_num").split(" ")
-        # remove all empty items in the list
-        input_list = [sn for sn in input_list if sn != ""]
-        
+        # If there is input, pass it into input_list using user_input() method
+        input_list = user_input()
         data: list = []
         for idx, sn in enumerate(input_list):
             for sn_list in base_data:
+                # if user input in the database column 0
                 if sn in sn_list[0]:
+                    # append into a new list along with its index
                     data.append([idx+1] + sn_list)
-    
+
         # Sort items per conditions
         data.sort(key=lambda item:
                   (item[2] == "WARNING",
@@ -48,8 +48,12 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/rburn_log")
+@app.route("/rburn_log", methods=["GET", "POST"])
 def rburn_log():
+    if request.method == "POST":
+        input_list = user_input()
+        data: list = []
+        return render_template("rburn_log.html", headings=rburn_headings)
     return render_template("rburn_log.html")
 
 

@@ -1,10 +1,14 @@
 import requests
+from flask import request
 from bs4 import BeautifulSoup
 from operator import itemgetter
+from search import *
 
 
 DATA_= {
-        "headings": ("Location", "System SN", "Status", "Rack", "Time Gap", "Log"),
+        "live_headings": ("Location", "System SN", "Status", "Rack", "Time Gap", "Log"),
+        "rburn_headings": ("System SN","Test Result", "CPU Speed", "CPU Linpack", "DIMM", "GPU Thresholds", 
+                           "GPU Benchmark", "GPU Linpack", "FDT", "GDT", "GPU FW", "GPU NV"),
         "conditions": ("WARNING", "FAIL", "PASS"),
         }
 
@@ -21,7 +25,7 @@ class Source:
         Search and isolate data table from the RackBurn Webpage.
         url: Rack Burn URL
         header: Http header
-        Return: List table
+        return: List table
         """
         respond = requests.get(self.url, self.header)
         if not respond:
@@ -50,3 +54,22 @@ class Source:
                 data_list.append(list(itemgetter(1, 3, 0, 6, 7)(temp[elem])))
 
             return data_list
+
+
+def user_input():
+    """
+    Get data from user input text box.
+    param: none
+    return: list of data separated by a white space
+    """
+    input_data = request.form.get("serial_num").split(" ")
+    # remove all empty items in the list
+    input_data = [sn for sn in input_data if sn != ""]
+    return input_data
+
+
+
+
+
+def cpu_info():
+    pass

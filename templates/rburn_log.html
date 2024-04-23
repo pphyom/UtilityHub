@@ -4,29 +4,25 @@
 
 {% block body %}
 <div class="main">
-    <table data-toggle="table" data-search="true" data-show-columns="true">
-        <thead>
-            <tr>
-                <th data-field="name">Name</th>
-                <th data-field="star">Stars</th>
-                <th data-field="forks">Forks</th>
-                <th data-field="description">Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td data-label="Account">Visa - 3412</td>
-                <td data-label="Due Date">04/01/2016</td>
-                <td data-label="Amount">$1,190</td>
-                <td data-label="New Col">New Data</td>
-            </tr>
-            <tr>
-                <td scope="row" data-label="Account">Visa - 6076</td>
-                <td data-label="Due Date">03/01/2016</td>
-                <td data-label="Amount">$2,443</td>
-                <td data-label="New Col">New Data</td>
-            </tr>
-        </tbody>
-    </table>
+    <main>
+        <div class="container-fluid p-4">
+            <h3 class="mb-5">Rack Burn Logs</h3>
+            {% include "input_form.html" %}
+            
+            <div class="card mb-4">
+                <div class="table-wrapper">
+                    <table class="table table-hover table-striped">
+                        <thead class="sticky-top table-secondary">
+                            <tr>
+                                {% for head in headings %}
+                                <th>{{ head }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div><!-- Container Fluid End -->
+    </main>
 </div>
 {% endblock %}

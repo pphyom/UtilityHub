@@ -7,11 +7,15 @@
     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>{% block head %}{% endblock %}</title>
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.4/dist/bootstrap-table.min.css">
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.22.4/dist/bootstrap-table.min.js"></script>
+
   <script defer src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
   
 </head>
 

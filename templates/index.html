@@ -7,49 +7,8 @@
 <div class="main">
     <main>
         <div class="container-fluid p-4">
-            <h2 class="mb-5">Live Dashboard</h2>
-            <div class="row mb-3">
-                <div class="col-xl-6">
-                    <form class="row" action="" method="post">
-                        <div class="col-md-8 col-sm-12 mb-2">
-                            <input type="text" id="primary-textbox" class="form-control"
-                                placeholder="Insert system serial number/s" name="serial_num">
-                        </div>
-                        <div class="col-md-4 col-sm-12 mb-2">
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop">...</button>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
-                                data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-                                aria-hidden="true">
-                                <div class="modal-dialog modal-sm">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h6 class="modal-title" id="staticBackdropLabel">Bulk Input
-                                            </h6>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <textarea id="secondary-textbox" class="form-control"
-                                                style="min-width: 100%; resize: none;" rows="10"
-                                                placeholder="Place data line by line."></textarea>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="reset" class="btn btn-secondary">Reset</button>
-                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                                onclick="passData()">Insert</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Track</button>
-                        </div>
-                    </form>
-                </div>
-            </div><!-- Row End -->
+            <h3 class="mb-5">Live Dashboard</h3>
+            {% include "input_form.html" %}
 
             <div id="fullscreen-wrapper" class="card mb-4">
                 <div class="card-header bg-custom text-white">
@@ -113,21 +72,21 @@
                             {% include "nodata.html" %}
                         {% else %}
                         <table class="table table-hover table-striped">
-                            <thead class="sticky-top table-light">
+                            <thead class="sticky-top table-secondary">
                                 <tr>
                                     {% for head in headings %}
                                         {% if head == headings[0] %}
-                                        <th scope="col"><i class="bi bi-geo-alt-fill"></i>{{ head }}</th>
+                                            <th scope="col"><i class="bi bi-geo-alt-fill"></i>{{ head }}</th>
                                         {% elif head == headings[1] %}
-                                        <th scope="col"><i class="bi bi-upc"></i>{{ head }}</th>
+                                            <th scope="col"><i class="bi bi-upc"></i>{{ head }}</th>
                                         {% elif head == headings[2] %}
-                                        <th scope="col"><i class="bi bi-info-square-fill"></i>{{ head }}</th>
+                                            <th scope="col"><i class="bi bi-info-square-fill"></i>{{ head }}</th>
                                         {% elif head == headings[3] %}
-                                        <th scope="col"><i class="bi bi-hdd-rack"></i>{{ head }}</th>
+                                            <th scope="col"><i class="bi bi-hdd-rack"></i>{{ head }}</th>
                                         {% elif head == headings[4] %}
-                                        <th scope="col"><i class="bi bi-stopwatch-fill"></i>{{ head }}</th>
+                                            <th scope="col"><i class="bi bi-stopwatch-fill"></i>{{ head }}</th>
                                         {% else %}
-                                        <th scope="col"><i class="bi bi-journal-code"></i>{{ head }}</th>
+                                            <th scope="col"><i class="bi bi-journal-code"></i>{{ head }}</th>
                                         {% endif %}
                                     {% endfor %}
                                 </tr>
@@ -138,46 +97,45 @@
                                     {% for cell in row %}
                                         {% if row.index(cell) == 2 %} <!-- If the column 2, display badges -->
                                             {% if cell == cond[0] %}
-                                            <td scope="row">
-                                                <span class="badge status warning text-dark">
-                                                    <a class="text-decoration-none text-muted" 
-                                                    href="{{ b23rburn + row[5] + '/Failure-Records-Full.txt' }}" 
-                                                    target="_blank">{{ cell }}</i></a>
-                                                </span>
-                                            </td>
+                                                <td scope="row">
+                                                    <span class="badge status warning text-dark">
+                                                        <a class="text-decoration-none text-muted" 
+                                                        href="{{ b23rburn + row[5] + '/Failure-Records-Full.txt' }}" 
+                                                        target="_blank">{{ cell }}</i></a>
+                                                    </span>
+                                                </td>
                                             {% elif cell == cond[1] %}
+                                                <td scope="row">
+                                                    <span class="badge status fail">
+                                                        <a class="text-decoration-none text-muted" 
+                                                        href="{{ b23rburn + row[5] + '/Failure-Records-Full.txt' }}" 
+                                                        target="_blank">{{ cell }}</i></a>
+                                                    </span>
+                                                </td>
+                                            {% elif cell == cond[2] %}
+                                                <td scope="row">
+                                                    <span class="badge status pass">{{ cell }}</span>
+                                                </td>
+                                            {% else %}
+                                                <td scope="row">
+                                                    <span class="badge status running">{{ cell }}</span>
+                                                </td>
+                                            {% endif %}
+                                        {% elif row.index(cell) == 5 %}
                                             <td scope="row">
-                                                <span class="badge status fail">
-                                                    <a class="text-decoration-none text-muted" 
-                                                    href="{{ b23rburn + row[5] + '/Failure-Records-Full.txt' }}" 
-                                                    target="_blank">{{ cell }}</i></a>
+                                                <span>
+                                                    <a href="{{ b23rburn + cell }}" target="_blank"><i class="bi bi-file-text-fill"></i></a>
                                                 </span>
                                             </td>
-                                            {% elif cell == cond[2] %}
-                                            <td scope="row">
-                                                <span class="badge status pass">{{ cell }}</span>
-                                            </td>
-                                            {% else %}
-                                            <td scope="row">
-                                                <span class="badge status running">{{ cell }}</span>
-                                            </td>
-                                            {% endif %}
-
-                                        {% elif row.index(cell) == 5 %}
-                                        <td scope="row">
-                                            <span>
-                                                <a href="{{ b23rburn + cell }}" target="_blank"><i class="bi bi-file-text-fill"></i></a>
-                                            </span>
-                                        </td>
                                         {% else %}
-                                        <td scope="row">{{ cell }}</td>
+                                            <td scope="row">{{ cell }}</td>
                                         {% endif %}
                                     {% endfor %}
                                 </tr>
                                 {% endfor %}
                             </tbody>
-                            {% endif %}
                         </table>
+                        {% endif %}
                     </div>
                 </div>
             </div><!-- Row End -->

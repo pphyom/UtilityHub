@@ -1,0 +1,41 @@
+<div class="row mb-3">
+    <div class="col-xl-6">
+        <form class="row" action="" method="post">
+            <div class="col-md-8 col-sm-12 mb-2">
+                <input type="text" id="primary-textbox" class="form-control" placeholder="Insert system serial number/s"
+                    name="serial_num">
+            </div>
+            <div class="col-md-4 col-sm-12 mb-2">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop">...</button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="staticBackdropLabel">Bulk Input
+                                </h6>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <textarea id="secondary-textbox" class="form-control"
+                                    style="min-width: 100%; resize: none;" rows="10"
+                                    placeholder="Place data line by line."></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="reset" class="btn btn-secondary">Reset</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                    onclick="passData()">Insert</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Track</button>
+            </div>
+        </form>
+    </div>
+</div><!-- Form Row End -->
