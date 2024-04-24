@@ -11,7 +11,7 @@ url23 = "http://10.43.251.42/input_output?model=Supermicro"
 
 
 smc = Source(url=url23, header=header)
-base_data = smc.live_data()  # assigned the data into the base_data variable
+# base_data = smc.live_data()  # assigned the data into the base_data variable
 headings = DATA_["live_headings"]
 rburn_headings = DATA_["rburn_headings"]
 conditions = DATA_["conditions"]
@@ -22,28 +22,28 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    if request.method == "POST":
-        # If there is input, pass it into input_list using user_input() method
-        input_list = user_input()
-        data: list = []
-        for idx, sn in enumerate(input_list):
-            for sn_list in base_data:
-                # if user input in the database column 0
-                if sn in sn_list[0]:
-                    # append into a new list along with its index
-                    data.append([idx+1] + sn_list)
+    # if request.method == "POST":
+    #     # If there is input, pass it into input_list using user_input() method
+    #     input_list = user_input()
+    #     data: list = []
+    #     for idx, sn in enumerate(input_list):
+    #         for sn_list in base_data:
+    #             # if user input in the database column 0
+    #             if sn in sn_list[0]:
+    #                 # append into a new list along with its index
+    #                 data.append([idx+1] + sn_list)
 
-        # Sort items per conditions
-        data.sort(key=lambda item:
-                  (item[2] == "WARNING",
-                   item[2] == "FAIL",
-                   item[2] == "PASS"), reverse=True)
+    #     # Sort items per conditions
+    #     data.sort(key=lambda item:
+    #               (item[2] == "WARNING",
+    #                item[2] == "FAIL",
+    #                item[2] == "PASS"), reverse=True)
     
-        return render_template("index.html", 
-                               data=data,
-                               headings=headings,
-                               b23rburn=b23rburn,
-                               cond=conditions)
+    #     return render_template("index.html", 
+    #                            data=data,
+    #                            headings=headings,
+    #                            b23rburn=b23rburn,
+    #                            cond=conditions)
     return render_template("index.html")
 
 
@@ -56,6 +56,9 @@ def rburn_log():
     return render_template("rburn_log.html")
 
 
+@app.route("/ftu_log")
+def ftu_log():
+    return render_template("ftu_log.html")
 
 
 if __name__ == "__main__":

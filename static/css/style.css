@@ -272,16 +272,16 @@ thead tr i {
 /* Fullscreen button */
 .full-screen {
     opacity: 70%;
-    transition: 150ms;
+    transition: .1s ease-in-out;
     background-color: var(--theme-color);
     border-color: var(--main-color);
-    border-radius: 15%;
+    border-radius: 25%;
     cursor: pointer;
 }
 
 .full-screen:hover {
-    opacity: 80%;
-    border-radius: 40%;
+    opacity: 100%;
+    transform: scale(1.15);
 }
 
 .full-screen--close {
