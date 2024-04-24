@@ -17,6 +17,7 @@ def search_it(search_item: str, source2search: dict):
                         yield result
 
 
+#               ("CPU", "Core", dict)
 def search_pair(parent: str, child: str, source2search: dict):
     for k, v in source2search.items():
         if k == parent:

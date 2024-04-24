@@ -2,8 +2,7 @@ import requests
 from flask import request
 from bs4 import BeautifulSoup
 from operator import itemgetter
-from search import *
-
+from config.search import *
 
 DATA_= {
         "live_headings": ("Location", "System SN", "Status", "Rack", "Time Gap", "Log"),

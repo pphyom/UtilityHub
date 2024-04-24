@@ -16,7 +16,6 @@ headings = DATA_["live_headings"]
 rburn_headings = DATA_["rburn_headings"]
 conditions = DATA_["conditions"]
 b23rburn = smc.url_server42
-temp = ("WARNING", "FAIL", "PASS")
 
 app = Flask(__name__)
 
