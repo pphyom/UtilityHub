@@ -7,7 +7,7 @@ header = {
                   " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1",
     "Accept-Language": "en-US,en;q=0.9",
 }
-url23 = "http://10.43.251.39/input_output?model=Supermicro"
+url23 = "http://10.43.251.42/input_output?model=Supermicro"
 
 
 smc = Source(url=url23, header=header)
@@ -16,6 +16,7 @@ headings = DATA_["live_headings"]
 rburn_headings = DATA_["rburn_headings"]
 conditions = DATA_["conditions"]
 b23rburn = smc.url_server42
+
 
 app = Flask(__name__)
 
@@ -28,7 +29,7 @@ def index():
         data: list = []
         for idx, sn in enumerate(input_list):
             for sn_list in base_data:
-                # if user input in the database column 0
+                # if user input is in the column 0 of each rows
                 if sn in sn_list[0]:
                     # append into a new list along with its index
                     data.append([idx+1] + sn_list)
@@ -37,7 +38,7 @@ def index():
         data.sort(key=lambda item:
                   (item[2] == "WARNING",
                    item[2] == "FAIL",
-                   item[2] == "PASS"), reverse=True)
+                   item[2] == "RUNNING"), reverse=True)
     
         return render_template("index.html", 
                                data=data,
@@ -52,7 +53,11 @@ def rburn_log():
     if request.method == "POST":
         input_list = user_input()
         data: list = []
-        return render_template("rburn_log.html", headings=rburn_headings)
+        # for idx, sn in enumerate(input_list):
+        #     for sn_list in base_data:
+        #         pass
+        # return render_template("rburn_log.html", headings=rburn_headings)
+        return base_data
     return render_template("rburn_log.html")
 
 
