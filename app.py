@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-from sqlalchemy import SQLAlchemy
 from config.core import *
 
 
