@@ -17,7 +17,7 @@ class Source:
         self.url = url
         self.header = header
     
-    url_server42 = "http://10.43.251.42"
+    url_server40 = "http://10.43.251.40"
 
     def live_data(self):
         """
@@ -59,7 +59,7 @@ def user_input():
     """
     Get data from user input text box.
     param: none
-    return: list of data separated by a white space
+    return: list of input data separated by a white space
     """
     input_data = request.form.get("serial_num").split(" ")
     # remove all empty items in the list
