@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, render_template, request
 from config.core import *
 
 
@@ -7,7 +7,7 @@ header = {
                   " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1",
     "Accept-Language": "en-US,en;q=0.9",
 }
-url23 = "http://10.43.251.42/input_output?model=Supermicro"
+url23 = "http://10.43.251.40/input_output?model=Supermicro"
 
 
 smc = Source(url=url23, header=header)
@@ -15,7 +15,7 @@ base_data = smc.live_data()  # assigned the data into the base_data variable
 headings = DATA_["live_headings"]
 rburn_headings = DATA_["rburn_headings"]
 conditions = DATA_["conditions"]
-b23rburn = smc.url_server42
+b23rburn = smc.url_server40
 
 
 app = Flask(__name__)
@@ -68,4 +68,3 @@ def ftu_log():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=90, debug=True)
-    
