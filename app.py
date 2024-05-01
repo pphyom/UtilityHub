@@ -13,7 +13,7 @@ url23 = "http://10.43.251.40/input_output?model=Supermicro"
 
 
 smc = Source(url=url23, header=header)
-base_data = smc.live_data()  # assigned the data into the base_data variable
+# base_data = smc.live_data()  # assigned the data into the base_data variable
 headings = DATA_["live_headings"]
 rburn_headings = DATA_["rburn_headings"]
 conditions = DATA_["conditions"]

@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from operator import itemgetter
 from config.search import *
 
-DATA_= {
+DATA_ = {
         "live_headings": ("Location", "System SN", "Status", "Rack", "Time Gap", "Log"),
         "rburn_headings": ("System SN","Test Result", "CPU Speed", "CPU Linpack", "DIMM", "GPU Thresholds", 
                            "GPU Benchmark", "GPU Linpack", "FDT", "GDT", "GPU FW", "GPU NV"),
@@ -65,9 +65,6 @@ def user_input():
     # remove all empty items in the list
     input_data = [sn for sn in input_data if sn != ""]
     return input_data
-
-
-
 
 
 def cpu_info():
