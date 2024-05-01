@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from config.core import *
+from config.rburn_helper import *
 
 
 header = {
@@ -61,7 +62,8 @@ def rburn_log():
         #     for sn_list in base_data:
         #         pass
         # return render_template("rburn_log.html", headings=rburn_headings)
-        return base_data
+        addr = find_mac_summary_log()
+        return render_template("rburn_log.html", addr=addr)
     return render_template("rburn_log.html")
 
 

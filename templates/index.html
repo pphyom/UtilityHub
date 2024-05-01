@@ -121,7 +121,7 @@
                                                     <span class="badge status running">{{ cell }}</span>
                                                 </td>
                                             {% endif %}
-                                        {% elif row.index(cell) == 5 %}
+                                        {% elif row.index(cell) == 5 %} <!-- If the column 5, display log links -->
                                             <td scope="row">
                                                 <span>
                                                     <a href="{{ b23rburn + cell }}" target="_blank"><i class="bi bi-file-text-fill"></i></a>
