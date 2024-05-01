@@ -13,14 +13,14 @@ url23 = "http://10.43.251.40/input_output?model=Supermicro"
 
 
 smc = Source(url=url23, header=header)
-# base_data = smc.live_data()  # assigned the data into the base_data variable
+base_data = smc.live_data()  # assigned the data into the base_data variable
 headings = DATA_["live_headings"]
 rburn_headings = DATA_["rburn_headings"]
 conditions = DATA_["conditions"]
 b23rburn = smc.url_server40
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
 # configure the SQLite database, relative to the app instance folder
 # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 # db = SQLAlchemy(app)

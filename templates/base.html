@@ -7,12 +7,12 @@
     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>{% block head %}{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-icons.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 
-  <script defer src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script defer src="js/bootstrap.bundle.min.js"></script>
+  <script defer src="js/script.js"></script>
   
 </head>
 
@@ -30,19 +30,19 @@
 
       <ul class="sidebar-nav">
         <li class="sidebar-item">
-          <a href="{{ url_for('index') }}" class="sidebar-link">
+          <a href="/" class="sidebar-link">
             <i class="bi bi-cast"></i>
             <span>Live</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="{{ url_for('ftu_log') }}" class="sidebar-link">
+          <a href="ftu_log" class="sidebar-link">
             <i class="bi bi-braces"></i>
             <span>Function Test Logs</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="{{ url_for('rburn_log') }}" class="sidebar-link">
+          <a href="rburn_log" class="sidebar-link">
             <i class="bi bi-code-square"></i>
             <span>Rack Burn Logs</span>
           </a>
