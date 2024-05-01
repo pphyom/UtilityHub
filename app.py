@@ -32,18 +32,19 @@ def index():
         # If there is input, pass it into input_list using user_input() method
         input_list = user_input()
         data: list = []
+        unknown: list = []
         for idx, sn in enumerate(input_list):
             for sn_list in base_data:
-                # if user input is in the column 0 of each rows
+                # if user input sn is in the database
                 if sn in sn_list[0]:
                     # append into a new list along with its index
                     data.append([idx+1] + sn_list)
 
         # Sort items per conditions
-        data.sort(key=lambda item:
-                  (item[2] == "WARNING",
-                   item[2] == "FAIL",
-                   item[2] == "RUNNING"), reverse=True)
+        # data.sort(key=lambda item:
+        #           (item[2] == "WARNING",
+        #            item[2] == "FAIL",
+        #            item[2] == "RUNNING"), reverse=True)
     
         return render_template("index.html", 
                                data=data,
@@ -58,12 +59,18 @@ def rburn_log():
     if request.method == "POST":
         input_list = user_input()
         data: list = []
-        # for idx, sn in enumerate(input_list):
-        #     for sn_list in base_data:
-        #         pass
+        racks: list = []
+        for idx, sn in enumerate(input_list):
+            for sn_list in base_data:
+                # if user input sn is in the database and pass
+                if sn in sn_list[0] and sn_list[1] == "PASS":
+                    # append into a new list along with its index
+                    racks.append(sn_list[2])
+                    data.append([idx+1] + sn_list)
         # return render_template("rburn_log.html", headings=rburn_headings)
-        addr = find_mac_summary_log()
-        return render_template("rburn_log.html", addr=addr)
+        racks = list(set(racks))
+        return racks
+    
     return render_template("rburn_log.html")
 
 

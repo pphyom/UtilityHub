@@ -3,15 +3,21 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 
-PRESENT = datetime.now()
-year = PRESENT.strftime("%Y")
-month = PRESENT.strftime("%B")
-day = PRESENT.day
+present = datetime.now()
+year = present.year
+month = {1: "January", 2: "February", 3: "March", 4: "April", 
+         5: "May", 6: "June", 7: "July", 8: "August", 
+         9: "September", 10: "October", 11: "November", 12: "December"}
 
-base_url = f"http://10.43.251.40/logs/Supermicro/{year}/{month}/6U8801332583-2/29/R-PRE/"
+
+base_url = f"http://10.43.251.40/logs/Supermicro/{year}/{month.get(present.month-1)}/6U8801332583-1/29/R-PRE/"
         
 
-def find_all_aTag(url):
+def find_all_a_tag(url: str):
+    """ 
+    Find all the a href link from the webpage. 
+    param: web url
+    """
     try:
         respond = requests.get(url)
         respond.raise_for_status()
@@ -26,16 +32,17 @@ def find_all_aTag(url):
 
 
 def find_mac_summary_log():
-    snumbers_list = find_all_aTag(base_url) # get all serial numbers
+    """ Find mac address from the given link, retrieve json test result from it. """
+    snumbers_list = find_all_a_tag(base_url) # get all serial numbers
     try:
         snumbers_list = set(snumbers_list[5:])  # remove duplicates and extra rows
-        addr = []
+        mac_list: list = []
         for sn in snumbers_list:
             url_for_each_sn = base_url + f"{sn}"
-            mac = find_all_aTag(url_for_each_sn)    # find mac address in each url
+            mac = find_all_a_tag(url_for_each_sn)    # find mac address in each url
             link = base_url + f"{sn}/" + mac[5] + "/system_test-summary-json-full.json"
-            addr.append(link)
-        return addr
+            mac_list.append(link)
+        return mac_list
         
     except TypeError as te:
         print(te)

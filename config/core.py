@@ -61,9 +61,12 @@ def user_input():
     param: none
     return: list of input data separated by a white space
     """
-    input_data = request.form.get("serial_num").split(" ")
+    temp = request.form.get("serial_num").split(" ")
     # remove all empty items in the list
-    input_data = [sn for sn in input_data if sn != ""]
+    temp = [sn for sn in temp if sn != ""]
+    # remove all duplicates and maintain the index order
+    input_data:list = []
+    [input_data.append(sn) for sn in temp if sn not in input_data]
     return input_data
 
 
