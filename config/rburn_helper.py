@@ -11,7 +11,12 @@ month = {1: "January", 2: "February", 3: "March", 4: "April",
 
 
 base_url = f"http://10.43.251.40/logs/Supermicro/{year}/{month.get(present.month-1)}/6U8801332583-1/29/R-PRE/"
-        
+
+
+class Rack:
+    def __init__(self) -> None:
+        pass
+
 
 def find_all_a_tag(url: str):
     """ 
