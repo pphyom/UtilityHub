@@ -58,19 +58,24 @@ def index():
 @app.route("/rburn_log", methods=["GET", "POST"])
 def rburn_log():
     if request.method == "POST":
-        input_list = user_input()
-        data: list = []
-        racks: list = []
-        for idx, sn in enumerate(input_list):
-            for sn_list in base_data:
-                # if user input sn is in the database and pass
-                if sn in sn_list[0] and sn_list[1] == "PASS":
-                    # append into a new list along with its index
-                    racks.append(sn_list[2])
-                    data.append([idx+1] + sn_list)
+        sn_pack, rack_pack = retrieve_sys_info(user_input(), base_data, b23rburn)
+        # input_list = user_input()
+        # racks: list = []
+        # sn_rack = retrieve_sys_info(input_list, base_data, b23rburn)
+            # for sn_list in base_data:
+            #     # if user input sn is in the database and pass
+            #     if sn in sn_list[0] and sn_list[1] == "PASS":
+            #         # append into a new list along with its index
+            #         substr = "http://10.43.251.40" + sn_list[4].partition("/R-PRE")[0][:-2]
+            #         racks.append(substr)
+            #         temp = {"serial_num": sn_list[0], 
+            #                 "rack": sn_list[2], 
+            #                 "path": b23rburn + (sn_list[4].strip("\n")) + "/system_test-summary-json-full.json"}
+            #         sn_rack.append(temp)
+                    
         # return render_template("rburn_log.html", headings=rburn_headings)
-        racks = list(set(racks))
-        return racks
+        # racks = list(set(racks))
+        return sn_pack
     
     return render_template("rburn_log.html")
 

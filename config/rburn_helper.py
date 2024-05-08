@@ -51,3 +51,28 @@ def find_mac_summary_log():
         
     except TypeError as te:
         print(te)
+
+
+def retrieve_sys_info(input_list, base_data, rb_server):
+    trace_sn: list = []
+    trace_rack: list = []
+    bad_sn_list: list = []
+    for serial_number in input_list:
+        for sn_list in base_data:
+            # if user input sn is in the database and pass
+            if serial_number in sn_list[0] and sn_list[1] == "PASS":
+                # temp = {"serial_num": sn_list[0], 
+                #         "rack": sn_list[2], 
+                #         "path": rb_server + (sn_list[4].strip("\n")) + "/system_test-summary-json-full.json"}
+                temp = {sn_list[0]: {"rack": sn_list[2], "path": rb_server + (sn_list[4].strip("\n")) + "/system_test-summary-json-full.json"}}
+                trace_sn.append(temp)
+                # separate rack list
+                substr = "http://10.43.251.40" + sn_list[4].partition("/R-PRE")[0][:-2]
+                sn_list[0] = {sn_list[2]: sn_list[4]}
+
+                trace_rack.append(sn_list[0])
+                # trace_rack = list(set(trace_rack))
+            # if not, throw sn into bad_sn_list
+            else:
+                bad_sn_list.append(serial_number)
+    return trace_sn, trace_rack
