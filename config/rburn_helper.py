@@ -4,14 +4,12 @@ from bs4 import BeautifulSoup
 
 
 present = datetime.now()
-year = present.year
 month = {1: "January", 2: "February", 3: "March", 4: "April", 
          5: "May", 6: "June", 7: "July", 8: "August", 
          9: "September", 10: "October", 11: "November", 12: "December"}
 
 
-base_url = f"http://10.43.251.40/logs/Supermicro/{year}/{month.get(present.month-1)}/6U8801332583-1/29/R-PRE/"
-
+base_url = f"http://10.43.251.40/logs/Supermicro/{present:%Y}/{month.get(present.month-1)}/6U8801332583-1/29/R-PRE/"
 
 class Rack:
     def __init__(self) -> None:
@@ -21,7 +19,7 @@ class Rack:
 def find_all_a_tag(url: str):
     """ 
     Find all the a href link from the webpage. 
-    param: web url
+    param: web url (the url tail must be R-PRE/)
     """
     try:
         respond = requests.get(url)
@@ -54,19 +52,20 @@ def find_mac_summary_log():
 
 
 def get_sys_info(input_list, base_data, rb_server):
-    trace_sn: list = []
-    trace_rack: list = []
+    get_sn: list = []
+    get_rack: list = []
     for serial_number in input_list:
         for sn_list in base_data:
             # if user input sn is in the database and pass
             if serial_number in sn_list[0] and sn_list[1] == "PASS":
                 temp = {sn_list[0]: {"rack": sn_list[2], 
                                      "path": rb_server + (sn_list[4].strip("\n")) + "/system_test-summary-json-full.json"}}
-                trace_sn.append(temp)
+                get_sn.append(temp)
                 
                 # get rack list
-                substr = "http://10.43.251.40" + sn_list[4].partition("/R-PRE")[0][:-2]
-                trace_rack.append(substr)
-                trace_rack = list(set(trace_rack))
+                get_rack.append(sn_list[2])
+                # substr = "http://10.43.251.40" + sn_list[4].partition("/R-PRE")[0][:-2]
+                # get_rack.append(substr)
+                get_rack = list(set(get_rack))
 
-    return trace_sn, trace_rack
+    return get_sn, get_rack
