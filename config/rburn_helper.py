@@ -9,11 +9,11 @@ month = {1: "January", 2: "February", 3: "March", 4: "April",
          9: "September", 10: "October", 11: "November", 12: "December"}
 
 
-base_url = f"http://10.43.251.40/logs/Supermicro/{present:%Y}/{month.get(present.month-1)}/6U8801332583-1/29/R-PRE/"
+base_url = f"http://10.43.251.40/logs/Supermicro/{present:%Y}/{month.get(present.month)}/"
 
 class Rack:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, url):
+        self.url = url
 
 
 def find_all_a_tag(url: str):
@@ -60,6 +60,7 @@ def get_sys_info(input_list, base_data, rb_server):
             if serial_number in sn_list[0] and sn_list[1] == "PASS":
                 temp = {sn_list[0]: {"rack": sn_list[2], 
                                      "path": rb_server + (sn_list[4].strip("\n")) + "/system_test-summary-json-full.json"}}
+                # get serial numbers 
                 get_sn.append(temp)
                 
                 # get rack list
@@ -69,3 +70,10 @@ def get_sys_info(input_list, base_data, rb_server):
                 get_rack = list(set(get_rack))
 
     return get_sn, get_rack
+
+
+def get_sn_models_from_rack(rack_list: list):
+    racks = Rack(url=base_url)
+    for rack in rack_list:
+        print(f"{racks.url}{rack}")
+

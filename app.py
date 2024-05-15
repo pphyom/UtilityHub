@@ -58,14 +58,14 @@ def index():
 @app.route("/rburn_log", methods=["GET", "POST"])
 def rburn_log():
     if request.method == "POST":
-        sn_pack, rack_pack = get_sys_info(user_input(), base_data, b23rburn)
+        get_sn, get_rack = get_sys_info(user_input(), base_data, b23rburn)
 
-        for i in sn_pack:
+        for i in get_sn:
             for key in i.values():
                 if key["rack"] == "101000226144":
                     print(key)
-
-        return rack_pack
+        get_sn_models_from_rack(get_rack)
+        return get_rack
     
     return render_template("rburn_log.html")
 
