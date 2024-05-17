@@ -1,6 +1,4 @@
 from flask import Flask, render_template, request
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import JSON
 from config.core import *
 from config.rburn_helper import *
 
@@ -22,9 +20,6 @@ b23rburn = smc.url_server40
 
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
-# configure the SQLite database, relative to the app instance folder
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
-# db = SQLAlchemy(app)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -60,12 +55,12 @@ def rburn_log():
     if request.method == "POST":
         get_sn, get_rack = get_sys_info(user_input(), base_data, b23rburn)
 
-        for i in get_sn:
-            for key in i.values():
-                if key["rack"] == "101000226144":
-                    print(key)
-        get_sn_models_from_rack(get_rack)
-        return get_rack
+        # for i in get_sn:
+        #     for key in i.values():
+        #         if key["rack"] == "101000226144":
+        #             print(key)
+        rack_addr = get_sn_models_from_rack(get_rack)
+        return rack_addr
     
     return render_template("rburn_log.html")
 

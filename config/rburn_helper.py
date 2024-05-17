@@ -1,4 +1,4 @@
-import requests
+import requests, os
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -9,7 +9,8 @@ month = {1: "January", 2: "February", 3: "March", 4: "April",
          9: "September", 10: "October", 11: "November", 12: "December"}
 
 
-base_url = f"http://10.43.251.40/logs/Supermicro/{present:%Y}/{month.get(present.month)}/"
+base_url = f"http://10.43.251.40/logs/Supermicro"
+
 
 class Rack:
     def __init__(self, url):
@@ -74,6 +75,16 @@ def get_sys_info(input_list, base_data, rb_server):
 
 def get_sn_models_from_rack(rack_list: list):
     racks = Rack(url=base_url)
-    for rack in rack_list:
-        print(f"{racks.url}{rack}")
+    t_year = int(present.strftime("%Y"))
+    t_month = month.get(present.month)
+    t_day = int(present.strftime("%d"))
+    rack_addr: list = []
+    # Create a directory that stores test data for each rack
+    if not os.path.exists("rack_data"):
+            os.makedirs("rack_data")
+    for rack in rack_list:            
+        filename = f"{rack}.json"
+        rack_address = f"{racks.url}/{t_year}/{t_month}/{rack}/{t_day}"
+        rack_addr.append(rack_address)
+    return rack_addr
 

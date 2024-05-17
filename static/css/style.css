@@ -215,6 +215,12 @@ thead tr i {
     padding-right: .5rem;
 }
 
+tbody a {
+    text-decoration: none;
+    color: var(--theme-color);
+}
+
+
 /* Table customization */
 
 /*  Responsive Table  */

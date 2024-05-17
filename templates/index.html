@@ -121,6 +121,12 @@
                                                     <span class="badge status running">{{ cell }}</span>
                                                 </td>
                                             {% endif %}
+                                        {% elif row.index(cell) == 3 %} <!-- If the column 3, attach rack links -->
+                                            <td scope="row">
+                                                <span>
+                                                    <a href="{{ b23rburn + '/monitor/Supermicro/' + cell }}" target="_blank">@{{ cell }}</a>
+                                                </span>
+                                            </td>
                                         {% elif row.index(cell) == 5 %} <!-- If the column 5, display log links -->
                                             <td scope="row">
                                                 <span>
