@@ -60,7 +60,7 @@ def rburn_log():
         #         if key["rack"] == "101000226144":
         #             print(key)
         rack_addr = get_sn_models_from_rack(get_rack)
-        return rack_addr
+        return get_rack
     
     return render_template("rburn_log.html")
 

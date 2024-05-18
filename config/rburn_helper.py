@@ -61,6 +61,13 @@ def find_mac_summary_log():
 
 
 def get_sys_info(input_list, base_data, rb_server):
+    """
+    Take a (list of) serial number from user input and search it in the database. 
+    Store it in a separate list along with the log ONLY IF it is in the database AND "pass" the test. 
+    param: list of serial number/s input from users.
+    param: base_data-- the rack burn database.
+    param: rb_server-- the server to get the info from (eg: http://10.43.251.40)
+    """
     get_sn: list = []
     get_rack: list = []
     for serial_number in input_list:
@@ -73,19 +80,14 @@ def get_sys_info(input_list, base_data, rb_server):
                 get_sn.append(temp)
                 
                 # get racks belong to each input sn
-                get_rack.append(sn_list[2])
-                # substr = "http://10.43.251.40" + sn_list[4].partition("/R-PRE")[0][:-2]
-                # get_rack.append(substr)
+                substr = "http://10.43.251.40" + sn_list[4].partition("/R-PRE")[0][:-2]
+                get_rack.append(substr)
                 get_rack = list(set(get_rack))
 
     return get_sn, get_rack
 
 
 def get_sn_models_from_rack(rack_list: list):
-    t_year = int(present.strftime("%Y"))
-    t_month = month.get(present.month)
-    t_day = int(present.strftime("%d"))
-    # t_day = 1
     racks = Rack(url=base_url)
     count = 0
     rack_addr: list = []
@@ -94,13 +96,7 @@ def get_sn_models_from_rack(rack_list: list):
             os.makedirs("rack_data")
 
     for rack in rack_list:
-        rack_address = f"{racks.url}{t_year}/{t_month}/{rack}/{t_day}/R-PRE/"
-        # If the rack is not found on the current date
-        if not requests.get(rack_address) and t_day > 1:
-            print(f"EXECUTE {rack} NOT FOUND!")
-            rack_address = f"{racks.url}{t_year}/{t_month}/{rack}/{t_day - 1}/R-PRE/"
-        print(f"EXECUTE {rack} FOUND!")
-        rack_addr.append(rack_address)
+        print(rack)
     
     return rack_addr
 
