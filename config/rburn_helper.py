@@ -1,5 +1,5 @@
 import requests, os
-from datetime import datetime
+from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
 
@@ -8,8 +8,12 @@ month = {1: "January", 2: "February", 3: "March", 4: "April",
          5: "May", 6: "June", 7: "July", 8: "August", 
          9: "September", 10: "October", 11: "November", 12: "December"}
 
+# t_year = int(present.strftime("%Y"))
+# t_month = month.get(present.month)
+# t_day = int(present.strftime("%d"))
 
-base_url = f"http://10.43.251.40/logs/Supermicro"
+
+base_url = f"http://10.43.251.40/logs/Supermicro/"
 
 
 class Rack:
@@ -19,6 +23,7 @@ class Rack:
 
 def find_all_a_tag(url: str):
     """ 
+    Helper function for find_mac_summary_log().
     Find all the a href link from the webpage. 
     param: web url (the url tail must be R-PRE/)
     """
@@ -36,15 +41,18 @@ def find_all_a_tag(url: str):
 
 
 def find_mac_summary_log():
-    """ Find mac address from the given link, retrieve json test result from it. """
-    snumbers_list = find_all_a_tag(base_url) # get all serial numbers
+    """
+    Required find_all_a_tag(url: str) to work with.
+    Find mac address from the given link, retrieve json test result from it.
+    """
+    snumbers_list = find_all_a_tag(base_url) # get all serial numbers from /R-PRE/SN
     try:
         snumbers_list = set(snumbers_list[5:])  # remove duplicates and extra rows
         mac_list: list = []
         for sn in snumbers_list:
-            url_for_each_sn = base_url + f"{sn}"
+            url_for_each_sn = base_url + f"/{sn}"
             mac = find_all_a_tag(url_for_each_sn)    # find mac address in each url
-            link = base_url + f"{sn}/" + mac[5] + "/system_test-summary-json-full.json"
+            link = base_url + f"/{sn}/" + mac[5] + "/system_test-summary-json-full.json"
             mac_list.append(link)
         return mac_list
         
@@ -61,10 +69,10 @@ def get_sys_info(input_list, base_data, rb_server):
             if serial_number in sn_list[0] and sn_list[1] == "PASS":
                 temp = {sn_list[0]: {"rack": sn_list[2], 
                                      "path": rb_server + (sn_list[4].strip("\n")) + "/system_test-summary-json-full.json"}}
-                # get serial numbers 
+                # append the combination of sn, rack, and url to json file into get_sn list
                 get_sn.append(temp)
                 
-                # get rack list
+                # get racks belong to each input sn
                 get_rack.append(sn_list[2])
                 # substr = "http://10.43.251.40" + sn_list[4].partition("/R-PRE")[0][:-2]
                 # get_rack.append(substr)
@@ -74,17 +82,31 @@ def get_sys_info(input_list, base_data, rb_server):
 
 
 def get_sn_models_from_rack(rack_list: list):
-    racks = Rack(url=base_url)
     t_year = int(present.strftime("%Y"))
     t_month = month.get(present.month)
     t_day = int(present.strftime("%d"))
+    # t_day = 1
+    racks = Rack(url=base_url)
+    count = 0
     rack_addr: list = []
     # Create a directory that stores test data for each rack
     if not os.path.exists("rack_data"):
             os.makedirs("rack_data")
-    for rack in rack_list:            
-        filename = f"{rack}.json"
-        rack_address = f"{racks.url}/{t_year}/{t_month}/{rack}/{t_day}"
+
+    for rack in rack_list:
+        rack_address = f"{racks.url}{t_year}/{t_month}/{rack}/{t_day}/R-PRE/"
+        # If the rack is not found on the current date
+        if not requests.get(rack_address) and t_day > 1:
+            print(f"EXECUTE {rack} NOT FOUND!")
+            rack_address = f"{racks.url}{t_year}/{t_month}/{rack}/{t_day - 1}/R-PRE/"
+        print(f"EXECUTE {rack} FOUND!")
         rack_addr.append(rack_address)
+    
     return rack_addr
 
+
+def last_day_of_previous_month(year, month, tday):
+    """ Subtract one day from the first day of the current month """
+    date = datetime(year, month, tday)
+    last_day = date.replace(day=1) - timedelta(days=1)
+    return last_day.day
