@@ -25,7 +25,7 @@ def find_all_a_tag(url: str):
     """ 
     Helper function for find_mac_summary_log().
     Find all the a href link from the webpage. 
-    param: web url (the url tail must be R-PRE/)
+    param: web url
     """
     try:
         respond = requests.get(url)
@@ -40,19 +40,21 @@ def find_all_a_tag(url: str):
         print(ce)
 
 
-def find_mac_summary_log():
+def find_mac_summary_log(path_to_mac):
     """
     Required find_all_a_tag(url: str) to work with.
     Find mac address from the given link, retrieve json test result from it.
     """
-    snumbers_list = find_all_a_tag(base_url) # get all serial numbers from /R-PRE/SN
+    snumbers_list = find_all_a_tag(path_to_mac) # get all serial numbers from /R-PRE/
+    # test.append(snumbers_list[5:])
+
     try:
         snumbers_list = set(snumbers_list[5:])  # remove duplicates and extra rows
         mac_list: list = []
         for sn in snumbers_list:
-            url_for_each_sn = base_url + f"/{sn}"
+            url_for_each_sn = path_to_mac + f"/{sn}"
             mac = find_all_a_tag(url_for_each_sn)    # find mac address in each url
-            link = base_url + f"/{sn}/" + mac[5] + "/system_test-summary-json-full.json"
+            link = path_to_mac + f"/{sn}/" + mac[5]
             mac_list.append(link)
         return mac_list
         
@@ -88,17 +90,42 @@ def get_sys_info(input_list, base_data, rb_server):
 
 
 def get_sn_models_from_rack(rack_list: list):
-    racks = Rack(url=base_url)
     count = 0
-    rack_addr: list = []
+    path_list: list = []
+    mac_list: list = []
     # Create a directory that stores test data for each rack
-    if not os.path.exists("rack_data"):
-            os.makedirs("rack_data")
+    # if not os.path.exists("rack_data"):
+    #         os.makedirs("rack_data")
 
+    # Find the path to SN
+    # Get the available test date of the rack. Added the constant value R-PRE to it.
     for rack in rack_list:
-        print(rack)
-    
-    return rack_addr
+        # print(rack) # debugging
+        dates = find_all_a_tag(rack)[5:]    # Search test date by each rack
+        dates = list(set(dates))            # Remove date duplicates
+        dates.sort(reverse=True)
+        # print(dates) # debugging
+        for date in dates:
+            path = f"{rack}{date}/R-PRE/"
+            path_list.append(path)
+            count += 1
+
+    # Find the path to mac address
+    # Get all available SNs under R-PRE path, 
+    for path in path_list:
+        sn_list = find_all_a_tag(path)[5:]
+        sn_list = list(set(sn_list))
+        for sn in sn_list:
+            final = path + sn
+            mac_list.append(final)
+        
+
+
+
+    # rack_addr = list(set(rack_addr))
+    print(f"Total: {count}") # debugging
+
+    return mac_list
 
 
 def last_day_of_previous_month(year, month, tday):
