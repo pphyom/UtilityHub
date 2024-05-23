@@ -23,8 +23,8 @@ class Rack:
 
 def find_all_a_tag(url: str):
     """ 
-    Helper function for find_mac_summary_log().
-    Find all the a href link from the webpage. 
+    Helper function to retrieve links from the url.
+    Find all the a href link from the given link. 
     param: web url
     """
     try:
@@ -32,7 +32,7 @@ def find_all_a_tag(url: str):
         respond.raise_for_status()
         soup = BeautifulSoup(respond.content, "html.parser")
         links = [(link.get("href").strip("/")) for link in soup.find_all("a")]
-        return links # list of serial numbers
+        return links
     
     except requests.exceptions.HTTPError as he:
         print(he)
@@ -40,24 +40,34 @@ def find_all_a_tag(url: str):
         print(ce)
 
 
-def find_mac_summary_log(path_to_mac):
+def find_mac_summary_log(rack_url):
     """
+    Find path to the mac from the given link.
     Required find_all_a_tag(url: str) to work with.
-    Find mac address from the given link, retrieve json test result from it.
+    param: eg., url=> logs/Supermicro/2024/May/'rack'
     """
-    snumbers_list = find_all_a_tag(path_to_mac) # get all serial numbers from /R-PRE/
-    # test.append(snumbers_list[5:])
-
+    path_to_mac: list = []
+    total = 0
     try:
-        snumbers_list = set(snumbers_list[5:])  # remove duplicates and extra rows
-        mac_list: list = []
-        for sn in snumbers_list:
-            url_for_each_sn = path_to_mac + f"/{sn}"
-            mac = find_all_a_tag(url_for_each_sn)    # find mac address in each url
-            link = path_to_mac + f"/{sn}/" + mac[5]
-            mac_list.append(link)
-        return mac_list
-        
+        dates = find_all_a_tag(rack_url)[5:]    # Search test date by each rack
+        dates = list(set(dates))                # Remove date duplicates
+        dates.sort(reverse=True)
+        for date in dates:
+            path = f"{rack_url}{date}/R-PRE/"
+            sn_list = find_all_a_tag(path)[5:]  # Search system sn
+            sn_list = list(set(sn_list))        # Remove sn duplicates
+            for sn in sn_list:
+                url_for_each_sn = path + sn
+                mac = find_all_a_tag(url_for_each_sn)   # Search mac address
+                link = f"{url_for_each_sn}/{mac[5]}/"
+
+                # Validating if the system passed the test. Only passed unit will be added to the list.
+                temp = requests.get(f"{link}system_final-test-result.txt")
+                if "PASS" in temp.text and total != 5:
+                    path_to_mac.append(link)
+                    total += 1
+        return path_to_mac
+    
     except TypeError as te:
         print(te)
 
@@ -89,43 +99,16 @@ def get_sys_info(input_list, base_data, rb_server):
     return get_sn, get_rack
 
 
-def get_sn_models_from_rack(rack_list: list):
-    count = 0
-    path_list: list = []
-    mac_list: list = []
+def get_sn_models_from_rack(rack_list):
     # Create a directory that stores test data for each rack
-    # if not os.path.exists("rack_data"):
-    #         os.makedirs("rack_data")
+    if not os.path.exists("rack_data"):
+            os.makedirs("rack_data")
 
-    # Find the path to SN
-    # Get the available test date of the rack. Added the constant value R-PRE to it.
+    test = []
     for rack in rack_list:
-        # print(rack) # debugging
-        dates = find_all_a_tag(rack)[5:]    # Search test date by each rack
-        dates = list(set(dates))            # Remove date duplicates
-        dates.sort(reverse=True)
-        # print(dates) # debugging
-        for date in dates:
-            path = f"{rack}{date}/R-PRE/"
-            path_list.append(path)
-            count += 1
-
-    # Find the path to mac address
-    # Get all available SNs under R-PRE path, 
-    for path in path_list:
-        sn_list = find_all_a_tag(path)[5:]
-        sn_list = list(set(sn_list))
-        for sn in sn_list:
-            final = path + sn
-            mac_list.append(final)
-        
-
-
-
-    # rack_addr = list(set(rack_addr))
-    print(f"Total: {count}") # debugging
-
-    return mac_list
+        path_to_mac = find_mac_summary_log(rack)
+        test.append(path_to_mac)
+    return test
 
 
 def last_day_of_previous_month(year, month, tday):
