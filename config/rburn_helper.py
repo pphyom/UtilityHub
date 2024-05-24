@@ -104,6 +104,8 @@ def get_sn_models_from_rack(rack_list):
     if not os.path.exists("rack_data"):
             os.makedirs("rack_data")
 
+    
+
     test_dict = {
                     "CPU": {
                         "speed": "100",
