@@ -28,7 +28,6 @@ def index():
         # If there is input, pass it into input_list using user_input() method
         input_list = user_input()
         data: list = []
-        unknown: list = []
         for idx, sn in enumerate(input_list):
             for sn_list in base_data:
                 # if user input sn is in the database
@@ -55,12 +54,12 @@ def rburn_log():
     if request.method == "POST":
         get_sn, get_rack = get_sys_info(user_input(), base_data, b23rburn)
 
-        # for i in get_sn:
-        #     for key in i.values():
-        #         if key["rack"] == "101000226144":
-        #             print(key)
+        for i in get_sn:
+            for key in i.values():
+                print(key["rack"])
+
         rack_addr = get_sn_models_from_rack(get_rack)
-        return rack_addr
+        return get_sn
     
     return render_template("rburn_log.html")
 

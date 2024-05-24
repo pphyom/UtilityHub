@@ -1,4 +1,4 @@
-import requests, os
+import requests, os, json
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
@@ -103,6 +103,34 @@ def get_sn_models_from_rack(rack_list):
     # Create a directory that stores test data for each rack
     if not os.path.exists("rack_data"):
             os.makedirs("rack_data")
+
+    test_dict = {
+                    "CPU": {
+                        "speed": "100",
+                        "core": "",
+                        "linpack_hpl": ""
+                    },
+
+                    "DIMM": {
+                        "total_available_size": "",
+                        "stream_memory_bandwidth": ""
+                    },
+
+                    "DISK": {
+                        "disk_speed_test": "",
+                        "disk_fio_benchmark128": ""
+                    },
+
+                    "GPU": {
+                        "bandwidth_test": "",
+                        "linpack_hpl": "",
+                        "threasholds": "",
+                        "nv_topology": "",
+                        "GDT": "",
+                        "FDT": "",
+                        "FW_Retimer": ""
+                    }
+                }
 
     test = []
     for rack in rack_list:

@@ -1,0 +1,28 @@
+{
+    "CPU": {
+        "speed": "",
+        "core": "",
+        "linpack_hpl": ""
+    },
+
+    "DIMM": {
+        "total_available_size": "",
+        "stream_memory_bandwidth": ""
+    },
+
+    "DISK": {
+        "disk_speed_test": "",
+        "disk_fio_benchmark128": ""
+    },
+
+    "GPU": {
+        "bandwidth_test": "",
+        "linpack_hpl": "",
+        "threasholds": "",
+        "nv_topology": "",
+        "GDT": "",
+        "FDT": "",
+        "FW_Retimer": ""
+    }
+
+}
