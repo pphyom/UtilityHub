@@ -60,7 +60,7 @@ def rburn_log():
                 print(key["rack"])
 
         
-        return rack_addr
+        return get_rack
     
     return render_template("rburn_log.html")
 
