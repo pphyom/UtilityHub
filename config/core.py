@@ -6,7 +6,7 @@ from config.search import *
 
 DATA_ = {
         "live_headings": ("Location", "System SN", "Status", "Rack", "Time Gap", "Log"),
-        "rburn_headings": ("System SN","Test Result", "CPU Speed", "CPU Linpack", "DIMM", "GPU Thresholds", 
+        "rburn_headings": ("System SN", "Test Result", "CPU Speed", "CPU Linpack", "DIMM", "GPU Thresholds",
                            "GPU Benchmark", "GPU Linpack", "FDT", "GDT", "GPU FW", "GPU NV"),
         "conditions": ("WARNING", "FAIL", "PASS"),
         }
@@ -65,7 +65,7 @@ def user_input():
     # remove all empty items in the list
     temp = [sn for sn in temp if sn != ""]
     # remove all duplicates and maintain the index order
-    input_data:list = []
+    input_data: list = []
     [input_data.append(sn) for sn in temp if sn not in input_data]
     return input_data
 

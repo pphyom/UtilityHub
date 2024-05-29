@@ -59,7 +59,6 @@ def rburn_log():
             for key in i.values():
                 print(key["rack"])
 
-        
         return get_rack
     
     return render_template("rburn_log.html")

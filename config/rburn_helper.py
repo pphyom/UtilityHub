@@ -24,7 +24,7 @@ class Rack:
 def find_all_a_tag(url: str):
     """ 
     Helper function to retrieve links from the url.
-    Find all the a href link from the given link. 
+    Find all the 'a href' links from the given link.
     param: web url
     """
     try:
@@ -44,7 +44,7 @@ def find_mac_summary_log(rack_url):
     """
     Find path to the mac from the given link.
     Required find_all_a_tag(url: str) to work with.
-    param: eg., url=> logs/Supermicro/2024/May/'rack'
+    param: e.g., url=> logs/Supermicro/2024/May/'rack'
     """
     path_to_mac: list = []
     total = 0
@@ -102,9 +102,7 @@ def get_sys_info(input_list, base_data, rb_server):
 def get_sn_models_from_rack(rack_list):
     # Create a directory that stores test data for each rack
     if not os.path.exists("rack_data"):
-            os.makedirs("rack_data")
-
-    
+        os.makedirs("rack_data")
 
     test_dict = {
                     "CPU": {
@@ -141,8 +139,8 @@ def get_sn_models_from_rack(rack_list):
     return test
 
 
-def last_day_of_previous_month(year, month, tday):
+def last_day_of_previous_month(year, mnth, tday):
     """ Subtract one day from the first day of the current month """
-    date = datetime(year, month, tday)
+    date = datetime(year, mnth, tday)
     last_day = date.replace(day=1) - timedelta(days=1)
     return last_day.day
