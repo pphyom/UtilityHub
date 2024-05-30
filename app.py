@@ -55,11 +55,11 @@ def rburn_log():
         get_sn, get_rack = get_sys_info(user_input(), base_data, b23rburn)
         rack_addr = get_sn_models_from_rack(get_rack)
 
-        for i in get_sn:
-            for key in i.values():
-                print(key["rack"])
+        # for i in get_sn:
+        #     for key in i.values():
+        #         print(key["rack"])
 
-        return get_rack
+        return rack_addr
     
     return render_template("rburn_log.html")
 

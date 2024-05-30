@@ -42,12 +42,12 @@ def find_all_a_tag(url: str):
 
 def find_mac_summary_log(rack_url):
     """
-    Find path to the mac from the given link.
+    Find path to the mac from the given input URL.
     Required find_all_a_tag(url: str) to work with.
     param: e.g., url=> logs/Supermicro/2024/May/'rack'
     """
     path_to_mac: list = []
-    total = 0
+    count = 0
     try:
         dates = find_all_a_tag(rack_url)[5:]    # Search test date by each rack
         dates = list(set(dates))                # Remove date duplicates
@@ -63,9 +63,9 @@ def find_mac_summary_log(rack_url):
 
                 # Validating if the system passed the test. Only passed unit will be added to the list.
                 temp = requests.get(f"{link}system_final-test-result.txt")
-                if "PASS" in temp.text and total != 5:
+                if "PASS" in temp.text and count != 5:
                     path_to_mac.append(link)
-                    total += 1
+                    count += 1
         return path_to_mac
     
     except TypeError as te:
@@ -132,11 +132,14 @@ def get_sn_models_from_rack(rack_list):
                     }
                 }
 
-    test = []
-    for rack in rack_list:
+    for rack in rack_list: # rack = http://10.43.251.40/logs/Supermicro/2024/May/6U8801322401/
         path_to_mac = find_mac_summary_log(rack)
-        test.append(path_to_mac)
-    return test
+
+        for full_path in path_to_mac:
+            elem = full_path + "system_test-summary-json-full.json"
+            print(elem)
+        
+    return test_dict
 
 
 def last_day_of_previous_month(year, mnth, tday):
