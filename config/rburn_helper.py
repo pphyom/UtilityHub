@@ -139,7 +139,7 @@ def get_sn_models_from_rack(rack_list):
             elem = full_path + "system_test-summary-json-full.json"
             print(elem)
         
-    return test_dict
+    return "Hello"
 
 
 def last_day_of_previous_month(year, mnth, tday):

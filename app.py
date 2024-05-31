@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
+from icecream import ic
 from config.core import *
 from config.rburn_helper import *
+import os
 
 
 header = {
@@ -53,13 +55,26 @@ def index():
 def rburn_log():
     if request.method == "POST":
         get_sn, get_rack = get_sys_info(user_input(), base_data, b23rburn)
-        rack_addr = get_sn_models_from_rack(get_rack)
 
-        # for i in get_sn:
-        #     for key in i.values():
-        #         print(key["rack"])
+        # rack_addr = get_sn_models_from_rack(get_rack)
 
-        return rack_addr
+        if not os.path.exists("rack_data"):
+            os.makedirs("rack_data")
+
+        for item in get_sn:
+            for key in item.values():
+                rack = key["rack"]
+
+                if os.path.exists(f"rack_data\{rack}.json"):
+                    ic("file exist")
+                else:
+                    ic("file not exist")
+                    data = {}
+                    with open(f"rack_data\{rack}.json", "w") as db_file:
+                        # json.dump(data, db_file)
+                        db_file.write(json.dumps({}))
+
+        return get_sn
     
     return render_template("rburn_log.html")
 
