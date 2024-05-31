@@ -54,6 +54,7 @@ def index():
 @app.route("/rburn_log", methods=["GET", "POST"])
 def rburn_log():
     if request.method == "POST":
+        # 1. get the user input 
         get_sn, get_rack = get_sys_info(user_input(), base_data, b23rburn)
 
         # rack_addr = get_sn_models_from_rack(get_rack)
