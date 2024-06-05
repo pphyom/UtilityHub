@@ -19,7 +19,7 @@ class Source:
     
     url_server40 = "http://10.43.251.40"
 
-    def live_data(self):
+    def live_data(self) -> list:
         """
         Search and isolate data table from the RackBurn Webpage.
         url: Rack Burn URL
@@ -55,7 +55,7 @@ class Source:
             return data_list
 
 
-def user_input():
+def user_input() -> list:
     """
     Get data from user input text box.
     param: none
@@ -68,7 +68,3 @@ def user_input():
     input_data: list = []
     [input_data.append(sn) for sn in temp if sn not in input_data]
     return input_data
-
-
-def cpu_info():
-    pass

@@ -17,7 +17,7 @@ base_url = f"http://10.43.251.40/logs/Supermicro/"
 
 
 class Rack:
-    def __init__(self, url):
+    def __init__(self, url) -> list:
         self.url = url
 
 
@@ -40,7 +40,7 @@ def find_all_a_tag(url: str):
         print(ce)
 
 
-def find_mac_summary_log(rack_url):
+def find_mac_summary_log(rack_url: str) -> list:
     """
     Find path to the mac from the given input URL.
     Required find_all_a_tag(url: str) to work with.
@@ -66,13 +66,14 @@ def find_mac_summary_log(rack_url):
                 if "PASS" in temp.text and count != 5:
                     path_to_mac.append(link)
                     count += 1
+
         return path_to_mac
     
     except TypeError as te:
         print(te)
 
 
-def get_sys_info(input_list, base_data, rb_server):
+def get_sys_info(input_list: list, base_data: list, rb_server: str) -> list | list:
     """
     Take a (list of) serial number from user input and search it in the database. 
     Store it in a separate list along with the log ONLY IF it is in the database AND "pass" the test. 
@@ -99,7 +100,7 @@ def get_sys_info(input_list, base_data, rb_server):
     return get_sn, get_rack
 
 
-def get_sn_models_from_rack(rack_list):
+def get_sn_models_from_rack(rack_list: list):
     # Create a directory that stores test data for each rack
     if not os.path.exists("rack_data"):
         os.makedirs("rack_data")
