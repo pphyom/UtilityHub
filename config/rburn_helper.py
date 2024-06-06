@@ -13,7 +13,7 @@ month = {1: "January", 2: "February", 3: "March", 4: "April",
 # t_day = int(present.strftime("%d"))
 
 
-base_url = f"http://10.43.251.40/logs/Supermicro/"
+base_url = f"http://10.43.251.35/logs/Supermicro/"
 
 
 class Rack:

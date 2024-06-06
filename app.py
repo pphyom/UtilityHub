@@ -10,7 +10,7 @@ header = {
                   " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1",
     "Accept-Language": "en-US,en;q=0.9",
 }
-url23 = "http://10.43.251.40/input_output?model=Supermicro"
+url23 = "http://10.43.251.35/input_output?model=Supermicro"
 
 
 smc = Source(url=url23, header=header)

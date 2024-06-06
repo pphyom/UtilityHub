@@ -17,7 +17,7 @@ class Source:
         self.url = url
         self.header = header
     
-    url_server40 = "http://10.43.251.40"
+    url_server40 = "http://10.43.251.35"
 
     def live_data(self) -> list:
         """
