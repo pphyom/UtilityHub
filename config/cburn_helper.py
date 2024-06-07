@@ -38,6 +38,7 @@ def get_screendump_helper(ins_file_list: list[str], cburn_addr: str, sn: str, or
     screen_dmp = "screen-1.dump"
     no_cburn: dict = {}
     cburn: list[str] = []
+    test = {}
 
     for ins_file in ins_file_list:
         mac_addr = (ins_file.partition("ins-"))[2]  # retrieve mac address back from the link
@@ -52,12 +53,13 @@ def get_screendump_helper(ins_file_list: list[str], cburn_addr: str, sn: str, or
                 if valid:
                     screendump = f"{temp}/{screen_dmp}"
                     last_line = get_last_line_from_file(screendump)
-                    cburn.insert(0, sn)
-                    cburn.insert(1, last_line)
+                    # cburn.insert(0, sn)
+                    # cburn.insert(1, last_line)
+                    test = {"sn": sn, "log": last_line}
                 else:
                     no_cburn = {"mo": order_num, "serial number": sn}
                 
-    return cburn, no_cburn
+    return test, no_cburn
 
 
 def get_screendump(sn_list: list, assembly_rec_addr: str, ins_addr: str, cburn_addr: str) -> tuple[
@@ -76,6 +78,5 @@ def get_screendump(sn_list: list, assembly_rec_addr: str, ins_addr: str, cburn_a
             cburn_found.append(cburn_result)
         if no_cburn:
             cburn_not_found.append(no_cburn)
-    ic(cburn_not_found)
     
     return cburn_found, cburn_not_found

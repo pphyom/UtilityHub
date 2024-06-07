@@ -102,13 +102,7 @@ def cburn_log():
         return render_template("cburn_log.html",
                                headings = cburn_headings,
                                data = cburn_result)
-
-
-    
     return render_template("cburn_log.html")
-
-
-
 
 
 if __name__ == "__main__":

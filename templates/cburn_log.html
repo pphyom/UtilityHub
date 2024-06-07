@@ -22,8 +22,12 @@
                         <tbody>
                             {% for row in data %}
                                 <tr>
-                                    {{ row }}
-
+                                    <td>
+                                        {{ row["sn"] }}
+                                    </td>
+                                    <td>
+                                        {{ row["log"] }}
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
