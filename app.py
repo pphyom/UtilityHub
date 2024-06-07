@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from icecream import ic
-from config.core import *
+from config.core import Source, user_input, DATA_
+from config.cburn_helper import *
 from config.rburn_helper import *
 import os
 
@@ -14,11 +15,17 @@ url23 = "http://10.43.251.35/input_output?model=Supermicro"
 
 
 smc = Source(url=url23, header=header)
+b23rburn = smc.url_server40
+assembly_rec = smc.assembly_rec
+cburn_addr = smc.cburn_addr
+ins_path = smc.ins_path
+
+
 base_data = smc.live_data()  # assigned the data into the base_data variable
 headings = DATA_["live_headings"]
 rburn_headings = DATA_["rburn_headings"]
+cburn_headings = DATA_["cburn_headings"]
 conditions = DATA_["conditions"]
-b23rburn = smc.url_server40
 
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
@@ -85,9 +92,23 @@ def ftu_log():
     return render_template("ftu_log.html")
 
 
-@app.route("/cburn_log")
+@app.route("/cburn_log", methods = ["GET", "POST"])
 def cburn_log():
+    if request.method == "POST":
+        sn_list: list[str] = user_input()
+        cburn_result, no_cburn = get_screendump(sn_list, assembly_rec, ins_path, cburn_addr)
+        # ic(no_cburn)
+
+        return render_template("cburn_log.html",
+                               headings = cburn_headings,
+                               data = cburn_result)
+
+
+    
     return render_template("cburn_log.html")
+
+
+
 
 
 if __name__ == "__main__":
