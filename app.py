@@ -85,5 +85,10 @@ def ftu_log():
     return render_template("ftu_log.html")
 
 
+@app.route("/cburn_log")
+def cburn_log():
+    return render_template("cburn_log.html")
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=90, debug=True)
+    app.run(host="0.0.0.0", port=80, debug=True)

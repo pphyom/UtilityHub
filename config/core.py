@@ -68,3 +68,5 @@ def user_input() -> list:
     input_data: list = []
     [input_data.append(sn) for sn in temp if sn not in input_data]
     return input_data
+
+
