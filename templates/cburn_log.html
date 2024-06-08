@@ -11,6 +11,9 @@
 
             <div class="card mb-4">
                 <div class="table-wrapper">
+                    {% if not data %}
+                        {% include "nodata.html" %}
+                    {% else %}
                     <table class="table table-hover table-striped">
                         <thead class="sticky-top table-secondary">
                             <tr>
@@ -35,6 +38,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% endif %}
                 </div>
             </div>
         </div>
