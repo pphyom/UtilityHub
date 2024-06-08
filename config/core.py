@@ -4,12 +4,14 @@ from flask import request
 from bs4 import BeautifulSoup
 from operator import itemgetter
 
+from icecream import ic
+
 
 DATA_ = {
         "live_headings": ("Location", "System SN", "Status", "Rack", "Time Gap", "Log"),
         "rburn_headings": ("System SN", "Test Result", "CPU Speed", "CPU Linpack", "DIMM", "GPU Thresholds",
                            "GPU Benchmark", "GPU Linpack", "FDT", "GDT", "GPU FW", "GPU NV"),
-        "cburn_headings": ("Serial Number", "Screen Dump"),
+        "cburn_headings": ("Serial Number", "Material Order", "Screen Dump"),
         "conditions": ("WARNING", "FAIL", "PASS"),
         }
 
@@ -69,11 +71,14 @@ def user_input() -> list:
     return: list of input data separated by a white space
     """
     temp = request.form.get("serial_num").split(" ")
+
     # remove all empty items in the list
-    temp = [sn for sn in temp if sn != ""]
+    temp = [sn for sn in temp if sn != "\t" and sn != ""]
+
     # remove all duplicates and maintain the index order
     input_data: list = []
     [input_data.append(sn) for sn in temp if sn not in input_data]
+    
     return input_data
 
 

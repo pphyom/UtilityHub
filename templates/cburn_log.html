@@ -15,20 +15,23 @@
                         <thead class="sticky-top table-secondary">
                             <tr>
                                 {% for head in headings %}
-                                <th>{{ head }}</th>
+                                    {% if head == headings[0] %}
+                                        <th scope="col"><i class="bi bi-upc"></i>{{ head }}</th>
+                                    {% elif head == headings[1] %}
+                                        <th scope="col"><i class="bi bi-receipt"></i>{{ head }}</th>
+                                    {% else %}
+                                        <th scope="col"><i class="bi bi-card-text"></i>{{ head }}</th>
+                                    {% endif %}
                                 {% endfor %}
                             </tr>
                         </thead>
                         <tbody>
                             {% for row in data %}
-                                <tr>
-                                    <td>
-                                        {{ row["sn"] }}
-                                    </td>
-                                    <td>
-                                        {{ row["log"] }}
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>{{ row["sn"] }}</td>
+                                <td>{{ row["ord"] }}</td>
+                                <td>{{ row["log"] }}</td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>

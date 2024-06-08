@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-from icecream import ic
 from config.core import retrieve_data_from_file
+
+from icecream import ic
 
 
 def get_mac_address(part_list: list[str], sub_sn: list[str]) -> list[str]:
@@ -37,8 +38,7 @@ def get_last_line_from_file(screendump: str) -> str:
 def get_screendump_helper(ins_file_list: list[str], cburn_addr: str, sn: str, order_num: str) -> tuple[str, dict]:
     screen_dmp = "screen-1.dump"
     no_cburn: dict = {}
-    cburn: list[str] = []
-    test = {}
+    cburn: dict[str] = {}
 
     for ins_file in ins_file_list:
         mac_addr = (ins_file.partition("ins-"))[2]  # retrieve mac address back from the link
@@ -53,13 +53,11 @@ def get_screendump_helper(ins_file_list: list[str], cburn_addr: str, sn: str, or
                 if valid:
                     screendump = f"{temp}/{screen_dmp}"
                     last_line = get_last_line_from_file(screendump)
-                    # cburn.insert(0, sn)
-                    # cburn.insert(1, last_line)
-                    test = {"sn": sn, "log": last_line}
+                    cburn = {"sn": sn, "ord": order_num, "log": last_line}
                 else:
                     no_cburn = {"mo": order_num, "serial number": sn}
                 
-    return test, no_cburn
+    return cburn, no_cburn
 
 
 def get_screendump(sn_list: list, assembly_rec_addr: str, ins_addr: str, cburn_addr: str) -> tuple[
