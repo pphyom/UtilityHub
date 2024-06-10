@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from icecream import ic
-from config.core import Source, user_input, DATA_
+from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
 import os
@@ -14,11 +14,16 @@ header = {
 url23 = "http://10.43.251.35/input_output?model=Supermicro"
 
 
+spm = SPM()
+mo_url = spm.mo_url
+sn_url = spm.sn_url
+assembly_rec = spm.assembly_rec
+cburn_addr = spm.cburn_addr
+ins_path = spm.ins_path
+
+
 smc = Source(url=url23, header=header)
-b23rburn = smc.url_server40
-assembly_rec = smc.assembly_rec
-cburn_addr = smc.cburn_addr
-ins_path = smc.ins_path
+b23rburn = smc.rburn_server
 
 
 base_data = smc.live_data()  # assigned the data into the base_data variable
@@ -35,7 +40,7 @@ app = Flask(__name__, template_folder="templates", static_folder="static", stati
 def index():
     if request.method == "POST":
         # If there is input, pass it into input_list using user_input() method
-        input_list = user_input()
+        input_list: list[str] = user_input()
         data: list = []
         for idx, sn in enumerate(input_list):
             for sn_list in base_data:
@@ -102,7 +107,10 @@ def cburn_log():
 
         return render_template("cburn_log.html",
                                headings = cburn_headings,
-                               data = cburn_result)
+                               data = cburn_result,
+                               mo_url = mo_url,
+                               sn_url = sn_url)
+    
     return render_template("cburn_log.html")
 
 

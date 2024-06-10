@@ -55,7 +55,7 @@
                                             {% if cell == cond[0] %}
                                                 <td scope="row">
                                                     <span class="badge status warning text-dark">
-                                                        <a class="text-decoration-none text-muted" 
+                                                        <a class="text-decoration-none" 
                                                         href="{{ b23rburn + row[5] + '/Failure-Records-Full.txt' }}" 
                                                         target="_blank">{{ cell }}</a>
                                                     </span>
@@ -63,7 +63,7 @@
                                             {% elif cell == cond[1] %}
                                                 <td scope="row">
                                                     <span class="badge status fail">
-                                                        <a class="text-decoration-none text-muted" 
+                                                        <a class="text-decoration-none" 
                                                         href="{{ b23rburn + row[5] + '/Failure-Records-Full.txt' }}" 
                                                         target="_blank">{{ cell }}</a>
                                                     </span>
@@ -81,7 +81,8 @@
                                             <td scope="row">
                                                 <span>
                                                     <a href="{{ b23rburn + '/monitor/Supermicro/' + cell }}" target="_blank">
-                                                        <i class="bi bi-align-end"></i> {{ cell }}
+                                                        {{ cell }}
+                                                        <i class="bi bi-link-45deg"></i>
                                                     </a>
                                                 </span>
                                             </td>

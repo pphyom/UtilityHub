@@ -37,7 +37,7 @@ def get_last_line_from_file(screendump: str) -> str:
 
 def get_screendump_helper(ins_file_list: list[str], cburn_addr: str, sn: str, order_num: str) -> tuple[str, dict]:
     screen_dmp = "screen-1.dump"
-    no_cburn: dict = {}
+    no_cburn: dict[str] = {}
     cburn: dict[str] = {}
 
     for ins_file in ins_file_list:
@@ -64,6 +64,7 @@ def get_screendump(sn_list: list, assembly_rec_addr: str, ins_addr: str, cburn_a
                     list[str], list[dict]]:
     cburn_found = []
     cburn_not_found = []
+    
     for sn in sn_list:
         order_num, sub_sn, sub_items, ord_ = retrieve_data_from_file(assembly_rec_addr, sn)
 

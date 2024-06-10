@@ -11,21 +11,26 @@ DATA_ = {
         "live_headings": ("Location", "System SN", "Status", "Rack", "Time Gap", "Log"),
         "rburn_headings": ("System SN", "Test Result", "CPU Speed", "CPU Linpack", "DIMM", "GPU Thresholds",
                            "GPU Benchmark", "GPU Linpack", "FDT", "GDT", "GPU FW", "GPU NV"),
-        "cburn_headings": ("Serial Number", "Material Order", "Screen Dump"),
+        "cburn_headings": ("Serial Number", "Material Order", "Current Stage"),
         "conditions": ("WARNING", "FAIL", "PASS"),
         }
+
+
+class SPM:
+    def __init__(self):
+        self.mo_url = "http://super-spm/order/order_detail.asp?orderno="
+        self.sn_url = "http://super-spm/order/order_item_detail.asp?serialno="
+        self.assembly_rec = ("http://10.2.7.138/order/assembly_record_export.asp?FetchType=OP2&ListType=All&chkSPMWIP"
+                    "=on&MONumber=")
+        self.cburn_addr = "http://10.43.251.20/burnin"
+        self.ins_path = "http://10.43.251.20/instructions"
 
 
 class Source:
     def __init__(self, url: str, header: dict):
         self.url = url
         self.header = header
-    
-    url_server40 = "http://10.43.251.35"
-    assembly_rec = ("http://10.2.7.138/order/assembly_record_export.asp?FetchType=OP2&ListType=All&chkSPMWIP"
-                    "=on&MONumber=")
-    cburn_addr = "http://10.43.251.20/burnin"
-    ins_path = "http://10.43.251.20/instructions"
+        self.rburn_server = "http://10.43.251.35"
     
 
     def live_data(self) -> list:
