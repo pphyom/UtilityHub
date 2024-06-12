@@ -121,11 +121,11 @@ def retrieve_data_from_file(addr: str, sn: str):
     content = pd.read_html(url, header=0)[0]  # Read the web address
     order_num = content["ORDERNUM"]  # Order list
     server_sku = content["SERVERPARTNO"]  # Product list
-    sub_item = content["SUB-ITEM"]  # Parts list
+    part_list = content["SUB-ITEM"]  # Parts list
     sub_sn = content["SUB-SERIAL"]  # Sub Serial for ORD 880
 
-    sub_item = strip_list(sub_item)  # Slicing unnecessary contents -- fun: strip_list
+    part_list = strip_list(part_list)  # Slicing unnecessary contents -- fun: strip_list
     sub_sn = strip_list(sub_sn)  # Slicing unnecessary contents -- fun: strip_list
-    ord_ = ord_lookup("NUM-ORD", sub_item, sub_sn)
+    ord_ = ord_lookup("NUM-ORD", part_list, sub_sn)
 
-    return str(order_num[0]), sub_sn, sub_item, ord_
+    return str(order_num[0]), sub_sn, part_list, ord_

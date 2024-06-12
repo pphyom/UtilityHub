@@ -103,13 +103,14 @@ def cburn_log():
         sn_list: list[str] = user_input()
 
         cburn_result, no_cburn = get_screendump(sn_list, assembly_rec, ins_path, cburn_addr)
+        
         # ic(no_cburn)
 
         return render_template("cburn_log.html",
-                               headings = cburn_headings,
-                               data = cburn_result,
-                               mo_url = mo_url,
-                               sn_url = sn_url)
+                               headings = cburn_headings)
+                            #    data = cburn_result,
+                            #    mo_url = mo_url,
+                            #    sn_url = sn_url)
     
     return render_template("cburn_log.html")
 
