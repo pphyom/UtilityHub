@@ -46,11 +46,9 @@ def get_cburn_path(mac_list: list[str], ins_path: str, cburn_addr: str):
 
 
 def test(mac_list: list[str], ins_path: str, cburn_addr: str, part_list: list[str], sn: str):
-    screen_dump = "/screen-1.dump"
     is_multinode = multinode_check(part_list)
-    screendump = get_cburn_path(mac_list, ins_path, cburn_addr)
+    final = get_cburn_path(mac_list, ins_path, cburn_addr)
     # last_line = [(get_last_line_from_file(path)) for path in screendump]
-    # serial = [f"{path}/ins-{mac}" for path, mac in mac_list]
 
 
     # for path in cburn_path:
@@ -58,7 +56,7 @@ def test(mac_list: list[str], ins_path: str, cburn_addr: str, part_list: list[st
 
 
 
-    return screendump
+    return final
 
 
 
