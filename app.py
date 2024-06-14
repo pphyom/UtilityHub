@@ -3,6 +3,7 @@ from icecream import ic
 from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
+
 import os
 
 
@@ -11,7 +12,7 @@ header = {
                   " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1",
     "Accept-Language": "en-US,en;q=0.9",
 }
-url23 = "http://10.43.251.35/input_output?model=Supermicro"
+url23 = "http://10.43.251.40/input_output?model=Supermicro"
 
 
 spm = SPM()
@@ -104,10 +105,10 @@ def cburn_log():
 
         cburn_result = screendump_wrapper(sn_list, assembly_rec, ins_path, cburn_addr)
         return render_template("cburn_log.html",
-                               headings = cburn_headings,
-                               data = cburn_result,
-                               mo_url = mo_url,
-                               sn_url = sn_url)
+                            headings = cburn_headings,
+                            data = cburn_result,
+                            mo_url = mo_url,
+                            sn_url = sn_url)
     
     return render_template("cburn_log.html")
 

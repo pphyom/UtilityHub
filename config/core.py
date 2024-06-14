@@ -30,7 +30,7 @@ class Source:
     def __init__(self, url: str, header: dict):
         self.url = url
         self.header = header
-        self.rburn_server = "http://10.43.251.35"
+        self.rburn_server = "http://10.43.251.40"
     
 
     def live_data(self) -> list:
@@ -65,7 +65,7 @@ class Source:
             # Sliced unnecessary columns from the original table
             for elem in range(1, len(temp)):
                 data_list.append(list(itemgetter(1, 3, 0, 6, 7)(temp[elem])))
-
+                
             return data_list
 
 

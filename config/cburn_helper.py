@@ -2,6 +2,7 @@ import requests
 from requests import HTTPError
 from bs4 import BeautifulSoup
 from config.core import retrieve_data_from_file
+from urllib.error import HTTPError
 
 from icecream import ic
 
@@ -94,14 +95,23 @@ def screendump(ins_path: str, cburn_addr: str, mac_list: list[str], mo: str):
     return final
 
 
+
+
 def screendump_wrapper(sn_list: list, assembly_rec_addr: str, ins_path: str, cburn_addr: str):
+    try:
+        final: list = []
+        for sn in sn_list:
+            order_num, sub_sn, part_list, ord_ = retrieve_data_from_file(assembly_rec_addr, sn)
+            mac_list = get_mac_address(part_list, sub_sn)  # find available mac address from the SN
+            temp = screendump(ins_path, cburn_addr, mac_list, order_num)
+            for i in temp:
+                final.append(i)
+        
+        return final
+    
 
-    final: list = []
-    for sn in sn_list:
-        order_num, sub_sn, part_list, ord_ = retrieve_data_from_file(assembly_rec_addr, sn)
-        mac_list = get_mac_address(part_list, sub_sn)  # find available mac address from the SN
-        temp = screendump(ins_path, cburn_addr, mac_list, order_num)
-        for i in temp:
-            final.append(i)
 
-    return final
+    except HTTPError as e:
+        match e.code:
+            case 500:
+                ic("Internal Server Error. Server cannot be found!")
