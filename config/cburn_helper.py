@@ -41,7 +41,6 @@ def get_last_line_from_file(in_file: str) -> str:
 
 def get_cburn_path(mac_list: list[str], ins_path: str, cburn_addr: str) -> dict[list, list]:
     
-
     temp = []
 
     cburn_path = dict(screendump = [], ins_to_sn = [])
@@ -64,7 +63,6 @@ def get_cburn_path(mac_list: list[str], ins_path: str, cburn_addr: str) -> dict[
 
 def screendump(ins_path: str, cburn_addr: str, mac_list: list[str], mo: str):
     
-
     final = []
 
     # final = dict(node_sn = [], log = [], order_num = [])
@@ -95,8 +93,6 @@ def screendump(ins_path: str, cburn_addr: str, mac_list: list[str], mo: str):
     return final
 
 
-
-
 def screendump_wrapper(sn_list: list, assembly_rec_addr: str, ins_path: str, cburn_addr: str):
     try:
         final: list = []
@@ -106,11 +102,9 @@ def screendump_wrapper(sn_list: list, assembly_rec_addr: str, ins_path: str, cbu
             temp = screendump(ins_path, cburn_addr, mac_list, order_num)
             for i in temp:
                 final.append(i)
-        
+
         return final
     
-
-
     except HTTPError as e:
         match e.code:
             case 500:
