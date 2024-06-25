@@ -67,20 +67,28 @@ def index():
 @app.route("/rburn_log", methods=["GET", "POST"])
 def rburn_log():
     if request.method == "POST":
-        # 1. get the user input 
+        # 1. get the user input: get_sn for sn, path to json, and rack name, 
+        #    get_rack for rack path to each units. 
         get_sn, get_rack = get_sys_info(user_input(), base_data, b23rburn)
 
-        # rack_addr = get_sn_models_from_rack(get_rack)
+        # retrieve all passed units from the rack including the user's input
+        # to create the test data if not exist
+        rack_addr = get_sn_models_from_rack(get_rack)
 
+        # 2. if the rack_data is not on database, create it.
         if not os.path.exists("rack_data"):
             os.makedirs("rack_data")
 
+        # 3. Retrieve the rack name from each servers and search if the comparison file exists.
         for item in get_sn:
             for key in item.values():
                 rack = key["rack"]
 
+                # if the file exists, will be used to compare test data.
                 if os.path.exists(f"rack_data\{rack}.json"):
                     ic("file exist")
+                
+                # if not exist, create an empty file using the rack name.
                 else:
                     ic("file not exist")
                     data = {}
