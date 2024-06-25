@@ -3,7 +3,6 @@ from icecream import ic
 from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
-
 import os
 
 
@@ -71,7 +70,7 @@ def rburn_log():
         #    get_rack for rack path to each units. 
         get_sn, get_rack = get_sys_info(user_input(), base_data, b23rburn)
 
-        # retrieve all passed units from the rack including the user's input
+        # retrieve at least 5 passed units from the rack including the user's input
         # to create the test data if not exist
         rack_addr = get_sn_models_from_rack(get_rack)
 
@@ -119,6 +118,24 @@ def cburn_log():
                             sn_url = sn_url)
     
     return render_template("cburn_log.html")
+
+import subprocess
+@app.route("/tools", methods = ["GET", "POST"])
+def tools():
+    if request.method == "POST":
+        sn_ilst: list[str] = user_input()
+
+        return sn_ilst
+    
+    cmd = 'arp -a | findstr "7c-c2-55-52-d5-ea" '
+    returned_output = subprocess.check_output((cmd), shell=True, stderr=subprocess.STDOUT)
+    # print(returned_output)
+    parse = str(returned_output).split(' ')[2]
+    # ip = parse[1].split(' ')
+    print(parse)
+
+    return render_template("tools.html")
+
 
 
 if __name__ == "__main__":

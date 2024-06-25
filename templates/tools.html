@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block head %} Tools {% endblock %}
+
+{% block body %}
+<div class="main">
+    <main>
+        <div class="container-fluid p-4">
+            <h3 class="mb-5">Tools</h3>
+            {% include "input_form.html" %}
+
+            <div class="card mb-4">
+                <div class="table-wrapper">
+                    {% if not data %}
+                        {% include "nodata.html" %}
+                    {% endif %}
+                </div>
+            </div>
+            
+        </div>
+    </main>
+</div>
+{% endblock %}
