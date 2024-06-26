@@ -127,5 +127,4 @@ def retrieve_data_from_file(addr: str, sn: str):
     part_list = strip_list(part_list)  # Slicing unnecessary contents -- fun: strip_list
     sub_sn = strip_list(sub_sn)  # Slicing unnecessary contents -- fun: strip_list
     ord_ = ord_lookup("NUM-ORD", part_list, sub_sn)
-
-    return str(order_num[0]), sub_sn, part_list, ord_
+    return (str(order_num[0]), sub_sn, part_list, ord_)

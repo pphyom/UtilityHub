@@ -3,6 +3,7 @@ from icecream import ic
 from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
+from config.tools import *
 import os
 
 
@@ -119,20 +120,21 @@ def cburn_log():
     
     return render_template("cburn_log.html")
 
-import subprocess
+
 @app.route("/tools", methods = ["GET", "POST"])
 def tools():
     if request.method == "POST":
+        mac_list = []
         sn_ilst: list[str] = user_input()
+        for sn in sn_ilst:
+            order_num, sub_sn, part_list, ord_ = retrieve_data_from_file(assembly_rec, sn)
+            ipmi_mac = get_ipmi_info(part_list, sub_sn)
+            for i in ipmi_mac:
+                mac_list.append(i)
+        
+        # ip_list = get_ip_from_mac(mac_list)
 
-        return sn_ilst
-    
-    cmd = 'arp -a | findstr "7c-c2-55-52-d5-ea" '
-    returned_output = subprocess.check_output((cmd), shell=True, stderr=subprocess.STDOUT)
-    # print(returned_output)
-    parse = str(returned_output).split(' ')[2]
-    # ip = parse[1].split(' ')
-    print(parse)
+        return mac_list
 
     return render_template("tools.html")
 
