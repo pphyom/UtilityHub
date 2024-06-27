@@ -25,6 +25,7 @@ ins_path = spm.ins_path
 
 smc = Source(url=url23, header=header)
 b23rburn = smc.rburn_server
+lease_ip = smc.lease_ip
 
 
 base_data = smc.live_data()  # assigned the data into the base_data variable
@@ -128,9 +129,9 @@ def tools():
         sn_ilst: list[str] = user_input()
         for sn in sn_ilst:
             order_num, sub_sn, part_list, ord_ = retrieve_data_from_file(assembly_rec, sn)
-            ipmi_mac = get_ipmi_info(part_list, sub_sn)
-            for i in ipmi_mac:
-                mac_list.append(i)
+            ipmi_mac = get_ipmi_info(part_list, sub_sn, lease_ip)
+            # for i in ipmi_mac:
+            #     mac_list.append(i)
         
         # ip_list = get_ip_from_mac(mac_list)
 

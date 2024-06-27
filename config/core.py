@@ -31,6 +31,7 @@ class Source:
         self.url = url
         self.header = header
         self.rburn_server = "http://10.43.251.40"
+        self.lease_ip = "http://10.43.251.40/lease"
     
 
     def live_data(self) -> list:
