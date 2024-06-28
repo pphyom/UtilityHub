@@ -79,7 +79,7 @@ def user_input() -> list:
     temp = request.form.get("serial_num").split(" ")
 
     # remove all empty items in the list
-    temp = [sn for sn in temp if sn != "\t" and sn != ""]
+    temp = [sn.upper() for sn in temp if sn != "\t" and sn != ""]
 
     # remove all duplicates and maintain the index order
     input_data: list = []
