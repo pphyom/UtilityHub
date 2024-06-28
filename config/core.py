@@ -89,6 +89,7 @@ def user_input() -> list:
 
 
 # below functions used in ftu and cburn
+
 def strip_list(list_item: list[str]) -> list:
     """
     Adding sliced contents from the list_item into a new list.

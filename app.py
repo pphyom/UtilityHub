@@ -122,20 +122,8 @@ def cburn_log():
     return render_template("cburn_log.html")
 
 
-@app.route("/tools", methods = ["GET", "POST"])
+@app.route("/tools")
 def tools():
-    if request.method == "POST":
-        mac_list = []
-        sn_ilst: list[str] = user_input()
-        for sn in sn_ilst:
-            order_num, sub_sn, part_list, ord_ = retrieve_data_from_file(assembly_rec, sn)
-            ipmi_mac = get_ipmi_info(part_list, sub_sn, lease_ip)
-            # for i in ipmi_mac:
-            #     mac_list.append(i)
-        
-        # ip_list = get_ip_from_mac(mac_list)
-
-        return mac_list
 
     return render_template("tools.html")
 

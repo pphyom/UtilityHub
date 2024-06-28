@@ -7,17 +7,13 @@
     <main>
         <div class="container-fluid p-4">
             <h3 class="mb-5">Tools</h3>
-            {% include "input_form.html" %}
 
             <div class="card mb-4">
                 <div class="table-wrapper">
-                    {% if not data %}
-                        {% include "nodata.html" %}
-                    {% endif %}
+                    {% include "construction.html" %}
                 </div>
             </div>
-            
-        </div>
+        </div><!-- Container Fluid End -->
     </main>
 </div>
 {% endblock %}
