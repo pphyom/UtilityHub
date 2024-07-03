@@ -7,7 +7,7 @@ sidebar.addEventListener("click", function () {
 });
 
 
-// copy data from modal textarea to textbox
+// copy data from modal textarea to textbox -- used in input_form.html
 function passData() {
     let primaryTextbox = document.querySelector("#primary-textbox")
     let secondaryTextbox = document.querySelector("#secondary-textbox")
@@ -16,21 +16,9 @@ function passData() {
 }
 
 
-// FULL SCREEN
-// var isFullscreen = false
-// var page = document.getElementById("fullscreen-wrapper");
-
-// function toggleFS () {
-//     isFullscreen ? document.exitFullscreen?.() : 
-//     page.requestFullscreen?.(), 
-//     (isFullscreen = !isFullscreen)
-// }
-
-
 // Full Screen
 const fullscreenWrapper = document.getElementById("fullscreen-wrapper");
 const fullscreenButton = document.querySelector(".full-screen");
-
 
 fullscreenButton.addEventListener("click", () => {
     if (document.fullscreenElement) {
@@ -49,3 +37,5 @@ fullscreenButton.addEventListener("click", () => {
         }
     }
 });
+
+

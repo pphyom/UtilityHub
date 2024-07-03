@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from icecream import ic
 from config.core import *
 from config.cburn_helper import *
@@ -38,25 +38,37 @@ conditions = DATA_["conditions"]
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
 
 
+def screen_live_data(input):
+    data: list = []
+    for idx, sn in enumerate(input):
+        for sn_list in base_data:
+            # if user input sn is in the database
+            if sn in sn_list[0]:
+                # append into a new list along with its index
+                data.append([idx+1] + sn_list)
+    return data
+
+
+@app.route("/fetch_live_data")
+def fetch_live_data():
+    data = smc.live_data()
+    return jsonify(data=data)
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
         # If there is input, pass it into input_list using user_input() method
         input_list: list[str] = user_input()
-        data: list = []
-        for idx, sn in enumerate(input_list):
-            for sn_list in base_data:
-                # if user input sn is in the database
-                if sn in sn_list[0]:
-                    # append into a new list along with its index
-                    data.append([idx+1] + sn_list)
+        data = screen_live_data(input_list)
 
         # Sort items per conditions
-        # data.sort(key=lambda item:
-        #           (item[2] == "WARNING",
-        #            item[2] == "FAIL",
-        #            item[2] == "RUNNING"), reverse=True)
+        data.sort(key=lambda item:
+                  (item[2] == "WARNING",
+                   item[2] == "FAIL",
+                   item[2] == "RUNNING"), reverse=True)
     
+        # return fetch_live_data()
         return render_template("index.html", 
                                data=data,
                                headings=headings,
@@ -126,7 +138,6 @@ def cburn_log():
 def tools():
 
     return render_template("tools.html")
-
 
 
 if __name__ == "__main__":

@@ -66,7 +66,7 @@ class Source:
             # Sliced unnecessary columns from the original table
             for elem in range(1, len(temp)):
                 data_list.append(list(itemgetter(1, 3, 0, 6, 7)(temp[elem])))
-                
+            
             return data_list
 
 
@@ -88,7 +88,7 @@ def user_input() -> list:
     return input_data
 
 
-# below functions used in ftu and cburn
+# following functions used in ftu and cburn
 
 def strip_list(list_item: list[str]) -> list:
     """
