@@ -4,7 +4,7 @@ from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
 from config.tools import *
-import os
+import os, threading, time
 
 
 header = {
@@ -28,7 +28,7 @@ b23rburn = smc.rburn_server
 lease_ip = smc.lease_ip
 
 
-base_data = smc.live_data()  # assigned the data into the base_data variable
+# base_data = smc.live_data()  # assigned the data into the base_data variable
 headings = DATA_["live_headings"]
 rburn_headings = DATA_["rburn_headings"]
 cburn_headings = DATA_["cburn_headings"]
@@ -36,6 +36,47 @@ conditions = DATA_["conditions"]
 
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
+
+base_data = []
+
+def live_data():
+    """
+    Search and isolate data table from the RackBurn Webpage.
+    url: Rack Burn URL
+    header: Http header
+    return: List table
+    """
+    global base_data
+    while True:
+        respond = requests.Session()
+        res = respond.get(url23)
+        temp: list = []
+        soup = BeautifulSoup(res.text, "html.parser")
+        # Scraping html table from the url
+        table = soup.find("table", attrs={"id": "heckintable"})
+        rows = table.find_all("tr")
+        for row in rows:
+            raw_data: list = []
+            cols = row.find_all("td")
+            # Test logs
+            logs = [link.get("href") for link in cols[-1].find_all("a")]
+            for cell in cols[:-1]:
+                raw_data.append(cell.text)
+            for log in logs:
+                raw_data.append(log)
+            
+            temp.append(raw_data)
+
+        # Sliced unnecessary columns from the original table
+        for elem in range(1, len(temp)):
+            base_data.append(list(itemgetter(1, 3, 0, 6, 7)(temp[elem])))
+        
+        time.sleep(60)
+
+
+thread = threading.Thread(target=live_data)
+thread.daemon = True
+thread.start()
 
 
 def screen_live_data(input):
@@ -47,12 +88,6 @@ def screen_live_data(input):
                 # append into a new list along with its index
                 data.append([idx+1] + sn_list)
     return data
-
-
-@app.route("/fetch_live_data")
-def fetch_live_data():
-    data = smc.live_data()
-    return jsonify(data=data)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -136,7 +171,6 @@ def cburn_log():
 
 @app.route("/tools")
 def tools():
-
     return render_template("tools.html")
 
 

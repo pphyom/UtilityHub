@@ -3,13 +3,6 @@ import requests, os, json
 from bs4 import BeautifulSoup
 
 
-# present = datetime.now()
-# month = {1: "January", 2: "February", 3: "March", 4: "April", 
-#          5: "May", 6: "June", 7: "July", 8: "August", 
-#          9: "September", 10: "October", 11: "November", 12: "December"}
-
-
-
 base_url = f"http://10.43.251.35/logs/Supermicro/"
 
 
@@ -138,14 +131,3 @@ def get_sn_models_from_rack(rack_list: list):
             print(elem)
         
     return "Hello"
-
-
-
-
-
-
-# def last_day_of_previous_month(year, mnth, tday):
-#     """ Subtract one day from the first day of the current month """
-#     date = datetime(year, mnth, tday)
-#     last_day = date.replace(day=1) - timedelta(days=1)
-#     return last_day.day
