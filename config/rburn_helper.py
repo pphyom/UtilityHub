@@ -1,5 +1,4 @@
-import requests, os, json
-# from datetime import datetime, timedelta
+import requests, os
 from bs4 import BeautifulSoup
 
 
@@ -7,7 +6,7 @@ base_url = f"http://10.43.251.35/logs/Supermicro/"
 
 
 class Rack:
-    def __init__(self, url) -> list:
+    def __init__(self, url):
         self.url = url
 
 
@@ -63,7 +62,7 @@ def find_mac_summary_log(rack_url: str) -> list:
         print(te)
 
 
-def get_sys_info(input_list: list, base_data: list, rb_server: str) -> list | list:
+def get_sys_info(input_list: list, base_data: list, rb_server: str) -> tuple[list, list]:
     """
     Take a (list of) serial number from user input and search it in the database. 
     Store it in a separate list along with the log ONLY IF it is in the database AND "pass" the test. 
@@ -123,7 +122,7 @@ def get_sn_models_from_rack(rack_list: list):
                     }
                 }
 
-    for rack in rack_list: # rack = http://10.43.251.40/logs/Supermicro/2024/May/6U8801322401/
+    for rack in rack_list:  # rack = http://10.43.251.40/logs/Supermicro/2024/May/6U8801322401/
         path_to_mac = find_mac_summary_log(rack)
 
         for full_path in path_to_mac:

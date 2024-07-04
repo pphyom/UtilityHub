@@ -39,17 +39,17 @@ def get_last_line_from_file(in_file: str) -> str:
     return last_line
 
 
-def get_cburn_path(mac_list: list[str], ins_path: str, cburn_addr: str) -> dict[list, list]:
+def get_cburn_path(mac_list: list[str], ins_path: str, cburn_addr: str) -> list[dict[str, str]]:
     
     temp = []
 
-    cburn_path = dict(screendump = [], ins_to_sn = [])
+    cburn_path = dict(screendump=[], ins_to_sn=[])
     screen_dump = "/screen-1.dump"
 
     for mac in mac_list:
-        ins_file_url = f"{ins_path}/ins-{mac}".lower() # get instruction file path
+        ins_file_url = f"{ins_path}/ins-{mac}".lower()  # get instruction file path
         lines = get_each_line_from_page(ins_file_url)
-        paths_to_screendump = [(f"{cburn_addr}/{line[5:-1]}/{mac}").lower() for line in lines if "DIR=" in line]
+        paths_to_screendump = [f"{cburn_addr}/{line[5:-1]}/{mac}".lower() for line in lines if "DIR=" in line]
 
         for path in paths_to_screendump:
             if requests.get(path):

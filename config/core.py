@@ -26,49 +26,12 @@ class SPM:
         self.ins_path = "http://10.43.251.20/instructions"
 
 
-class Source:
-    def __init__(self, url: str, header: dict):
+class RackBurn:
+    def __init__(self, url: str):
         self.url = url
-        self.header = header
         self.rburn_server = "http://10.43.251.40"
         self.lease_ip = "http://10.43.251.40/lease"
     
-
-    def live_data(self) -> list:
-        """
-        Search and isolate data table from the RackBurn Webpage.
-        url: Rack Burn URL
-        header: Http header
-        return: List table
-        """
-        respond = requests.get(self.url, self.header)
-        if not respond:
-            respond.raise_for_status()
-        else:
-            temp: list = []
-            data_list: list = []
-            soup = BeautifulSoup(respond.text, "html.parser")
-            # Scraping html table from the url
-            table = soup.find("table", attrs={"id": "heckintable"})
-            rows = table.find_all("tr")
-            for row in rows:
-                raw_data: list = []
-                cols = row.find_all("td")
-                # Test logs
-                logs = [link.get("href") for link in cols[-1].find_all("a")]
-                for cell in cols[:-1]:
-                    raw_data.append(cell.text)
-                for log in logs:
-                    raw_data.append(log)
-                
-                temp.append(raw_data)
-
-            # Sliced unnecessary columns from the original table
-            for elem in range(1, len(temp)):
-                data_list.append(list(itemgetter(1, 3, 0, 6, 7)(temp[elem])))
-            
-            return data_list
-
 
 def user_input() -> list:
     """

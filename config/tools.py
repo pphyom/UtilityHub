@@ -1,6 +1,6 @@
-from config.core import retrieve_data_from_file
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+
 
 def get_ipmi_info(part_list: list[str], sub_sn: list[str], lease_ip: str) -> list[str]:
     """
@@ -18,7 +18,6 @@ def get_ipmi_info(part_list: list[str], sub_sn: list[str], lease_ip: str) -> lis
             pswd = sub_sn[idx]
 
     print(_mac)
-
 
     return ipmi_pswd
 
