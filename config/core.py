@@ -1,8 +1,9 @@
-import requests
+import requests, json
 import pandas as pd
 from flask import request
 from bs4 import BeautifulSoup
 from operator import itemgetter
+from threading import Thread, Event
 
 from icecream import ic
 
@@ -27,10 +28,56 @@ class SPM:
 
 
 class RackBurn:
-    def __init__(self, url: str):
+    def __init__(self, url: str, refresh_interval: int):
         self.url = url
+        self.refresh_interval = refresh_interval
         self.rburn_server = "http://10.43.251.40"
         self.lease_ip = "http://10.43.251.40/lease"
+        self.base_data = []
+        self.event = Event()
+        self.thread = Thread(target=self.run)
+        self.thread.start()
+
+    
+    def fetch_live_data(self):
+        try:
+            temp = []
+            response = requests.get(self.url)
+            # data = json.loads(response.text)
+
+            soup = BeautifulSoup(response.text, "html.parser")
+            # Scraping html table from the url
+            table = soup.find("table", attrs={"id": "heckintable"})
+            rows = table.find_all("tr")
+            for row in rows:
+                raw_data: list = []
+                cols = row.find_all("td")
+                # Test logs
+                logs = [link.get("href") for link in cols[-1].find_all("a")]
+                for cell in cols[:-1]:
+                    raw_data.append(cell.text)
+                for log in logs:
+                    raw_data.append(log)
+
+                temp.append(raw_data)
+
+            # Sliced unnecessary columns from the original table
+            for elem in range(1, len(temp)):
+                self.base_data.append(list(itemgetter(1, 3, 0, 6, 7)(temp[elem])))
+        except Exception as e:
+            print(f"Error fetching scores: {e}")
+
+
+    def run(self):
+        while not self.event.is_set():
+            self.fetch_live_data()
+            self.event.wait(self.refresh_interval)
+
+
+    def stop(self):
+        self.event.set()
+        self.thread.join()
+
     
 
 def user_input() -> list:

@@ -1,8 +1,8 @@
-from flask import Flask, render_template
+import os, json
+from flask import Flask, render_template, jsonify
 from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
-import os, threading, time, json
 
 header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (HTML, like Gecko)"
@@ -20,7 +20,7 @@ assembly_rec = spm.assembly_rec
 cburn_addr = spm.cburn_addr
 ins_path = spm.ins_path
 
-smc = RackBurn(url=rburn_b23)
+smc = RackBurn(url=rburn_b23, refresh_interval=10)
 b23rburn = smc.rburn_server
 
 headings = DATA_["live_headings"]
@@ -28,53 +28,23 @@ rburn_headings = DATA_["rburn_headings"]
 cburn_headings = DATA_["cburn_headings"]
 conditions = DATA_["conditions"]
 
-live_data: list = []  # data will be retrieved from http request via get_live_data()
-
-
-def get_live_data():
-    """
-    Search and isolate data table from the RackBurn Webpage.
-    url: Rack Burn URL
-    header: Http header
-    return: List table
-    """
-    global live_data
-    while True:
-        respond = requests.Session()
-        res = respond.get(rburn_b23)
-        temp: list = []
-        soup = BeautifulSoup(res.text, "html.parser")
-        # Scraping html table from the url
-        table = soup.find("table", attrs={"id": "heckintable"})
-        rows = table.find_all("tr")
-        for row in rows:
-            raw_data: list = []
-            cols = row.find_all("td")
-            # Test logs
-            logs = [link.get("href") for link in cols[-1].find_all("a")]
-            for cell in cols[:-1]:
-                raw_data.append(cell.text)
-            for log in logs:
-                raw_data.append(log)
-
-            temp.append(raw_data)
-
-        # Sliced unnecessary columns from the original table
-        for elem in range(1, len(temp)):
-            live_data.append(list(itemgetter(1, 3, 0, 6, 7)(temp[elem])))
-
-        time.sleep(60)
-
 
 def screen_live_data(inf):
     data: list = []
     for idx, sn in enumerate(inf):
-        for sn_list in live_data:
+        for sn_list in smc.base_data:
             # if user input sn is in the database
             if sn in sn_list[0]:
                 # append into a new list along with its index
                 data.append([idx + 1] + sn_list)
     return data
+
+
+@app.route('/update', methods=['GET'])
+def update():
+    if request.method == "GET":
+        input_list: list[str] = user_input()
+        return jsonify(input_list)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -96,7 +66,8 @@ def index():
                                headings=headings,
                                b23rburn=b23rburn,
                                cond=conditions)
-    return render_template("index.html")
+    else:
+        return update()
 
 
 @app.route("/rburn_log", methods=["GET", "POST"])
@@ -161,8 +132,7 @@ def tools():
 
 
 if __name__ == "__main__":
-    thread = threading.Thread(target=get_live_data)
-    thread.daemon = True
-    thread.start()
-
-    app.run(host="0.0.0.0", port=80, debug=True)
+    try:
+        app.run(host="0.0.0.0", port=80, debug=True)
+    finally:
+        smc.stop()
