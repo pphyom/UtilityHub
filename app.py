@@ -1,4 +1,5 @@
-import os, json
+import os
+import json
 from flask import Flask, render_template, jsonify
 from config.core import *
 from config.cburn_helper import *
@@ -9,7 +10,7 @@ header = {
                   " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1",
     "Accept-Language": "en-US,en;q=0.9",
 }
-rburn_b23 = "http://10.43.251.40/input_output?model=Supermicro"
+rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
 
@@ -20,54 +21,43 @@ assembly_rec = spm.assembly_rec
 cburn_addr = spm.cburn_addr
 ins_path = spm.ins_path
 
-smc = RackBurn(url=rburn_b23, refresh_interval=10)
-b23rburn = smc.rburn_server
-
 headings = DATA_["live_headings"]
 rburn_headings = DATA_["rburn_headings"]
 cburn_headings = DATA_["cburn_headings"]
 conditions = DATA_["conditions"]
 
-
-def screen_live_data(inf):
-    data: list = []
-    for idx, sn in enumerate(inf):
-        for sn_list in smc.base_data:
-            # if user input sn is in the database
-            if sn in sn_list[0]:
-                # append into a new list along with its index
-                data.append([idx + 1] + sn_list)
-    return data
+live = RackBurn(url=rburn_live, refresh_interval=10)
 
 
 @app.route('/update', methods=['GET'])
 def update():
-    if request.method == "GET":
-        input_list: list[str] = user_input()
-        return jsonify(input_list)
+    input_list = live.user_input_
+    data_set = live.filtered_data(input_list)
+    return jsonify(data_set)
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
         # If there is input, pass it into input_list using user_input() method
-        input_list: list[str] = user_input()
-        data = screen_live_data(input_list)
+        input_list = user_input()
+        # store the user input for the periodic updates
+        live.user_input_ = input_list
+        data_set = live.filtered_data(input_list)
 
         # Sort items per conditions
-        data.sort(key=lambda item: (
+        data_set.sort(key=lambda item: (
             item[2] == "WARNING",
             item[2] == "FAIL",
             item[2] == "RUNNING"), reverse=True)
 
-        # return fetch_live_data()
         return render_template("index.html",
-                               data=data,
+                               data=data_set,
                                headings=headings,
-                               b23rburn=b23rburn,
+                               b23rburn=live.rburn_server,
                                cond=conditions)
-    else:
-        return update()
+
+    return render_template("index.html")
 
 
 @app.route("/rburn_log", methods=["GET", "POST"])
@@ -75,7 +65,7 @@ def rburn_log():
     if request.method == "POST":
         # 1. get the user input: get_sn for sn, path to json, and rack name, 
         #    get_rack for rack path to each unit.
-        get_sn, get_rack = get_sys_info(user_input(), live_data, b23rburn)
+        get_sn, get_rack = get_sys_info(user_input(), live.live_data, live.rburn_server)
 
         # retrieve at least 5 passed units from the rack including the user's input
         # to create the test data if not exist
@@ -135,4 +125,4 @@ if __name__ == "__main__":
     try:
         app.run(host="0.0.0.0", port=80, debug=True)
     finally:
-        smc.stop()
+        live.stop()

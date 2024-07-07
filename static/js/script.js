@@ -39,3 +39,25 @@ fullscreenButton.addEventListener("click", () => {
 });
 
 
+// Update
+async function fetchData() {
+    const response = await fetch('/update');
+    const data = await response.json();
+    const tableBody = document.getElementById('data-table');
+    tableBody.innerHTML = '';  // Clear the table
+
+    data.forEach(row => {
+        const tableRow = document.createElement('tr');
+        row.forEach(cell => {
+            const tableCell = document.createElement('td');
+            tableCell.textContent = cell;
+            tableRow.appendChild(tableCell);
+        });
+        tableBody.appendChild(tableRow);
+    });
+}
+
+setInterval(fetchData, 10000);  // Fetch scores every 10 seconds
+
+// Fetch scores immediately on page load
+window.onload = fetchData;
