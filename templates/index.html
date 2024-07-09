@@ -48,56 +48,7 @@
                                 </tr>
                             </thead>
                             <tbody id="data-table">
-                                {% for row in data %}
-                                <tr>
-                                    {% for cell in row %}
-                                        {% if row.index(cell) == 2 %} <!-- If the column 2, display badges -->
-                                            {% if cell == cond[0] %}
-                                                <td scope="row">
-                                                    <span class="badge status warning text-dark">
-                                                        <a class="text-decoration-none" 
-                                                        href="{{ b23rburn + row[5] + '/Failure-Records-Full.txt' }}" 
-                                                        target="_blank">{{ cell }}</a>
-                                                    </span>
-                                                </td>
-                                            {% elif cell == cond[1] %}
-                                                <td scope="row">
-                                                    <span class="badge status fail">
-                                                        <a class="text-decoration-none" 
-                                                        href="{{ b23rburn + row[5] + '/Failure-Records-Full.txt' }}" 
-                                                        target="_blank">{{ cell }}</a>
-                                                    </span>
-                                                </td>
-                                            {% elif cell == cond[2] %}
-                                                <td scope="row">
-                                                    <span class="badge status pass">{{ cell }}</span>
-                                                </td>
-                                            {% else %}
-                                                <td scope="row">
-                                                    <span class="badge status running">{{ cell }}</span>
-                                                </td>
-                                            {% endif %}
-                                        {% elif row.index(cell) == 3 %} <!-- If the column 3, attach rack links -->
-                                            <td scope="row">
-                                                <span>
-                                                    <a href="{{ b23rburn + '/monitor/Supermicro/' + cell }}" target="_blank">
-                                                        {{ cell }}
-                                                        <i class="bi bi-link-45deg"></i>
-                                                    </a>
-                                                </span>
-                                            </td>
-                                        {% elif row.index(cell) == 5 %} <!-- If the column 5, display log links -->
-                                            <td scope="row">
-                                                <span>
-                                                    <a href="{{ b23rburn + cell }}" target="_blank"><i class="bi bi-file-text-fill"></i></a>
-                                                </span>
-                                            </td>
-                                        {% else %}
-                                            <td scope="row">{{ cell }}</td>
-                                        {% endif %}
-                                    {% endfor %}
-                                </tr>
-                                {% endfor %}
+                                <!-- Data is inserted using JS -->
                             </tbody>
                         </table>
                         {% endif %}
@@ -107,5 +58,112 @@
         </div><!-- Container Fluid End -->
     </main>
 </div>
+
+<script>
+
+    let b23rburn, cond;
+
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch("/get_data")
+        .then(response => response.json())
+        .then(data_helper => {
+            b23rburn = data_helper.b23rburn;
+            cond = data_helper.cond
+        })
+        .catch(error => console.error("Error fetching data_helper: ", error.message))
+    });
+
+    // Update and display the data
+    async function fetchData() {
+        try {
+            const response = await fetch('/update');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            const tableBody = document.getElementById('data-table');
+            
+            // Check if data is empty before clearing
+            if (data.length === 0) {
+                console.log('No data to display.');
+                return;
+            }
+            
+            // Clear the table only if there is data
+            tableBody.innerHTML = '';
+            
+            data.forEach(row => {
+                const tableRow = document.createElement('tr');
+                row.forEach((cell, index) => {
+                    const tableCell = document.createElement('td');
+
+                    // Check which column index we are at
+                    if (index === 2) { // Column 2: Display badge
+                        if (cell === cond[0]) { // Warning
+                            tableCell.innerHTML = `
+                                <span class="badge status warning text-dark">
+                                    <a class="text-decoration-none" 
+                                    href="${b23rburn}${row[5]}/Failure-Records-Full.txt" target="_blank">${cell}</a>
+                                </span>
+                            `;
+                        } else if (cell === cond[1]) { // Fail
+                            tableCell.innerHTML = `
+                                <span class="badge status fail">
+                                    <a class="text-decoration-none" 
+                                    href="${b23rburn}${row[5]}/Failure-Records-Full.txt" target="_blank">${cell}</a>
+                                </span>
+                            `;
+                        } else if (cell === cond[2]) { // Pass
+                            // Condition 3
+                            tableCell.innerHTML = `
+                                <span class="badge status pass">${cell}</span>
+                            `;
+                        } else { // Running
+                            // Default case
+                            tableCell.innerHTML = `
+                                <span class="badge status running">${cell}</span>
+                            `;
+                        }
+                    } else if (index === 3) { // Column 3: Attach rack links
+                        tableCell.innerHTML = `
+                            <span>
+                                <a href="${b23rburn}/monitor/Supermicro/${cell}" target="_blank">
+                                    ${cell}<i class="bi bi-link-45deg"></i>
+                                </a>
+                            </span>
+                        `;
+                    } else if (index === 5) { // Column 5: Display log links
+                        tableCell.innerHTML = `
+                            <span>
+                                <a href="${b23rburn}${cell}" target="_blank"><i class="bi bi-file-text-fill"></i></a>
+                            </span>
+                        `;
+                    } else {
+                        // Default case: Just display the cell value
+                        tableCell.textContent = cell;
+                    }
+
+                    // Append the created cell to the current row
+                    tableRow.appendChild(tableCell);
+                });
+
+                // Append the created row to the tbody
+                tableBody.appendChild(tableRow);
+
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error.message);
+        }
+    }
+    
+    // Fetch scores immediately on page load
+    window.onload = fetchData;
+    
+    // Fetch scores every 10 seconds
+    setInterval(fetchData, 10000);  
+        
+    
+            
+</script>
 
 {% endblock %}

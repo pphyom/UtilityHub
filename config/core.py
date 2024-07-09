@@ -38,6 +38,7 @@ class RackBurn:
 
     def fetch_live_data(self):
         try:
+            self.live_data:list = []
             temp: list = []
             response = requests.get(self.url)
 

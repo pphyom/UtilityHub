@@ -29,6 +29,15 @@ conditions = DATA_["conditions"]
 live = RackBurn(url=rburn_live, refresh_interval=10)
 
 
+@app.route("/get_data", methods=["GET"])
+def get_data():
+    data_helper = {
+        "b23rburn": live.rburn_server,
+        "cond": conditions
+    }
+    return jsonify(data_helper)
+
+
 @app.route('/update', methods=['GET'])
 def update():
     input_list = live.user_input_
@@ -38,6 +47,7 @@ def update():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    
     if request.method == "POST":
         # If there is input, pass it into input_list using user_input() method
         input_list = user_input()
@@ -46,16 +56,14 @@ def index():
         data_set = live.filtered_data(input_list)
 
         # Sort items per conditions
-        data_set.sort(key=lambda item: (
-            item[2] == "WARNING",
-            item[2] == "FAIL",
-            item[2] == "RUNNING"), reverse=True)
+        # data_set.sort(key=lambda item: (
+        #     item[2] == "WARNING",
+        #     item[2] == "FAIL",
+        #     item[2] == "RUNNING"), reverse=True)
 
         return render_template("index.html",
                                data=data_set,
-                               headings=headings,
-                               b23rburn=live.rburn_server,
-                               cond=conditions)
+                               headings=headings)
 
     return render_template("index.html")
 
@@ -123,6 +131,6 @@ def tools():
 
 if __name__ == "__main__":
     try:
-        app.run(host="0.0.0.0", port=80, debug=True)
+        app.run(host="0.0.0.0", debug=True)
     finally:
         live.stop()
