@@ -14,26 +14,3 @@ function passData() {
     secondaryTextbox = secondaryTextbox.value.split("\n")
     primaryTextbox.value = secondaryTextbox.join(" ");
 }
-
-
-// Full Screen
-const fullscreenWrapper = document.getElementById("fullscreen-wrapper");
-const fullscreenButton = document.querySelector(".full-screen");
-
-fullscreenButton.addEventListener("click", () => {
-    if (document.fullscreenElement) {
-        document
-            .exitFullscreen()
-            .then(() => fullscreenButton.classList.remove("is-active"));
-    } else {
-        if (fullscreenWrapper.webkitSupportsFullscreen) {
-            fullscreenWrapper
-                .webkitEnterFullscreen()
-                .then(() => fullscreenButton.classList.add("is-active"));
-        } else {
-            fullscreenWrapper
-                .requestFullscreen()
-                .then(() => fullscreenButton.classList.add("is-active"));
-        }
-    }
-});

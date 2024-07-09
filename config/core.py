@@ -20,6 +20,9 @@ class SPM:
         self.sn_url = "http://super-spm/order/order_item_detail.asp?serialno="
         self.assembly_rec = ("http://10.2.7.138/order/assembly_record_export.asp?FetchType=OP2&ListType=All&chkSPMWIP"
                              "=on&MONumber=")
+        self.scanlog = "http://10.2.7.138/order/export_scanlog.asp?print=Export+scan+log&ssn="
+        self.ftu_addr = "http://10.43.251.22/prodfile/FTU/"
+        self.ftu_b23 = "http://172.21.100.1/prodfile/FTU/"
         self.cburn_addr = "http://10.43.251.20/burnin"
         self.ins_path = "http://10.43.251.20/instructions"
 
@@ -98,17 +101,17 @@ def user_input() -> list:
     param: none
     return: list of input data separated by a white space
     """
-    # input_data: list = []
+    input_data: list = []
     txt_ = request.form.get("serial_num").split(" ")
     # remove all empty items in the list
     temp = [sn.upper() for sn in txt_ if sn != "\t" and sn != ""]
     # remove all duplicates and maintain the index order
-    input_data = [sn for sn in temp if sn not in input_data]
+    [input_data.append(sn) for sn in temp if sn not in input_data]
 
     return input_data
 
 
-# following functions used in ftu and cburn
+# functions used in ftu and cburn
 
 def strip_list(list_item: list[str]) -> list:
     """

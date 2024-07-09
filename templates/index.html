@@ -9,7 +9,7 @@
         <div class="container-fluid p-4">
             <h3 class="mb-5">Live Dashboard</h3>
             {% include "input_form.html" %}
-
+            <div id="alert"></div>
             <div id="fullscreen-wrapper" class="card mb-4">
                 <div class="card-header bg-custom text-white">
                     <i class="bi bi-hdd-rack-fill"></i>
@@ -40,7 +40,7 @@
                                         {% elif head == headings[3] %}
                                             <th scope="col"><i class="bi bi-hdd-rack"></i>{{ head }}</th>
                                         {% elif head == headings[4] %}
-                                            <th scope="col"><i class="bi bi-stopwatch-fill"></i>{{ head }}</th>
+                                            <th scope="col"><i class="bi bi-stopwatch-fill blink"></i>{{ head }}</th>
                                         {% else %}
                                             <th scope="col"><i class="bi bi-journal-code"></i>{{ head }}</th>
                                         {% endif %}
@@ -61,9 +61,15 @@
 
 <script>
 
+    /**
+    *************************************
+    * Live data table based on the input.
+    *************************************
+    **/
+
     // Assign variables global
     let b23rburn, cond;
-
+    
     // Pass the data from backend to frontend
     document.addEventListener("DOMContentLoaded", function() {
         fetch("/get_data")
@@ -160,6 +166,34 @@
     
     // Fetch scores every 10 seconds
     setInterval(fetchData, 10000);
+
+
+    /**
+    *************************************
+    * Full screen data table
+    *************************************
+    **/
+    const fullscreenWrapper = document.getElementById("fullscreen-wrapper");
+    const fullscreenButton = document.querySelector(".full-screen");
+
+    fullscreenButton.addEventListener("click", () => {
+        if (document.fullscreenElement) {
+            document
+                .exitFullscreen()
+                .then(() => fullscreenButton.classList.remove("is-active"));
+        } else {
+            if (fullscreenWrapper.webkitSupportsFullscreen) {
+                fullscreenWrapper
+                    .webkitEnterFullscreen()
+                    .then(() => fullscreenButton.classList.add("is-active"));
+            } else {
+                fullscreenWrapper
+                    .requestFullscreen()
+                    .then(() => fullscreenButton.classList.add("is-active"));
+            }
+        }
+});
+
 
 </script>
 
