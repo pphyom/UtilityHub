@@ -55,12 +55,6 @@ def index():
         live.user_input_ = input_list
         data_set = live.filtered_data(input_list)
 
-        # Sort items per conditions
-        # data_set.sort(key=lambda item: (
-        #     item[2] == "WARNING",
-        #     item[2] == "FAIL",
-        #     item[2] == "RUNNING"), reverse=True)
-
         return render_template("index.html",
                                data=data_set,
                                headings=headings)

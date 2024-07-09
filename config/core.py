@@ -83,7 +83,11 @@ class RackBurn:
                     # append into a new list along with its index
                     data_set.append([idx + 1] + sn_list)
 
-        
+        # Sort items per conditions
+        data_set.sort(key=lambda item: (
+            item[2] == "WARNING",
+            item[2] == "FAIL",
+            item[2] == "RUNNING"), reverse=True)
 
         return data_set
 
