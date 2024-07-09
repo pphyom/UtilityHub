@@ -83,6 +83,8 @@ class RackBurn:
                     # append into a new list along with its index
                     data_set.append([idx + 1] + sn_list)
 
+        
+
         return data_set
 
 
