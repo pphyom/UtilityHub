@@ -4,18 +4,17 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def validation(sn: str, address: str):
+def validation(sn_list: str, scan_log: str):
     """
     Check if the input serial number is valid or not.
     - Verify the SN exists on SPM. 
     - Yes -> go to good_list | No -> go to bad_list.
     """
-    sn_list = list(set(sn.split(" ")))
     bad_list: list = []  # invalid inputs
-    for elem in range(len(sn_list)):
-        validate = requests.get(address + sn_list[elem])
+    for elem in sn_list:
+        validate = requests.get(scan_log + elem)
         if not validate:  # if data is not found
-            bad_list.append(sn_list[elem])
+            bad_list.append(elem)
 
     # A list to store valid serial numbers
     good_list = [_ for _ in sn_list if _ not in bad_list]

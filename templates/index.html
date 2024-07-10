@@ -12,13 +12,22 @@
             <div id="alert"></div>
             <div id="fullscreen-wrapper" class="card mb-4">
                 <div class="card-header bg-custom text-white">
-                    <i class="bi bi-hdd-rack-fill"></i>
-                    <span>Total: {{data|length}}</span>
-                    <div class="float-end">
-                        <button class="full-screen py-0">
-                            <i class="bi bi-arrows-fullscreen full-screen--open text-white p-0"></i>
-                            <i class="bi bi-fullscreen-exit full-screen--close text-white p-0"></i>
-                        </button>
+                    <div class="d-inline-flex justify-content-start">
+                        <div class="px-2 d-inline-flex">
+                            <div><i class="bi bi-cast blink text-warning"></i></div>
+                            <div class="m-auto">LIVE</div>
+                        </div>
+                    </div>
+                    <div class="d-inline-flex float-end">
+                        <!-- <div class="my-auto mx-3"><i class="bi bi-hdd-rack"></i>
+                            {{data|length}}
+                        </div> -->
+                        <div>
+                            <button class="full-screen py-0">
+                                <i class="bi bi-arrows-fullscreen full-screen--open text-white p-0"></i>
+                                <i class="bi bi-fullscreen-exit full-screen--close text-white p-0"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -40,7 +49,7 @@
                                         {% elif head == headings[3] %}
                                             <th scope="col"><i class="bi bi-hdd-rack"></i>{{ head }}</th>
                                         {% elif head == headings[4] %}
-                                            <th scope="col"><i class="bi bi-stopwatch-fill blink"></i>{{ head }}</th>
+                                            <th scope="col"><i class="bi bi-stopwatch-fill"></i>{{ head }}</th>
                                         {% else %}
                                             <th scope="col"><i class="bi bi-journal-code"></i>{{ head }}</th>
                                         {% endif %}

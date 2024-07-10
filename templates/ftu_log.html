@@ -8,10 +8,14 @@
     <main>
         <div class="container-fluid p-4">
             <h3 class="mb-5">Functional Test Logs</h3>
+            {% include "input_form.html" %}
             
             <div class="card mb-4">
                 <div class="table-wrapper">
                     {% include "construction.html" %}
+                    <p>{{ data }}</p>
+                    <p>{{ goodlist }}</p>
+                    <p>{{ badlist }}</p>
                 </div>
             </div>
         </div><!-- Container Fluid End -->

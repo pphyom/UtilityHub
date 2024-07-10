@@ -4,6 +4,7 @@ from flask import Flask, render_template, jsonify
 from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
+from config.ftu_helper import *
 
 header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (HTML, like Gecko)"
@@ -17,7 +18,10 @@ app = Flask(__name__, template_folder="templates", static_folder="static", stati
 spm = SPM()
 mo_url = spm.mo_url
 sn_url = spm.sn_url
+scan_log = spm.scanlog
 assembly_rec = spm.assembly_rec
+ftu_addr = spm.ftu_addr
+ftu_b23 = spm.ftu_b23
 cburn_addr = spm.cburn_addr
 ins_path = spm.ins_path
 
@@ -26,7 +30,7 @@ rburn_headings = DATA_["rburn_headings"]
 cburn_headings = DATA_["cburn_headings"]
 conditions = DATA_["conditions"]
 
-live = RackBurn(url=rburn_live, refresh_interval=10)
+live = RackBurn(url=rburn_live, refresh_interval=60)
 
 
 @app.route("/get_data", methods=["GET"])
@@ -47,7 +51,6 @@ def update():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    
     if request.method == "POST":
         # If there is input, pass it into input_list using user_input() method
         input_list = user_input()
@@ -58,7 +61,6 @@ def index():
         return render_template("index.html",
                                data=data_set,
                                headings=headings)
-
     return render_template("index.html")
 
 
@@ -98,8 +100,13 @@ def rburn_log():
     return render_template("rburn_log.html")
 
 
-@app.route("/ftu_log")
+@app.route("/ftu_log", methods=["GET", "POST"])
 def ftu_log():
+    if request.method == "POST":
+        input_list = user_input()
+        goodlist, badlist = validation(input_list, scan_log)
+
+        return render_template("ftu_log.html", data=input_list, goodlist=goodlist, badlist=badlist)
     return render_template("ftu_log.html")
 
 
