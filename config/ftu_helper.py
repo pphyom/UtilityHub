@@ -1,25 +1,36 @@
 import json
+import asyncio
+import httpx
 import urllib3
 import requests
 from bs4 import BeautifulSoup
 
 
-def validation(sn_list: str, scan_log: str):
-    """
-    Check if the input serial number is valid or not.
-    - Verify the SN exists on SPM. 
-    - Yes -> go to good_list | No -> go to bad_list.
-    """
-    bad_list: list = []  # invalid inputs
-    for elem in sn_list:
-        validate = requests.get(scan_log + elem)
-        if not validate:  # if data is not found
-            bad_list.append(elem)
+class FTU:
+    def __init__(self):
+        self.bad_items = []
 
-    # A list to store valid serial numbers
-    good_list = [_ for _ in sn_list if _ not in bad_list]
 
-    return good_list, bad_list
+    async def validation(self, sn_list: str, scan_log: str):
+        """
+        Check if the input serial number is valid or not.
+        - Verify the SN exists on SPM. 
+        - Yes -> go to good_list | No -> go to bad_list.
+        """
+        bad_list = []  # invalid inputs
+        
+        async with httpx.AsyncClient() as client:
+            tasks = [client.get(scan_log + elem) for elem in sn_list]
+            responses = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            for elem, response in zip(sn_list, responses):
+                if response.status_code != 200:
+                    bad_list.append(elem)
+
+        self.bad_items = bad_list
+        good_list = [elem for elem in sn_list if elem not in bad_list]
+
+        return good_list
 
 
 def json_lookup(url: str):

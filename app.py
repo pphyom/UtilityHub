@@ -1,5 +1,6 @@
 import os
 import json
+import asyncio
 from flask import Flask, render_template, jsonify
 from config.core import *
 from config.cburn_helper import *
@@ -31,7 +32,7 @@ cburn_headings = DATA_["cburn_headings"]
 conditions = DATA_["conditions"]
 
 live = RackBurn(url=rburn_live, refresh_interval=60)
-
+ftu = FTU()
 
 @app.route("/get_data", methods=["GET"])
 def get_data():
@@ -86,11 +87,11 @@ def rburn_log():
 
                 # if the file exists, will be used to compare test data.
                 if os.path.exists(f"rack_data\\{rack}.json"):
-                    ic("file exist")
+                    print("file exist")
 
                 # if not exist, create an empty file using the rack name.
                 else:
-                    ic("file not exist")
+                    print("file not exist")
                     with open(f"rack_data\\{rack}.json", "w") as db_file:
                         # json.dump(data, db_file)
                         db_file.write(json.dumps({}))
@@ -104,9 +105,9 @@ def rburn_log():
 def ftu_log():
     if request.method == "POST":
         input_list = user_input()
-        goodlist, badlist = validation(input_list, scan_log)
-
-        return render_template("ftu_log.html", data=input_list, goodlist=goodlist, badlist=badlist)
+        goodlist= asyncio.run(ftu.validation(input_list, scan_log))
+        
+        return render_template("ftu_log.html", data=input_list, goodlist=goodlist, badlist=ftu.bad_items)
     return render_template("ftu_log.html")
 
 
