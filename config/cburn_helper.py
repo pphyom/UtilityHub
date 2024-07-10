@@ -4,8 +4,6 @@ from bs4 import BeautifulSoup
 from config.core import retrieve_data_from_file
 from urllib.error import HTTPError
 
-from icecream import ic
-
 
 def get_mac_address(part_list: list[str], sub_sn: list[str]) -> list[str]: 
     mac = [sub_sn[idx] for idx, val in enumerate(part_list) if "MAC-ADDRESS" in val or "MAC-AOC-ADDRESS" in val]
@@ -108,4 +106,4 @@ def screendump_wrapper(sn_list: list, assembly_rec_addr: str, ins_path: str, cbu
     except HTTPError as e:
         match e.code:
             case 500:
-                ic("Internal Server Error. Server cannot be found!")
+                print("Internal Server Error. Server cannot be found!")
