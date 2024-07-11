@@ -1,3 +1,5 @@
+import httpx
+import asyncio
 import requests
 import pandas as pd
 from flask import request
@@ -27,17 +29,58 @@ class SPM:
         self.ins_path = "http://10.43.251.20/instructions"
 
 
+    async def retrieve_data_from_file(self, addr: str, sn_list: list[str]) -> dict:
+        assembly_data = {"order_num": [], "sub_sn": [], "part_list": [], "ord_": []}
+
+        async with httpx.AsyncClient() as client:
+            tasks = [client.get(addr + sn) for sn in sn_list]
+            responses = await asyncio.gather(*tasks, return_exceptions=True)
+
+        for response in responses:
+            content = pd.read_html(response.content, header=0)[0]
+            order_num = content["ORDERNUM"]
+            server_sku = content["SERVERPARTNO"]
+            part_list = content["SUB-ITEM"]
+            sub_sn = content["SUB-SERIAL"]
+
+            part_list = self.strip_list(part_list)
+            sub_sn = self.strip_list(sub_sn)
+            ord_ = self.ord_lookup("NUM-ORD", part_list, sub_sn)
+
+            assembly_data["order_num"].append(str(order_num.iloc[0]))  # Assuming there's always at least one element
+            assembly_data["sub_sn"].append(sub_sn)
+            assembly_data['part_list'].append(part_list)
+            assembly_data["ord_"].append(ord_)
+
+        return assembly_data
+
+
+    @staticmethod
+    def strip_list(list_item: pd.Series) -> list:
+        return list_item.str.slice(14, -5).tolist()
+
+
+    @staticmethod
+    def ord_lookup(item_to_find: str, part_list: pd.Series, sub_sn: pd.Series):
+        if item_to_find in part_list:
+            idx = part_list.index(item_to_find)
+            return sub_sn[idx]
+
+        return None  # Handle case where item_to_find is not found
+
+
 class RackBurn:
     def __init__(self, url: str, refresh_interval: int):
         self.url = url
         self.refresh_interval = refresh_interval
-        self.rburn_server = "http://10.43.251.40"
-        self.lease_ip = "http://10.43.251.40/lease"
+        self.rburn_server = "http://10.43.251.35"
+        self.lease_ip = "http://10.43.251.35/lease"
         self.live_data = []
         self.user_input_ = []
         self.event = Event()
         self.thread = Thread(target=self.run)
         self.thread.start()
+
 
     def fetch_live_data(self):
         try:
@@ -68,14 +111,17 @@ class RackBurn:
             # required to replace with an error page
             print(f"Error fetching live data: {e}")
 
+
     def run(self):
         while not self.event.is_set():
             self.fetch_live_data()
             self.event.wait(self.refresh_interval)
 
+
     def stop(self):
         self.event.set()
         self.thread.join()
+
 
     def filtered_data(self, input_list):
         data_set = []
@@ -109,47 +155,3 @@ def user_input() -> list:
     [input_data.append(sn) for sn in temp if sn not in input_data]
 
     return input_data
-
-
-# functions used in ftu and cburn
-
-def strip_list(list_item: list[str]) -> list:
-    """
-    Adding sliced contents from the list_item into a new list.
-    Usage: strip(a list)
-    """
-    sub_item_slice: list = []
-    for item in list_item:
-        sub_item_slice.append(item[14:-5])  # remove extra words
-
-    return sub_item_slice  # return data only
-
-
-def ord_lookup(item_to_find: str, part_list: list, sub_sn: list):
-    """
-    Search the ORD number using "NUM-ORD" argument in the part_list.
-    If found, take the index of it in the part_list and return the
-    same index in the sub_sn list.
-    """
-    if item_to_find in part_list:
-        idx = part_list.index(item_to_find)
-
-        return sub_sn[idx]
-
-
-def retrieve_data_from_file(addr: str, sn: str):
-    """
-    Retrieve data from addr + each SN from sn_list. 
-    Get the data of the server and scrape them into each param.
-    """
-    url = addr + sn
-    content = pd.read_html(url, header=0)[0]  # Read the web address
-    order_num = content["ORDERNUM"]  # Order list
-    server_sku = content["SERVERPARTNO"]  # Product list
-    part_list = content["SUB-ITEM"]  # Parts list
-    sub_sn = content["SUB-SERIAL"]  # Sub Serial for ORD 880
-
-    part_list = strip_list(part_list)  # Slicing unnecessary contents -- fun: strip_list
-    sub_sn = strip_list(sub_sn)  # Slicing unnecessary contents -- fun: strip_list
-    ord_ = ord_lookup("NUM-ORD", part_list, sub_sn)
-    return str(order_num[0]), sub_sn, part_list, ord_

@@ -12,7 +12,7 @@ header = {
                   " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1",
     "Accept-Language": "en-US,en;q=0.9",
 }
-rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
+rburn_live = "http://10.43.251.35/input_output?model=Supermicro"
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
 
@@ -100,14 +100,21 @@ def rburn_log():
 
     return render_template("rburn_log.html")
 
-
+import time
 @app.route("/ftu_log", methods=["GET", "POST"])
 def ftu_log():
     if request.method == "POST":
         input_list = user_input()
-        goodlist= asyncio.run(ftu.validation(input_list, scan_log))
+        good_list = asyncio.run(ftu.validation(input_list, scan_log))
         
-        return render_template("ftu_log.html", data=input_list, goodlist=goodlist, badlist=ftu.bad_items)
+        start = time.perf_counter()
+        outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))
+        end = time.perf_counter()
+        print(end-start)
+        
+        return outfile
+
+        # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
 
 

@@ -1,8 +1,11 @@
 import requests
 from requests import HTTPError
 from bs4 import BeautifulSoup
-from config.core import retrieve_data_from_file
+from config.core import SPM
 from urllib.error import HTTPError
+
+
+spm = SPM()
 
 
 def get_mac_address(part_list: list[str], sub_sn: list[str]) -> list[str]: 
@@ -95,7 +98,7 @@ def screendump_wrapper(sn_list: list, assembly_rec_addr: str, ins_path: str, cbu
     try:
         final: list = []
         for sn in sn_list:
-            order_num, sub_sn, part_list, ord_ = retrieve_data_from_file(assembly_rec_addr, sn)
+            order_num, sub_sn, part_list, ord_ = spm.retrieve_data_from_file(assembly_rec_addr, sn)
             mac_list = get_mac_address(part_list, sub_sn)  # find available mac address from the SN
             temp = screendump(ins_path, cburn_addr, mac_list, order_num)
             for i in temp:

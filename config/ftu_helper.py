@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 class FTU:
     def __init__(self):
-        self.bad_items = []
+        self.bad_items = [] # stores all invalid inputs
 
 
     async def validation(self, sn_list: str, scan_log: str):
@@ -17,7 +17,7 @@ class FTU:
         - Verify the SN exists on SPM. 
         - Yes -> go to good_list | No -> go to bad_list.
         """
-        bad_list = []  # invalid inputs
+        bad_list = [] # invalid inputs
         
         async with httpx.AsyncClient() as client:
             tasks = [client.get(scan_log + elem) for elem in sn_list]

@@ -2,12 +2,7 @@ import requests, os
 from bs4 import BeautifulSoup
 
 
-base_url = f"http://10.43.251.35/logs/Supermicro/"
-
-
-class Rack:
-    def __init__(self, url):
-        self.url = url
+base_url = "http://10.43.251.35/logs/Supermicro/"
 
 
 def find_all_a_tag(url: str):
