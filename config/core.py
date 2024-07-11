@@ -28,7 +28,6 @@ class SPM:
         self.cburn_addr = "http://10.43.251.20/burnin"
         self.ins_path = "http://10.43.251.20/instructions"
 
-
     async def retrieve_data_from_file(self, addr: str, sn_list: list[str]) -> dict:
         assembly_data = {"order_num": [], "sub_sn": [], "part_list": [], "ord_": []}
 
@@ -54,14 +53,12 @@ class SPM:
 
         return assembly_data
 
-
     @staticmethod
     def strip_list(list_item: pd.Series) -> list:
         return list_item.str.slice(14, -5).tolist()
 
-
     @staticmethod
-    def ord_lookup(item_to_find: str, part_list: pd.Series, sub_sn: pd.Series):
+    def ord_lookup(item_to_find: str, part_list: list, sub_sn: list):
         if item_to_find in part_list:
             idx = part_list.index(item_to_find)
             return sub_sn[idx]
@@ -81,8 +78,7 @@ class RackBurn:
         self.thread = Thread(target=self.run)
         self.thread.start()
 
-
-    def fetch_live_data(self):
+    def fetch_live_data(self) -> None:
         try:
             self.live_data: list = []
             temp: list = []
@@ -111,19 +107,16 @@ class RackBurn:
             # required to replace with an error page
             print(f"Error fetching live data: {e}")
 
-
     def run(self):
         while not self.event.is_set():
             self.fetch_live_data()
             self.event.wait(self.refresh_interval)
 
-
     def stop(self):
         self.event.set()
         self.thread.join()
 
-
-    def filtered_data(self, input_list):
+    def filtered_data(self, input_list) -> list:
         data_set = []
         for idx, serial_n in enumerate(input_list):
             for sn_list in self.live_data:

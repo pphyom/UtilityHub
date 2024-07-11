@@ -1,6 +1,7 @@
 import os
 import json
 import asyncio
+import time
 from flask import Flask, render_template, jsonify
 from config.core import *
 from config.cburn_helper import *
@@ -33,6 +34,7 @@ conditions = DATA_["conditions"]
 
 live = RackBurn(url=rburn_live, refresh_interval=60)
 ftu = FTU()
+
 
 @app.route("/get_data", methods=["GET"])
 def get_data():
@@ -100,18 +102,18 @@ def rburn_log():
 
     return render_template("rburn_log.html")
 
-import time
+
 @app.route("/ftu_log", methods=["GET", "POST"])
 def ftu_log():
     if request.method == "POST":
         input_list = user_input()
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
-        
+
         start = time.perf_counter()
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))
         end = time.perf_counter()
-        print(end-start)
-        
+        print(end - start)
+
         return outfile
 
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)

@@ -8,16 +8,15 @@ from bs4 import BeautifulSoup
 
 class FTU:
     def __init__(self):
-        self.bad_items = [] # stores all invalid inputs
+        self.bad_items = []  # stores all invalid inputs
 
-
-    async def validation(self, sn_list: str, scan_log: str):
+    async def validation(self, sn_list: list, scan_log: str) -> list:
         """
         Check if the input serial number is valid or not.
         - Verify the SN exists on SPM. 
         - Yes -> go to good_list | No -> go to bad_list.
         """
-        bad_list = [] # invalid inputs
+        bad_list = []  # invalid inputs
         
         async with httpx.AsyncClient() as client:
             tasks = [client.get(scan_log + elem) for elem in sn_list]
@@ -33,7 +32,7 @@ class FTU:
         return good_list
 
 
-def json_lookup(url: str):
+def json_lookup(url: str) -> (list, bool):
     """
     Search .json file in a given url. Download it and return true if found. 
     Return none if not found.
