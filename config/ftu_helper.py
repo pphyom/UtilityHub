@@ -1,10 +1,13 @@
 import json
 import asyncio
-import httpx
+import aiohttp
 import urllib3
 import requests
 from bs4 import BeautifulSoup
+from config.core import SPM
 
+
+spm = SPM()
 
 class FTU:
     def __init__(self):
@@ -18,13 +21,15 @@ class FTU:
         """
         bad_list = []  # invalid inputs
         
-        async with httpx.AsyncClient() as client:
-            tasks = [client.get(scan_log + elem) for elem in sn_list]
-            responses = await asyncio.gather(*tasks, return_exceptions=True)
-            
-            for elem, response in zip(sn_list, responses):
-                if response.status_code != 200:
-                    bad_list.append(elem)
+        async with aiohttp.ClientSession() as session:
+            tasks = [spm.fetch(session, (scan_log + sn)) for sn in sn_list]
+            responses = await asyncio.gather(*tasks)
+
+        for elem, response in zip(sn_list, responses):
+            if isinstance(response, Exception):
+                print(f"Error while getting data for {elem}: {response}")
+                bad_list.append(elem)
+                continue
 
         self.bad_items = bad_list
         good_list = [elem for elem in sn_list if elem not in bad_list]
@@ -32,7 +37,9 @@ class FTU:
         return good_list
 
 
-def json_lookup(url: str) -> (list, bool):
+
+
+def json_lookup(url: str) -> tuple[list, bool]:
     """
     Search .json file in a given url. Download it and return true if found. 
     Return none if not found.

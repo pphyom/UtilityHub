@@ -108,13 +108,19 @@ def ftu_log():
     if request.method == "POST":
         input_list = user_input()
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
+        outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
+        mac_list = get_mac_address(outfile["part_list"], outfile["sub_sn"])
+        # for mac in mac_list:
+        ins_file_url = [f"{ins_path}/ins-{mac}".lower() for mac in mac_list]
 
-        start = time.perf_counter()
-        outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))
-        end = time.perf_counter()
-        print(end - start)
+        lines = [get_each_line_from_page(elem) for elem in ins_file_url]
+        ord_path = [f"{line[5:-1]}".lower() for line in lines if "DIR=" in line]
 
-        return outfile
+        temp = [f"{line[5:-1]}".lower() for elem in ins_file_url for line in get_each_line_from_page(elem) if "DIR=" in line]
+        
+        parti = ["/".join(t.split("/")[:2]) for t in temp]
+
+        return parti
 
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
@@ -124,8 +130,8 @@ def ftu_log():
 def cburn_log():
     if request.method == "POST":
         sn_list: list[str] = user_input()
-
-        cburn_result = screendump_wrapper(sn_list, assembly_rec, ins_path, cburn_addr)
+        good_list = asyncio.run(ftu.validation(sn_list, scan_log))
+        cburn_result = screendump_wrapper(good_list, assembly_rec, ins_path, cburn_addr)
         return render_template("cburn_log.html",
                                headings=cburn_headings,
                                data=cburn_result,

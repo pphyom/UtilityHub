@@ -1,9 +1,10 @@
-import httpx
 import asyncio
+import aiohttp
 import requests
 import pandas as pd
 from flask import request
 from bs4 import BeautifulSoup
+from io import StringIO
 from operator import itemgetter
 from threading import Thread, Event
 
@@ -28,15 +29,25 @@ class SPM:
         self.cburn_addr = "http://10.43.251.20/burnin"
         self.ins_path = "http://10.43.251.20/instructions"
 
-    async def retrieve_data_from_file(self, addr: str, sn_list: list[str]) -> dict:
+    async def fetch(self, session, url):
+        async with session.get(url) as response:
+            return await response.text()
+        
+    async def retrieve_data_from_file(self, addr, sn_list):
+        """
+        
+        """
         assembly_data = {"order_num": [], "sub_sn": [], "part_list": [], "ord_": []}
+        async with aiohttp.ClientSession() as session:
+            tasks = [self.fetch(session, (addr + sn)) for sn in sn_list]
+            responses = await asyncio.gather(*tasks)
 
-        async with httpx.AsyncClient() as client:
-            tasks = [client.get(addr + sn) for sn in sn_list]
-            responses = await asyncio.gather(*tasks, return_exceptions=True)
+        for elem, response in zip(sn_list, responses):
+            if isinstance(response, Exception):
+                print(f"Error while getting data for {elem}: {response}")
+                continue
 
-        for response in responses:
-            content = pd.read_html(response.content, header=0)[0]
+            content = pd.read_html(StringIO(response), header=0)[0]
             order_num = content["ORDERNUM"]
             server_sku = content["SERVERPARTNO"]
             part_list = content["SUB-ITEM"]
