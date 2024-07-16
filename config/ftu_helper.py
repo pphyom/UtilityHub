@@ -1,7 +1,6 @@
 import json
 import asyncio
 import aiohttp
-import urllib3
 import requests
 from bs4 import BeautifulSoup
 from config.core import SPM
@@ -48,9 +47,8 @@ def json_lookup(url: str) -> tuple[list, bool]:
         Web address (path) for .json files.
     """
     found: bool = False
-    http = urllib3.PoolManager()
-    html = http.request("GET", url)
-    soup = BeautifulSoup(html.data, "html.parser")
+    respond = requests.get(url)
+    soup = BeautifulSoup(respond.content, "html.parser")
     js_files = soup.find_all(string=lambda x: ".json" in x)
     if js_files:
         found = True

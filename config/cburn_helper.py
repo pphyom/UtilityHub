@@ -94,9 +94,16 @@ def screendump_wrapper(sn_list: list, assembly_rec_addr: str, ins_path: str, cbu
 
 
 def get_mac_address(part_list: list[str], sub_sn: list[str]) -> list[str]:
-
-    mac_addresses = [ssn[idx] for part, ssn in zip(part_list, sub_sn) for idx, val in enumerate(part)
-                     if "MAC-ADDRESS" in val or "MAC-AOC-ADDRESS" in val]
-    mac_list = ["-".join(x + y for x, y in zip(mac_addr[::2], mac_addr[1::2])).lower() for mac_addr in mac_addresses]
+    """
+    """
+    mac_addresses = [
+        ssn[idx] for part, ssn in zip(part_list, sub_sn) 
+        for idx, val in enumerate(part)
+        if "MAC-ADDRESS" in val or "MAC-AOC-ADDRESS" in val
+    ]
+    mac_list = [
+        "-".join(x + y for x, y in zip(mac_addr[::2], mac_addr[1::2])).lower() 
+        for mac_addr in mac_addresses
+    ]
 
     return mac_list

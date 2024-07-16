@@ -1,7 +1,7 @@
 import os
 import json
 import asyncio
-import time
+import requests
 from flask import Flask, render_template, jsonify
 from config.core import *
 from config.cburn_helper import *
@@ -13,7 +13,7 @@ header = {
                   " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1",
     "Accept-Language": "en-US,en;q=0.9",
 }
-rburn_live = "http://10.43.251.35/input_output?model=Supermicro"
+rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
 
@@ -110,17 +110,32 @@ def ftu_log():
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
         mac_list = get_mac_address(outfile["part_list"], outfile["sub_sn"])
-        # for mac in mac_list:
-        ins_file_url = [f"{ins_path}/ins-{mac}".lower() for mac in mac_list]
 
-        lines = [get_each_line_from_page(elem) for elem in ins_file_url]
-        ord_path = [f"{line[5:-1]}".lower() for line in lines if "DIR=" in line]
+        #  get validated instruction file
+        ins_file_url = [
+            ins_file for mac in mac_list 
+            if requests.get(ins_file := f"{ins_path}/ins-{mac}".lower())
+        ]
 
-        temp = [f"{line[5:-1]}".lower() for elem in ins_file_url for line in get_each_line_from_page(elem) if "DIR=" in line]
-        
-        parti = ["/".join(t.split("/")[:2]) for t in temp]
+        #  get the directory (path) from the instruction file for each system
+        directory = [
+            line[5:-1]
+            for elem in ins_file_url 
+            for line in get_each_line_from_page(elem) 
+            if "DIR=" in line
+        ]
 
-        return parti
+        #  create the ftu urls
+        ftu_paths = [(ftu_addr + "/".join(d.split("/")[:2])) for d in directory]
+        ftu_dir = list(dict.fromkeys(ftu_paths))  # remove duplicates
+
+
+        link = f"{ftu_dir[0]}/{good_list[0]}/"
+
+        js, found = json_lookup(link)
+        print(js)
+
+        return "Hello"
 
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
