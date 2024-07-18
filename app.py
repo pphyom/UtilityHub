@@ -128,14 +128,23 @@ def ftu_log():
         #  create the ftu urls
         ftu_paths = [(ftu_addr + "/".join(d.split("/")[:2])) for d in directory]
         ftu_dir = list(dict.fromkeys(ftu_paths))  # remove duplicates
+        
+        final = []
+        for sn, dir in zip(good_list, ftu_dir):
+            temp = {}
+            link = f"{dir}/{sn}/"
+            js, found = ftu.json_lookup(link)
+            temp["serial_number"] = sn
+            temp["json_data"] = js
+            temp["is_found"] = found
+            final.append(temp)
 
 
-        link = f"{ftu_dir[0]}/{good_list[0]}/"
+        # link = f"{ftu_dir[0]}/{good_list[0]}/"
 
-        js, found = json_lookup(link)
-        print(js)
+        # js, found = ftu.json_lookup(link)
 
-        return "Hello"
+        return final
 
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
