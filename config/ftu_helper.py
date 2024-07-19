@@ -2,6 +2,7 @@ import json
 import asyncio
 import aiohttp
 import requests
+from io import StringIO
 from bs4 import BeautifulSoup
 from config.core import SPM
 
@@ -35,7 +36,7 @@ class FTU:
 
         return good_list
 
-    def json_lookup(self, url: str) -> tuple[list, bool]:
+    async def json_lookup(self, url: str) -> tuple[list, bool]:
         """
         Search .json file in a given url. Download it and return true if found. 
         Return none if not found.
@@ -44,19 +45,22 @@ class FTU:
             Web address (path) for .json files.
         """
         found: bool = False
-        respond = requests.get(url)
-        soup = BeautifulSoup(respond.content, "html.parser")
-        js_files = soup.find_all(string=lambda x: ".json" in x)
-        if js_files:
-            found = True
-            for f in js_files:
-                if f.endswith(".json"):
-                    download_file = url + f
-                    res = requests.get(download_file, stream=True)
-                    js = json.loads(res.text)
-                    return js, found
-        else:
-            return None, found
+        async with aiohttp.ClientSession() as session:
+            task = spm.fetch(session, url)
+            respond = await task
+
+            soup = BeautifulSoup(StringIO(respond), "html.parser")
+            js_files = soup.find_all(string=lambda x: ".json" in x)
+            if js_files:
+                found = True
+                for f in js_files:
+                    if f.endswith(".json"):
+                        download_file = url + f
+                        res = requests.get(download_file, stream=True)
+                        js = json.loads(res.text)
+                        return js, found
+            else:
+                return None, found
 
     def pcie_drops_calculation(self, pcie_total: int, js: dict):
         """
@@ -81,6 +85,3 @@ class FTU:
                 spd_drop += 1
             
         return gen_drop, spd_drop
-
-    def ftu_god(self):
-        pass
