@@ -39,10 +39,7 @@ class FTU:
     async def json_lookup(self, url: str) -> tuple[list, bool]:
         """
         Search .json file in a given url. Download it and return true if found. 
-        Return none if not found.
-        
-        :param url:
-            Web address (path) for .json files.
+        Return none and false if not found.
         """
         found: bool = False
         async with aiohttp.ClientSession() as session:

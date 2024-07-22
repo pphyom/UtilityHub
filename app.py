@@ -13,7 +13,7 @@ header = {
                   " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1",
     "Accept-Language": "en-US,en;q=0.9",
 }
-rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
+rburn_live = "http://10.43.251.35/input_output?model=Supermicro"
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
 

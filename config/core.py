@@ -81,8 +81,8 @@ class RackBurn:
     def __init__(self, url: str, refresh_interval: int):
         self.url = url
         self.refresh_interval = refresh_interval
-        self.rburn_server = "http://10.43.251.40"
-        self.lease_ip = "http://10.43.251.40/lease"
+        self.rburn_server = "http://10.43.251.35"
+        self.lease_ip = "http://10.43.251.35/lease"
         self.live_data = []
         self.user_input_ = []
         self.event = Event()
