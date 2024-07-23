@@ -65,12 +65,21 @@
                     </button>
                 </div>
                 <div class="offcanvas-body">
-                    <p>Server</p>
-                    <select class="form-select"
-                        aria-label="rburn-servers">
-                        <option selected value="40">10.43.251.40</option>
-                        <option value="35">10.43.251.35</option>
-                    </select>
+                    <div class="mb-4">
+                        <label for="rackServer" class="form-label">Server</label>
+                        <select id="rackServer" class="form-select" aria-label="rburn-servers" name="rackServer">
+                            <option selected value="40">10.43.251.40</option>
+                            <option value="35">10.43.251.35</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="refreshInterval" class="form-label">Refresh Interval (minute)</label>
+                        <div class="d-flex display-inline-start gap-2">
+                            <input type="range" id="refreshInterval" class="form-range" min="1" max="10" step="1" 
+                            name="refreshInterval" value="1" oninput="output.value = refreshInterval.value">
+                            <output id="output">1</output>
+                        </div>
+                    </div>
                 </div>
             </div>
 
