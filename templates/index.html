@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-
-{% block head %} Home {% endblock %}
+{% set index_page = True %}  <!-- setting button to display only on the index.html -->
+{% block head %} Live {% endblock %}
 
 {% block body %}
 
@@ -8,7 +8,10 @@
     <main>
         <div class="container-fluid p-4">
             <h3 class="mb-5">Live Dashboard</h3>
-            {% include "input_form.html" %}
+            <div class="row mb-3 d-flex flex-row justify-content-start">
+                {% include "input_form.html" %}
+            </div>
+
             <div id="fullscreen-wrapper" class="card mb-4">
                 <div class="card-header bg-custom text-white">
                     <div class="d-inline-flex justify-content-start">

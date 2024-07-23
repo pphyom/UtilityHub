@@ -1,41 +1,82 @@
-<div class="row mb-3">
-    <div class="col-xl-6">
-        <form id="test" class="row" action="" method="POST">
-            <div class="col-md-8 col-sm-12 mb-2">
-                <input type="text" id="primary-textbox" class="form-control" placeholder="Insert system serial number/s"
-                    name="serial_num">
-            </div>
-            <div class="col-md-4 col-sm-12 mb-2">
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                    data-bs-target="#staticBackdrop">...</button>
+ <div class="col-xl-6">
+    <form class="row" action method="POST">
+        <div class="col-md-8 col-sm-12 mb-2">
+            <input type="text" id="primary-textbox" class="form-control"
+                placeholder="Insert system serial number/s."
+                name="serial_num">
+        </div>
+        <div class="col-md-4 col-sm-12 d-grid gap-2 d-md-block mb-2">
+            <!-- Button trigger modal -->
+            <button type="button" id="custom-btn" class="btn"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop">...</button>
 
-                <!-- Modal -->
-                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-sm">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h6 class="modal-title" id="staticBackdropLabel">Bulk Input
-                                </h6>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <textarea id="secondary-textbox" class="form-control"
-                                    style="min-width: 100%; resize: none;" rows="10"
-                                    placeholder="Place data line by line."></textarea>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="reset" class="btn btn-secondary">Reset</button>
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                    onclick="passData()">Insert</button>
-                            </div>
+            <!-- Modal: Bulk input -->
+            <div class="modal fade" id="staticBackdrop"
+                data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title"
+                                id="staticBackdropLabel">Bulk Input
+                            </h6>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <textarea id="secondary-textbox"
+                                class="form-control"
+                                style="min-width: 100%; resize: none;"
+                                rows="10"
+                                placeholder="Place data line by line."></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="reset" id="custom-btn"
+                                class="btn">Reset</button>
+                            <button type="button" class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                onclick="passData()">Insert</button>
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Track</button>
             </div>
-        </form>
-    </div>
-</div><!-- Form Row End -->
+            <!-- Modal: Bulk input -->
+
+            <button type="submit" class="btn btn-primary">Track</button>
+
+            {% block button %}
+            <button id="setting" type="button" class="btn btn-outline-dark"
+                {% if not index_page %} style="display: none;" {% endif %}
+                data-bs-toggle="offcanvas" data-bs-target="#config_setting">
+                <i class="bi bi-gear-fill"></i>
+            </button>
+
+            <!--Modal: Setting -->
+            <div class="offcanvas offcanvas-end" tabindex="-1"
+                id="config_setting" aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title"
+                        id="offcanvasRightLabel">Configuration</h5>
+                    <button type="button" class="btn-close"
+                        data-bs-dismiss="offcanvas" aria-label="Close">
+                    </button>
+                </div>
+                <div class="offcanvas-body">
+                    <p>Server</p>
+                    <select class="form-select"
+                        aria-label="rburn-servers">
+                        <option selected value="40">10.43.251.40</option>
+                        <option value="35">10.43.251.35</option>
+                    </select>
+                </div>
+            </div>
+
+            <!--Modal: Setting -->
+
+            {% endblock %}
+        </div>
+    </form>
+</div>
