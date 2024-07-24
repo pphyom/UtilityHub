@@ -360,3 +360,30 @@ tbody a {
     transform-origin: center;
     color: var(--btn-hover);
 }
+
+/* Search function table */
+
+#fullscreen-wrapper .input-group {
+    padding: 0 .2rem 0 .8rem;
+    background-color: #fff3;
+    border-radius: .3rem;
+
+    transition: .2s;
+}
+
+#fullscreen-wrapper .input-group:hover {
+    background-color: #fff9;
+    box-shadow: 0 .1rem .4rem #0002;
+}
+
+#fullscreen-wrapper .input-group:hover i {
+    color: var(--theme-color);
+}
+
+#fullscreen-wrapper .input-group input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+/* Search function table */

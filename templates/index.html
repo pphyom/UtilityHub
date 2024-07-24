@@ -13,17 +13,21 @@
             </div>
 
             <div id="fullscreen-wrapper" class="card mb-4">
-                <div class="card-header bg-custom text-white">
+                <div class="card-header bg-custom text-white">  <!-- Table header -->
                     <div class="d-inline-flex justify-content-start">
                         <div class="px-2 d-inline-flex">
                             <div><i class="bi bi-cast blink text-warning"></i></div>
                             <div class="m-auto">LIVE</div>
                         </div>
                     </div>
-                    <div class="d-inline-flex float-end">
+                    <div class="d-inline-flex float-end justify-content-between align-items-center gap-3">
                         <!-- <div class="my-auto mx-3"><i class="bi bi-hdd-rack"></i>
                             {{data|length}}
                         </div> -->
+                        <div class="input-group d-flex justify-content-center align-items-center">
+                            <input type="search" placeholder="Search...">
+                            <i class="bi bi-search"></i>
+                        </div>
                         <div>
                             <button class="full-screen py-0">
                                 <i class="bi bi-arrows-fullscreen full-screen--open text-white p-0"></i>
@@ -173,10 +177,10 @@
     }
     
     // Fetch scores immediately on page load
-    window.onload = fetchData;
+    //window.onload = fetchData;
     
     // Fetch scores every 10 seconds
-    setInterval(fetchData, 10000);
+    //setInterval(fetchData, 10000);
 
 
     /**

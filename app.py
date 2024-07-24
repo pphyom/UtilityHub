@@ -61,9 +61,10 @@ def index():
         live.user_input_ = input_list
         data_set = live.filtered_data(input_list)
 
-        return render_template("index.html",
-                               data=data_set,
-                               headings=headings)
+        return render_template("index.html")
+        # return render_template("index.html",
+        #                        data=data_set,
+        #                        headings=headings)
     return render_template("index.html")
 
 
