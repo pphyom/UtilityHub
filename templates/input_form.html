@@ -8,8 +8,9 @@
         <div class="col-md-4 col-sm-12 d-grid gap-2 d-md-block mb-2">
             <!-- Button trigger modal -->
             <button type="button" id="custom-btn" class="btn"
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop">...</button>
+                data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <i class="bi bi-three-dots"></i>
+            </button>
 
             <!-- Modal: Bulk input -->
             <div class="modal fade" id="staticBackdrop"
@@ -48,10 +49,10 @@
             <button type="submit" class="btn btn-primary">Track</button>
 
             {% block button %}
-            <button id="setting" type="button" class="btn btn-outline-dark"
+            <button id="custom-btn" type="button" class="btn"
                 {% if not index_page %} style="display: none;" {% endif %}
                 data-bs-toggle="offcanvas" data-bs-target="#config_setting">
-                <i class="bi bi-gear-fill"></i>
+                <span><i class="bi bi-gear-fill"></i></span>
             </button>
 
             <!--Modal: Setting -->
@@ -59,7 +60,7 @@
                 id="config_setting" aria-labelledby="offcanvasRightLabel">
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title"
-                        id="offcanvasRightLabel">Configuration</h5>
+                        id="offcanvasRightLabel">Configuration (Under Dev)</h5>
                     <button type="button" class="btn-close"
                         data-bs-dismiss="offcanvas" aria-label="Close">
                     </button>
@@ -82,9 +83,7 @@
                     </div>
                 </div>
             </div>
-
             <!--Modal: Setting -->
-
             {% endblock %}
         </div>
     </form>
