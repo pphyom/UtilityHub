@@ -220,6 +220,16 @@ tbody a {
     color: var(--theme-color);
 }
 
+/* table search function */
+tbody tr {
+    --delay: .1s;
+    transition: .5s ease-in-out var(--delay);
+}
+
+tbody tr.hide {
+    display: none;
+}
+/* Table search function */
 
 /* Table customization */
 
@@ -246,11 +256,6 @@ tbody a {
     }
 
     table td::before {
-        /*
-    * aria-label has no advantage, it won't be read inside a table
-    content: attr(aria-label);
-    */
-        content: attr(data-label);
         float: left;
         font-weight: bold;
         text-transform: uppercase;
@@ -367,13 +372,17 @@ tbody a {
     padding: 0 .2rem 0 .8rem;
     background-color: #fff3;
     border-radius: .3rem;
-
+    
     transition: .2s;
 }
 
 #fullscreen-wrapper .input-group:hover {
     background-color: #fff9;
     box-shadow: 0 .1rem .4rem #0002;
+}
+
+#fullscreen-wrapper .input-group i {
+    opacity: 70%;
 }
 
 #fullscreen-wrapper .input-group:hover i {
@@ -385,5 +394,4 @@ tbody a {
     border: none;
     outline: none;
 }
-
 /* Search function table */

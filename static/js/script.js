@@ -14,3 +14,20 @@ function passData() {
     secondaryTextbox = secondaryTextbox.value.split("\n")
     primaryTextbox.value = secondaryTextbox.join(" ");
 }
+
+
+// table search method
+const search = document.querySelector(".input-group input");
+search.addEventListener("input", searchTable);
+
+function searchTable() {
+    const tableRows = document.querySelectorAll("tbody tr");
+
+    tableRows.forEach((row, i) => {
+        let tableData = row.textContent.toLowerCase();
+        let searchData = search.value.toLowerCase();
+        // search by toggling the input data. input > 0 = matching and vice versa.
+        row.classList.toggle("hide", tableData.indexOf(searchData) < 0);
+        row.style.setProperty("--delay", i/25 + "s");
+    });
+}

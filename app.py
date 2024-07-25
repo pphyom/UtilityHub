@@ -60,11 +60,13 @@ def index():
         # store the user input for the periodic updates
         live.user_input_ = input_list
         data_set = live.filtered_data(input_list)
+        setting = live.configuration()
+        print(setting)
 
-        return render_template("index.html")
-        # return render_template("index.html",
-        #                        data=data_set,
-        #                        headings=headings)
+        # return render_template("index.html")
+        return render_template("index.html",
+                               data=data_set,
+                               headings=headings)
     return render_template("index.html")
 
 

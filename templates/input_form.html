@@ -31,7 +31,7 @@
                             <textarea id="secondary-textbox"
                                 class="form-control"
                                 style="min-width: 100%; resize: none;"
-                                rows="10"
+                                rows="12"
                                 placeholder="Place data line by line."></textarea>
                         </div>
                         <div class="modal-footer">
@@ -69,11 +69,11 @@
                     <div class="mb-4">
                         <label for="rackServer" class="form-label">Server</label>
                         <select id="rackServer" class="form-select" aria-label="rburn-servers" name="rackServer">
-                            <option selected value="40">10.43.251.40</option>
-                            <option value="35">10.43.251.35</option>
+                            <option selected value="10.43.251.40">10.43.251.40</option>
+                            <option value="10.43.251.35">10.43.251.35</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="mb-4">
                         <label for="refreshInterval" class="form-label">Refresh Interval (minute)</label>
                         <div class="d-flex display-inline-start gap-2">
                             <input type="range" id="refreshInterval" class="form-range" min="1" max="10" step="1" 
@@ -81,6 +81,9 @@
                             <output id="output">1</output>
                         </div>
                     </div>
+                    <button type="button" class="btn btn-primary mt-5">Update
+                        <i class="bi bi-arrow-right-circle"></i>
+                    </button>
                 </div>
             </div>
             <!--Modal: Setting -->

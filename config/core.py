@@ -144,6 +144,13 @@ class RackBurn:
 
         return data_set
 
+    def configuration(self):
+        setting = {
+            "rack_server": request.form.get("rackServer"), 
+            "refresh_itvl": request.form.get("refreshInterval"),
+            }
+        return setting
+
 
 def user_input() -> list:
     """
