@@ -27,7 +27,9 @@ class SPM:
         self.ftu_addr = "http://10.43.251.22/prodfile/FTU/"
         self.ftu_b23 = "http://172.21.100.1/prodfile/FTU/"
         self.cburn_addr = "http://10.43.251.20/burnin"
+        self.cburn_addr23 = "http://172.22.0.1/burnin"
         self.ins_path = "http://10.43.251.20/instructions"
+        self.ins_path_23 = "http://172.22.0.1/instructions"
 
     async def fetch(self, session, url):
         async with session.get(url) as response:
