@@ -7,12 +7,9 @@ from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
 from config.ftu_helper import *
+from config.tools import *
 
-header = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (HTML, like Gecko)"
-                  " Chrome/123.0.0.0 Safari/537.36sec-gpc: 1",
-    "Accept-Language": "en-US,en;q=0.9",
-}
+
 rburn_live = "http://10.43.251.35/input_output?model=Supermicro"
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
@@ -162,8 +159,18 @@ def cburn_log():
     return render_template("cburn_log.html")
 
 
-@app.route("/tools")
+@app.route("/tools", methods=["GET", "POST"])
 def tools():
+    if request.method == "POST":
+        input_list = user_input()
+        good_list = asyncio.run(ftu.validation(input_list, scan_log))
+        outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
+        temp = get_ip_addr(outfile["part_list"], outfile["sub_sn"])
+
+
+
+
+        return temp
     return render_template("tools.html")
 
 

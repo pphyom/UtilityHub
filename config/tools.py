@@ -1,43 +1,47 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
 
+import requests
+from bs4 import BeautifulSoup
 
-def get_ipmi_info(part_list: list[str], sub_sn: list[str], lease_ip: str) -> list[str]:
+url = 'http://10.43.251.40/lease'
+
+def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> list[str]:
     """
     
     """
-    ipmi_pswd: list = []
-    _mac: list[str] = []
-    for idx, val in enumerate(part_list):
-        if "MAC-IPMI-ADDRESS" in val:
-            mac = sub_sn[idx]
-            ip = get_ip_from_mac(mac, lease_ip)
-            _mac.append(ip)
-            # _mac.append(mac)
-        if "NUM-DEFPWD" in val:
-            pswd = sub_sn[idx]
+    ipmi_info = {'mac': [], 'pswd': []}
+    for part, ssn in zip(part_list, sub_sn):
+        for idx, val in enumerate(part):
+            if 'MAC-IPMI-ADDRESS' in val:
+                ipmi_info['mac'].append(ssn[idx])
+            if 'NUM-DEFPWD' in val:
+                ipmi_info['pswd'].append(ssn[idx])
 
-    print(_mac)
-
-    return ipmi_pswd
+    return ipmi_info
 
 
-def get_ip_from_mac(mac: str, lease_ip: str):
-    """
-    Selenium is used to scrape ip address from MAC address. 
-    """
-    op = webdriver.ChromeOptions()
-    op.add_argument('headless')  # to disable browser pop-up
-    browser = webdriver.Chrome(options=op)
-    browser.get(lease_ip)
+def get_ip_addr(part_list: list, sub_sn: list):
+    ipmi_info = get_ipmi_info(part_list, sub_sn)
+    mac_list = ipmi_info['mac']
+    pswd_list = ipmi_info['pswd']
+    for mac in mac_list:
+        data = {'searchtxt': mac}
+        try:
+            ipmi_combo = {
+                'ip_address': [],
+                'username': 'ADMIN',
+                'password': []
+                }
+            
+            response = requests.post(url, data=data, verify=False)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            ip_addr = soup.select_one('body > div > div > div > div.card-body > form > '
+                                    'div:nth-child(2) > div > span:nth-child(2) > font > b')
+            ipmi_combo['ip_address'].append(ip_addr.text)
+            
 
-    search_box = browser.find_element(By.ID, "searchstring")
-    search_btn = browser.find_element(By.XPATH, "/html/body/div/div/div/div[2]/form/div[1]/div[2]/button")
-    ip_address_list: list[str] = []
-    # for mac in mac_list:
-    search_box.send_keys(mac)
-    search_btn.click()
-    ip = browser.find_element(By.XPATH, "/html/body/div/div/div/div[2]/form/div[2]/div/span[2]/font/b")
-    ip_address_list.append(ip.text)
+            return ipmi_combo
+            
+        except Exception as e:
+            return f'Error finding the ip address: {e}'
     
-    return ip_address_list
+
