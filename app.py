@@ -133,14 +133,13 @@ def ftu_log():
         for sn, dir in zip(good_list, ftu_paths):
             temp = {}
             link = f"{dir}/{sn}/"
-            print(link)
             js, found = asyncio.run(ftu.json_lookup(link))
             temp["serial_number"] = sn
             temp["node_data"] = js
             temp["is_found"] = found
             final.append(temp)
-
-        return final
+        
+        return good_list
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
 

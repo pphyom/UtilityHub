@@ -36,9 +36,6 @@ class SPM:
             return await response.text()
         
     async def retrieve_data_from_file(self, addr, sn_list):
-        """
-        
-        """
         assembly_data = {"order_num": [], "sub_sn": [], "part_list": [], "ord_": []}
         async with aiohttp.ClientSession() as session:
             tasks = [self.fetch(session, (addr + sn)) for sn in sn_list]

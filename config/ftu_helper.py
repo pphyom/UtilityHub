@@ -15,24 +15,11 @@ class FTU:
 
     async def validation(self, sn_list: list, scan_log: str) -> list:
         """
-        Check if the input serial number is valid or not.
-        - Verify the SN exists on SPM. 
-        - Yes -> go to good_list | No -> go to bad_list.
+        Check if the input serial number is valid or not by comparing SPM scanlog.
         """
-        bad_list = []  # invalid inputs
-        
-        async with aiohttp.ClientSession() as session:
-            tasks = [spm.fetch(session, (scan_log + sn)) for sn in sn_list]
-            responses = await asyncio.gather(*tasks)
-
-        for elem, response in zip(sn_list, responses):
-            if isinstance(response, Exception):
-                print(f"Error while getting data for {elem}: {response}")
-                bad_list.append(elem)
-                continue
-
+        bad_list = [sn for sn in sn_list if not requests.get(scan_log + sn)]
+        good_list = [sn for sn in sn_list if sn not in bad_list]
         self.bad_items = bad_list
-        good_list = [elem for elem in sn_list if elem not in bad_list]
 
         return good_list
 
