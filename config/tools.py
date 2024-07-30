@@ -23,25 +23,19 @@ def get_ip_addr(part_list: list, sub_sn: list):
     ipmi_info = get_ipmi_info(part_list, sub_sn)
     mac_list = ipmi_info['mac']
     pswd_list = ipmi_info['pswd']
-    for mac in mac_list:
+    ipmi_combo = {
+            'ip_address': [],
+            'password': []
+        }
+    for mac, pswd in zip(mac_list, pswd_list):
         data = {'searchtxt': mac}
         try:
-            ipmi_combo = {
-                'ip_address': [],
-                'username': 'ADMIN',
-                'password': []
-                }
-            
             response = requests.post(url, data=data, verify=False)
             soup = BeautifulSoup(response.text, 'html.parser')
             ip_addr = soup.select_one('body > div > div > div > div.card-body > form > '
                                     'div:nth-child(2) > div > span:nth-child(2) > font > b')
-            ipmi_combo['ip_address'].append(ip_addr.text)
-            
-
-            return ipmi_combo
-            
+            ipmi_combo['ip_address'].append(ip_addr.text.strip('\n'))
+            ipmi_combo['password'].append(pswd)
         except Exception as e:
-            return f'Error finding the ip address: {e}'
-    
-
+            print(f'Error finding the ip address for {mac}: {e}')
+    return ipmi_combo

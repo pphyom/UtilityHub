@@ -127,12 +127,13 @@ def ftu_log():
 
         #  create the ftu urls
         ftu_paths = [(ftu_addr + "/".join(d.split("/")[:2])) for d in directory]
-        ftu_dir = list(dict.fromkeys(ftu_paths))  # remove duplicates
+        # ftu_dir = list(dict.fromkeys(ftu_paths))  # remove duplicates
         
         final = []
-        for sn, dir in zip(good_list, ftu_dir):
+        for sn, dir in zip(good_list, ftu_paths):
             temp = {}
             link = f"{dir}/{sn}/"
+            print(link)
             js, found = asyncio.run(ftu.json_lookup(link))
             temp["serial_number"] = sn
             temp["node_data"] = js
@@ -166,9 +167,6 @@ def tools():
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
         temp = get_ip_addr(outfile["part_list"], outfile["sub_sn"])
-
-
-
 
         return temp
     return render_template("tools.html")
