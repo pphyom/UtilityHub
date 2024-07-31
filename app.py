@@ -139,7 +139,7 @@ def ftu_log():
             temp["is_found"] = found
             final.append(temp)
         
-        return good_list
+        return ins_file_url
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
 
