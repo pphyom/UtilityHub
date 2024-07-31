@@ -57,10 +57,7 @@ def index():
         # store the user input for the periodic updates
         live.user_input_ = input_list
         data_set = live.filtered_data(input_list)
-        setting = live.configuration()
-        print(setting)
 
-        # return render_template("index.html")
         return render_template("index.html",
                                data=data_set,
                                headings=headings)
@@ -98,7 +95,7 @@ def rburn_log():
                         # json.dump(data, db_file)
                         db_file.write(json.dumps({}))
 
-        return get_sn
+        return render_template("rburn_log.html")
 
     return render_template("rburn_log.html")
 
@@ -139,7 +136,7 @@ def ftu_log():
             temp["is_found"] = found
             final.append(temp)
         
-        return ins_file_url
+        return render_template("ftu_log.html")
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
 
@@ -150,6 +147,7 @@ def cburn_log():
         sn_list: list[str] = user_input()
         good_list = asyncio.run(ftu.validation(sn_list, scan_log))
         cburn_result = screendump_wrapper(good_list, assembly_rec, ins_path, cburn_addr)
+
         return render_template("cburn_log.html",
                                headings=cburn_headings,
                                data=cburn_result,
@@ -167,7 +165,7 @@ def tools():
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
         temp = get_ip_addr(outfile["part_list"], outfile["sub_sn"])
 
-        return temp
+        return render_template("tools.html")
     return render_template("tools.html")
 
 

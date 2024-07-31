@@ -328,7 +328,7 @@ tbody tr.hide {
     color: var(--theme-color);
     display: flex;
     justify-content: center;
-    font-size: 5vw;
+    font-size: 3vw;
 }
 
 .blink {
