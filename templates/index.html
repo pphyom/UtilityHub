@@ -86,7 +86,7 @@
     let b23rburn, cond, intervalId;
     let intervalTime = 60000;  // Default fetch interval: 60 seconds
     
-    // Pass the Rburn link and Conditions 
+    // Pass data from the backend 
     document.addEventListener("DOMContentLoaded", function() {
         fetch("/get_data")
         .then(response => response.json())
@@ -176,12 +176,24 @@
             console.error("Error fetching data: ", error.message);
         }
     }
+
+    function startFetching() {
+        clearInterval(intervalId);
+        fetchData();
+        intervalId = setInterval(fetchData, intervalTime);
+    }
+
+    document.getElementById("form-config").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const newInterval = document.getElementById("update-interval").value * 1000; // convert to milliseconds
+        if (newInterval > 0) {
+            intervalTime = newInterval;
+            startFetching();
+        }
+    })
     
     // Fetch scores immediately on page load
     window.onload = fetchData;
-    
-    // Fetch scores every 10 seconds
-    setInterval(fetchData, 10000);
 
 
     /**
