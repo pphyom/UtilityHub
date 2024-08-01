@@ -80,8 +80,8 @@ class RackBurn:
     def __init__(self, url: str, refresh_interval: int):
         self.url = url
         self.refresh_interval = refresh_interval
-        self.rburn_server = "http://10.43.251.35"
-        self.lease_ip = "http://10.43.251.35/lease"
+        self.rburn_server = "http://10.43.251.40"
+        self.lease_ip = "http://10.43.251.40/lease"
         self.live_data = []
         self.user_input_ = []
         self.event = Event()
@@ -136,19 +136,19 @@ class RackBurn:
                     data_set.append([idx + 1] + sn_list)
 
         # Sort items per conditions
-        data_set.sort(key=lambda item: (
-            item[2] == "WARNING",
-            item[2] == "FAIL",
-            item[2] == "RUNNING"), reverse=True)
+        # data_set.sort(key=lambda item: (
+        #     item[2] == "WARNING",
+        #     item[2] == "FAIL",
+        #     item[2] == "RUNNING"), reverse=True)
 
         return data_set
 
-    def configuration(self):
-        setting = {
-            "rack_server": request.form.get("rackServer"), 
-            "refresh_itvl": request.form.get("refreshInterval"),
-            }
-        return setting
+def configuration(self):
+    setting = {
+        "rack_server": request.form.get("rackServer"), 
+        "refresh_itvl": request.form.get("refreshInterval"),
+        }
+    return setting
 
 
 def user_input() -> list:

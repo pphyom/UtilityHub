@@ -31,3 +31,7 @@ function searchTable() {
         row.style.setProperty("--delay", i/25 + "s");
     });
 }
+
+function config() {
+    console.log("HELLO CLICKED");
+}
