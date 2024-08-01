@@ -66,24 +66,25 @@
                     </button>
                 </div>
                 <div class="offcanvas-body">
-                    <div class="mb-4">
-                        <label for="rackServer" class="form-label">Server</label>
-                        <select id="rackServer" class="form-select" aria-label="rburn-servers" name="rackServer">
-                            <option selected value="10.43.251.40">10.43.251.40</option>
-                            <option value="10.43.251.35">10.43.251.35</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="refreshInterval" class="form-label">Refresh Interval (minute)</label>
-                        <div class="d-flex display-inline-start gap-2">
-                            <input type="range" id="refreshInterval" class="form-range" min="1" max="10" step="1" 
-                            name="refreshInterval" value="1" oninput="output.value = refreshInterval.value">
-                            <output id="output">1</output>
+                    <form id="form-config">
+                        <div class="mb-3">
+                            <label for="rackServer" class="form-label">Server IP</label>
+                            <select id="rackServer" class="form-select" aria-label="rburn-servers" name="rackServer">
+                                <option selected value="10.43.251.40">10.43.251.40</option>
+                                <option value="10.43.251.35">10.43.251.35</option>
+                            </select>
                         </div>
-                    </div>
-                    <button onclick="config()" type="button" class="btn btn-primary mt-5">Update
-                        <i class="bi bi-arrow-right-circle"></i>
-                    </button>
+                        <div class="mb-3">
+                            <label for="update-interval" class="form-label">Refresh Interval (seconds)</label>
+                            <div class="d-flex display-inline-start gap-2">
+                                <input type="number" class="form-control" id="update-interval" min="30" step="5"
+                                       required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-5">Update
+                            <i class="bi bi-arrow-right-circle"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
             <!--Modal: Setting -->

@@ -83,7 +83,8 @@
     **/
 
     // Assign variables global
-    let b23rburn, cond;
+    let b23rburn, cond, intervalId;
+    let intervalTime = 60000;  // Default fetch interval: 60 seconds
     
     // Pass the Rburn link and Conditions 
     document.addEventListener("DOMContentLoaded", function() {
