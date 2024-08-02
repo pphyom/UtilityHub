@@ -1,5 +1,5 @@
  <div class="col-xl-6">
-    <form class="row" action method="POST">
+    <form class="row" method="post">
         <div class="col-md-8 col-sm-12 mb-2">
             <input type="text" id="primary-textbox" class="form-control"
                 placeholder="Insert system serial number/s."
@@ -74,16 +74,18 @@
                                 <option value="10.43.251.35">10.43.251.35</option>
                             </select>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-2">
                             <label for="update-interval" class="form-label">Refresh Interval (seconds)</label>
                             <div class="d-flex display-inline-start gap-2">
-                                <input type="number" class="form-control" id="update-interval" min="30" step="5"
-                                       required>
+                                <input type="number" class="form-control" id="update-interval" value="60" min="30" step="5" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-5">Update
+                        <div id="alertPlaceholder" class="alert mb-4"></div>
+                        <div class="d-grid d-md-flex position-md-absolute justify-content-md-end" id="config-btn">
+                            <button type="button" onclick="updateData()" class="btn btn-primary">Update
                             <i class="bi bi-arrow-right-circle"></i>
-                        </button>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

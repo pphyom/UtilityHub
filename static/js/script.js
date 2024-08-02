@@ -32,6 +32,49 @@ function searchTable() {
     });
 }
 
-function config() {
-    console.log("HELLO CLICKED");
+// Alert
+let initialServerIP = document.getElementById('rackServer').value;
+let initialInterval = document.getElementById('update-interval').value;
+const alertPlaceholder = document.getElementById('alertPlaceholder');
+
+function showAlertSuccess () {
+    alertPlaceholder.classList.remove("alert-warning");
+    alertPlaceholder.classList.add("alert-success", "alert-dismissible", "fade", "show");
+    alertPlaceholder.innerHTML = "Configuration updated!";
+
+    setTimeout(() => {
+        alertPlaceholder.classList.remove("show");
+    }, 3000);
+}
+
+function showAlertWarning () {
+    alertPlaceholder.classList.remove("alert-success");
+    alertPlaceholder.classList.add("alert-warning", "alert-dismissible", "fade", "show");
+    alertPlaceholder.innerHTML = "Nothing to update!";
+
+    setTimeout(() => {
+        alertPlaceholder.classList.remove("show");
+    }, 3000);
+}
+
+// Update configuration
+function updateData () {
+
+    const currentServerIP = document.getElementById('rackServer').value;
+    const currentInterval = document.getElementById('update-interval').value;
+
+    if (currentServerIP !== initialServerIP || currentInterval !== initialInterval) {
+        showAlertSuccess();  // Updated
+
+        // Update initial values to the new values
+        initialServerIP = currentServerIP;
+        initialInterval = currentInterval;
+    } else {
+        showAlertWarning();  // Not Updated
+    }
+
+    const newInterval = currentInterval * 1000;  // convert to milliseconds
+    const newServerIP = currentServerIP;
+    intervalTime = newInterval;
+    startFetching();
 }

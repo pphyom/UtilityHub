@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% set index_page = True %}  <!-- setting button to display only on the index.html -->
-{% block head %} Live {% endblock %}
+{% block head %} Rack Burn Live {% endblock %}
 
 {% block body %}
 
 <div class="main">
     <main>
         <div class="container-fluid p-4">
-            <h3 class="mb-5">Live Dashboard</h3>
+            <h3 class="mb-5">Rack Burn Live</h3>
             <div class="row mb-3 d-flex flex-row justify-content-start">
                 {% include "input_form.html" %}
             </div>
@@ -84,7 +84,7 @@
 
     // Assign variables global
     let b23rburn, cond, intervalId;
-    let intervalTime = 60000;  // Default fetch interval: 60 seconds
+    let intervalTime = 10000;  // Default fetch interval: 60 seconds
     
     // Pass data from the backend 
     document.addEventListener("DOMContentLoaded", function() {
@@ -177,24 +177,17 @@
         }
     }
 
+
     function startFetching() {
         clearInterval(intervalId);
-        fetchData();
         intervalId = setInterval(fetchData, intervalTime);
     }
-
-    document.getElementById("form-config").addEventListener("submit", (event) => {
-        event.preventDefault();
-        const newInterval = document.getElementById("update-interval").value * 1000; // convert to milliseconds
-        if (newInterval > 0) {
-            intervalTime = newInterval;
-            startFetching();
-        }
-    })
-    
-    // Fetch scores immediately on page load
-    window.onload = fetchData;
-
+      
+    // Fetch data immediately on page load
+    window.onload = () => {
+        fetchData();
+        startFetching();
+    }
 
     /**
     *************************************
@@ -221,7 +214,6 @@
             }
         }
 });
-
 
 </script>
 
