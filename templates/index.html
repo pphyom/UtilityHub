@@ -84,7 +84,8 @@
 
     // Assign variables global
     let b23rburn, cond, intervalId;
-    let intervalTime = 10000;  // Default fetch interval: 60 seconds
+    let intervalTime = 60000;  // Default fetch interval: 60 seconds
+    let rackServer = `http://${document.getElementById("rackServer").value}`;
     
     // Pass data from the backend 
     document.addEventListener("DOMContentLoaded", function() {
@@ -127,14 +128,14 @@
                             tableCell.innerHTML = `
                                 <span class="badge status warning text-dark">
                                     <a class="text-decoration-none" 
-                                    href="${b23rburn}${row[5]}/Failure-Records-Full.txt" target="_blank">${cell}</a>
+                                    href="${rackServer}${row[5]}/Failure-Records-Full.txt" target="_blank">${cell}</a>
                                 </span>
                             `;
                         } else if (cell === cond[1]) { // Fail
                             tableCell.innerHTML = `
                                 <span class="badge status fail">
                                     <a class="text-decoration-none" 
-                                    href="${b23rburn}${row[5]}/Failure-Records-Full.txt" target="_blank">${cell}</a>
+                                    href="${rackServer}${row[5]}/Failure-Records-Full.txt" target="_blank">${cell}</a>
                                 </span>
                             `;
                         } else if (cell === cond[2]) { // Pass
@@ -149,7 +150,7 @@
                     } else if (index === 3) { // Column 3: Attach rack links
                         tableCell.innerHTML = `
                             <span>
-                                <a href="${b23rburn}/monitor/Supermicro/${cell}" target="_blank">
+                                <a href="${rackServer}/monitor/Supermicro/${cell}" target="_blank">
                                     ${cell}<i class="bi bi-link-45deg"></i>
                                 </a>
                             </span>
@@ -157,7 +158,7 @@
                     } else if (index === 5) { // Column 5: Attach log links
                         tableCell.innerHTML = `
                             <span>
-                                <a href="${b23rburn}${cell}" target="_blank"><i class="bi bi-file-text-fill"></i></a>
+                                <a href="${rackServer}${cell}" target="_blank"><i class="bi bi-file-text-fill"></i></a>
                             </span>
                         `;
                     } else { // Default case: Just display the cell value

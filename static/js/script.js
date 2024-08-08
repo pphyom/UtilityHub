@@ -76,5 +76,6 @@ function updateData () {
     const newInterval = currentInterval * 1000;  // convert to milliseconds
     const newServerIP = currentServerIP;
     intervalTime = newInterval;
+    rackServer = newServerIP;
     startFetching();
 }
