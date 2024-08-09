@@ -2,9 +2,9 @@ import os
 import json
 import asyncio
 import requests
-import redis
 from flask import Flask, render_template, jsonify, session
 from flask_session import Session
+from flask_sqlalchemy import SQLAlchemy
 from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
@@ -15,6 +15,20 @@ from config.tools import *
 rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
+
+
+# configuration
+app.config["SECRET_KEY"] = "testkey"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
+app.config["SESSION_TYPE"] = "sqlalchemy"
+app.config["SESSION_PERMANENT"] = False
+
+db = SQLAlchemy(app)
+
+app.config["SESSION_SQLALCHEMY"] = db
+sess = Session()
+sess.init_app(app)
+
 
 spm = SPM()
 mo_url = spm.mo_url
@@ -51,8 +65,16 @@ def update():
     return jsonify(data_set)
 
 
+def set_session():
+    if "user_data" not in session:
+        session["user_data"] = os.urandom(12)
+    user_data = session["user_data"]
+    return user_data
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
+    set_session()
     if request.method == "POST":
         # If there is input, pass it into input_list using user_input() method
         input_list = user_input()
