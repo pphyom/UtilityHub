@@ -155,12 +155,11 @@ def ftu_log():
             temp = {}
             link = f"{dir}/{sn}/"
             js, found = asyncio.run(ftu.json_lookup(link))
-            temp["serial_number"] = sn
-            temp["node_data"] = js
-            temp["is_found"] = found
+            # temp["MO"] = js["MO"]
+            temp["ftu_data"] = js
             final.append(temp)
         
-        return render_template("ftu_log.html")
+        return ftu_paths
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
 
@@ -189,7 +188,7 @@ def tools():
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
         temp = get_ip_addr(outfile["part_list"], outfile["sub_sn"])
 
-        return render_template("tools.html")
+        return temp
     return render_template("tools.html")
 
 
@@ -198,3 +197,5 @@ if __name__ == "__main__":
         app.run(host="0.0.0.0", debug=True)
     finally:
         live.stop()
+
+
