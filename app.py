@@ -131,12 +131,12 @@ def ftu_log():
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
         mac_list = get_mac_address(outfile["part_list"], outfile["sub_sn"])
-
+        
         #  get validated instruction file
         ins_file_url = [
             ins_file for mac in mac_list 
             if requests.get(ins_file := f"{ins_path}/ins-{mac}".lower())
-        ]
+        ]  
 
         #  get the directory (path) from the instruction file for each system
         directory = [
