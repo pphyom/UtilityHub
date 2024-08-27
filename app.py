@@ -16,6 +16,28 @@ rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
 
+
+# Secret key for session management
+app.config['SECRET_KEY'] = os.urandom(12)
+
+# Configuring the SQLite database for storing session data
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sessions.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Configuring Flask-Session to use SQLAlchemy
+app.config['SESSION_TYPE'] = 'sqlalchemy'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+
+# Initialize the database
+db = SQLAlchemy(app)
+app.config['SESSION_SQLALCHEMY'] = db
+
+# Initialize the session extension
+sess = Session()
+sess.init_app(app)
+
+
 spm = SPM()
 mo_url = spm.mo_url
 sn_url = spm.sn_url
@@ -46,7 +68,8 @@ def get_data():
 
 @app.route('/update', methods=['GET'])
 def update():
-    input_list = live.user_input_
+    # input_list = live.user_input_
+    input_list = session.get("user_input", [])
     data_set = live.filtered_data(input_list)
     return jsonify(data_set)
 
@@ -57,7 +80,9 @@ def index():
         # If there is input, pass it into input_list using user_input() method
         input_list = user_input()
         # store the user input for the periodic updates
-        live.user_input_ = input_list
+        # live.user_input_ = input_list
+        if "user_input" not in session:
+            session["user_input"] = input_list
         data_set = live.filtered_data(input_list)
 
         return render_template("index.html",
@@ -175,5 +200,3 @@ if __name__ == "__main__":
         app.run(host="0.0.0.0", debug=True)
     finally:
         live.stop()
-
-
