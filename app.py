@@ -5,6 +5,7 @@ import requests
 from flask import Flask, render_template, jsonify, session
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
+from datetime import timedelta
 from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
@@ -23,15 +24,14 @@ app.config['SECRET_KEY'] = os.urandom(12)
 # Configuring the SQLite database for storing session data
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sessions.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 # Configuring Flask-Session to use SQLAlchemy
 app.config['SESSION_TYPE'] = 'sqlalchemy'
+app.config['SESSION_SQLALCHEMY'] = db
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
-
-# Initialize the database
-db = SQLAlchemy(app)
-app.config['SESSION_SQLALCHEMY'] = db
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
 
 # Initialize the session extension
 sess = Session()
