@@ -2,11 +2,11 @@
 import requests
 from bs4 import BeautifulSoup
 
-url = 'http://10.43.251.40/lease'
+address_lease = "http://10.43.251.40/lease"
+
 
 def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> list[str]:
     """
-    
     """
     ipmi_info = {'mac': [], 'pswd': []}
     for part, ssn in zip(part_list, sub_sn):
@@ -20,6 +20,8 @@ def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> list[str]:
 
 
 def get_ip_addr(part_list: list, sub_sn: list):
+    """
+    """
     ipmi_info = get_ipmi_info(part_list, sub_sn)
     mac_list = ipmi_info['mac']
     pswd_list = ipmi_info['pswd']
@@ -30,7 +32,7 @@ def get_ip_addr(part_list: list, sub_sn: list):
     for mac, pswd in zip(mac_list, pswd_list):
         data = {'searchtxt': mac}
         try:
-            response = requests.post(url, data=data, verify=False)
+            response = requests.post(address_lease, data=data, verify=False)
             soup = BeautifulSoup(response.text, 'html.parser')
             ip_addr = soup.select_one('body > div > div > div > div.card-body > form > '
                                     'div:nth-child(2) > div > span:nth-child(2) > font > b')

@@ -81,8 +81,8 @@ def index():
         input_list = user_input()
         # store the user input for the periodic updates
         # live.user_input_ = input_list
-        if "user_input" not in session:
-            session["user_input"] = input_list
+        # if "user_input" not in session:
+        session["user_input"] = input_list
         data_set = live.filtered_data(input_list)
 
         return render_template("index.html",
