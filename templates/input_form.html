@@ -46,7 +46,9 @@
             </div>
             <!-- Modal: Bulk input -->
 
-            <button type="submit" class="btn btn-primary">Track</button>
+            <button type="submit" class="btn btn-primary" {% if tool_page %} style="display: none;" {% endif %}>
+                Track
+            </button>
 
             {% block button %}
             <button id="custom-btn" type="button" class="btn"
@@ -91,6 +93,10 @@
             </div>
             <!--Modal: Setting -->
             {% endblock %}
+            <button id="custom-btn" type="submit" class="btn"
+                {% if not tool_page %} style="display: none;" {% endif %}>
+                <span><i class="bi bi-plus-lg"></i></span>
+            </button>
         </div>
     </form>
 </div>

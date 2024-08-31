@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% set tool_page = True %}  <!-- setting button to display only on the tools.html -->
 {% block head %} Tools {% endblock %}
 
 {% block body %}
@@ -7,6 +7,10 @@
     <main>
         <div class="container-fluid p-4">
             <h3 class="mb-5">Tools</h3>
+            <div class="row mb-3 d-flex flex-row justify-content-start">
+                {% include "input_form.html" %}
+            </div>
+
             <div class="row px-3">
                 <div class="col-xl-2 col-lg-3">
                     <a href="#"><div class="p-2 mb-2 card bg-secondary text-white text-center">

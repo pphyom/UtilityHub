@@ -362,7 +362,7 @@ tbody tr.hide {
 }
 
 #custom-btn:hover i {
-    transform: rotate(-180deg);
+    transform: rotate(180deg);
     transform-origin: center;
     color: var(--btn-hover);
 }
