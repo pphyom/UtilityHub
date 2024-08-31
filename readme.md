@@ -43,3 +43,20 @@ For each system...
 - Main SWB CPLD
 - NVMe BPN CPLD
 - Side SWB CPLDs
+
+
+## Tools
+
+### SUM tool
+> BIOS/BMC/CPLD
+- Flash
+- Default/Reset
+- Delete Backup
+> GPU
+- Check Info
+- Update
+> Others
+- Delete MEL
+
+### Networking
+> Search IP/Password

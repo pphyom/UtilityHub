@@ -50,7 +50,7 @@ body {
     width: 70px;
     min-width: 70px;
     z-index: 1000;
-    transition: all .25s ease-in-out;
+    transition: all .20s ease-in-out;
     background-color: var(--theme-color);
     display: flex;
     flex-direction: column;
@@ -111,6 +111,10 @@ a.sidebar-link {
 .sidebar-link i {
     font-size: 1.5rem;
     margin-right: .75rem;
+}
+
+.sidebar-link span {
+    margin-bottom: 5px;
 }
 
 a.sidebar-link:hover {
@@ -324,11 +328,9 @@ tbody tr.hide {
     }
 }
 
-.construction {
-    color: var(--theme-color);
-    display: flex;
-    justify-content: center;
-    font-size: 3vw;
+.construction img {
+    min-width: 100px;
+    width: 15%;
 }
 
 .blink {
