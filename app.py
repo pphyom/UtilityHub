@@ -5,13 +5,11 @@ import requests
 from flask import Flask, render_template, jsonify, session
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
 from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
 from config.ftu_helper import *
-from config.tools import *
-
 
 rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
 
@@ -36,7 +34,6 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
 # Initialize the session extension
 sess = Session()
 sess.init_app(app)
-
 
 spm = SPM()
 mo_url = spm.mo_url
@@ -88,6 +85,7 @@ def index():
         return render_template("index.html",
                                data=data_set,
                                headings=headings)
+    
     return render_template("index.html")
 
 
@@ -191,7 +189,7 @@ def tools():
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
         temp = get_ip_addr(outfile["part_list"], outfile["sub_sn"])
 
-        return temp
+        return good_list
     return render_template("tools.html")
 
 
