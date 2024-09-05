@@ -11,10 +11,33 @@
             <div class="row mb-3">
                 {% include "input_form.html" %}
             </div>
-            
+
             <div class="card mb-4">
                 <div class="table-wrapper">
-                    {% include "construction.html" %}
+                    <!-- {% include "construction.html" %} -->
+                    <table data-toggle="table"
+                        data-show-columns="true"
+                        data-search="true">
+                        <thead>
+                            <tr>
+                                <th data-sortable="true">Serial Number</th>
+                                <th data-sortable="true">Item Name</th>
+                                <th data-sortable="true">Item Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Item 1</td>
+                                <td>$1</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Item 2</td>
+                                <td>$2</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div><!-- Container Fluid End -->

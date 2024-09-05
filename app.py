@@ -10,6 +10,7 @@ from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
 from config.ftu_helper import *
+from config.tools import get_ip_addr
 
 rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
 
@@ -160,7 +161,7 @@ def ftu_log():
             temp["ftu_data"] = js
             final.append(temp)
         
-        return render_template("ftu_log.html", data = good_list)
+        return final
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
 
@@ -189,7 +190,7 @@ def tools():
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
         temp = get_ip_addr(outfile["part_list"], outfile["sub_sn"])
 
-        return good_list
+        return temp
     return render_template("tools.html")
 
 
