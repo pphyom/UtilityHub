@@ -134,6 +134,15 @@ def ftu_log():
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
         mac_list = get_mac_address(outfile["part_list"], outfile["sub_sn"])
         
+        test = {}
+        for i in range(len(good_list)):
+            serial_num = good_list[i]
+            order_num = outfile["order_num"][i]
+            ord = outfile["ord_"][i]
+
+            test[serial_num] = [order_num, ord]
+            
+
         #  get validated instruction file
         ins_file_url = [
             ins_file for mac in mac_list 
@@ -160,8 +169,9 @@ def ftu_log():
             # temp["MO"] = js["MO"]
             temp["ftu_data"] = js
             final.append(temp)
-        
-        return final
+
+
+        return render_template("ftu_log.html", data=test)
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
 

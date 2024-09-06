@@ -14,30 +14,33 @@
 
             <div class="card mb-4">
                 <div class="table-wrapper">
+                    {% if not data %}
+                        {% include "nodata.html" %}
+                    {% else %}
                     <!-- {% include "construction.html" %} -->
                     <table data-toggle="table"
                         data-show-columns="true"
-                        data-search="true">
+                        data-search="true"
+                        data-show-export="true">
                         <thead>
                             <tr>
                                 <th data-sortable="true">Serial Number</th>
-                                <th data-sortable="true">Item Name</th>
-                                <th data-sortable="true">Item Price</th>
+                                <th data-sortable="true">MO</th>
+                                <th data-sortable="true">ORD</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for i in data.items() %}
                             <tr>
-                                <td>1</td>
-                                <td>Item 1</td>
-                                <td>$1</td>
+                                <td>{{i[0]}}</td>
+                                <td>{{i[1][0]}}</td>
+                                <td>{{i[1][1]}}</td>
                             </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Item 2</td>
-                                <td>$2</td>
-                            </tr>
+                            
+                            {% endfor %}
                         </tbody>
                     </table>
+                    {% endif %}
                 </div>
             </div>
         </div><!-- Container Fluid End -->
