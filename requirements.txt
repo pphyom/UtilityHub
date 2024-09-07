@@ -11,7 +11,9 @@ click==8.1.7
 colorama==0.4.6
 Flask==3.0.3
 Flask-Session==0.8.0
+Flask-SQLAlchemy==3.1.1
 frozenlist==1.4.1
+greenlet==3.0.3
 h11==0.14.0
 httpcore==1.0.5
 httpx==0.27.0
@@ -31,6 +33,8 @@ scapy==2.5.0
 six==1.16.0
 sniffio==1.3.1
 soupsieve==2.5
+SQLAlchemy==2.0.32
+typing_extensions==4.12.2
 tzdata==2024.1
 urllib3==2.2.2
 Werkzeug==3.0.3

@@ -84,7 +84,7 @@ def screendump_wrapper(sn_list: list, assembly_rec_addr: str, ins_path: str, cbu
 
         for elem in temp:
             final.append(elem)
-
+        
         return final
     
     except HTTPError as e:
