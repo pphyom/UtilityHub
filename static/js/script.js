@@ -38,7 +38,7 @@ let initialInterval = document.getElementById('update-interval').value;
 const alertPlaceholder = document.getElementById('alertPlaceholder');
 
 function showAlertSuccess () {
-    alertPlaceholder.classList.remove("alert-warning");
+    alertPlaceholder.classList.remove("alert-warning", "alert-danger");
     alertPlaceholder.classList.add("alert-success", "alert-dismissible", "fade", "show");
     alertPlaceholder.innerHTML = "Configuration updated!";
 
@@ -48,10 +48,20 @@ function showAlertSuccess () {
 }
 
 function showAlertWarning () {
-    alertPlaceholder.classList.remove("alert-success");
+    alertPlaceholder.classList.remove("alert-success", "alert-danger");
     alertPlaceholder.classList.add("alert-warning", "alert-dismissible", "fade", "show");
     alertPlaceholder.innerHTML = "Nothing to update!";
+    
+    setTimeout(() => {
+        alertPlaceholder.classList.remove("show");
+    }, 3000);
+}
 
+function showAlertError () {
+    alertPlaceholder.classList.remove("alert-success", "alert-warning");
+    alertPlaceholder.classList.add("alert-danger", "alert-dismissible", "fade", "show");
+    alertPlaceholder.innerHTML = "Value must be greater than or equal to 30 seconds!";
+    
     setTimeout(() => {
         alertPlaceholder.classList.remove("show");
     }, 3000);
@@ -63,9 +73,10 @@ function updateData () {
     const currentServerIP = document.getElementById('rackServer').value;
     const currentInterval = document.getElementById('update-interval').value;
 
-    if (currentServerIP !== initialServerIP || currentInterval !== initialInterval) {
-        showAlertSuccess();  // Updated
-
+    if (currentInterval < 30) {
+        showAlertError();
+    } else if (currentInterval >= 30 && (currentServerIP !== initialServerIP || currentInterval !== initialInterval)) {
+        showAlertSuccess();
         // Update initial values to the new values
         initialServerIP = currentServerIP;
         initialInterval = currentInterval;

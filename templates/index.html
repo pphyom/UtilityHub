@@ -84,7 +84,7 @@
 
     // Assign variables global
     let b23rburn, cond, intervalId;
-    let intervalTime = 60000;  // Default fetch interval: 60 seconds
+    let intervalTime = document.getElementById('update-interval').value * 1000;  // Default: 60 seconds
     let rackServer = `http://${document.getElementById("rackServer").value}`;
     
     // Pass data from the backend 
@@ -178,17 +178,19 @@
         }
     }
 
-
+    
     function startFetching() {
         clearInterval(intervalId);
+        fetchData();
         intervalId = setInterval(fetchData, intervalTime);
     }
-      
+     
+    window.onload = startFetching();
+
     // Fetch data immediately on page load
-    window.onload = () => {
-        fetchData();
-        startFetching();
-    }
+    //window.onload = () => {
+    //    startFetching();
+    //}
 
     /**
     *************************************
