@@ -1,6 +1,7 @@
 
 import requests
 from bs4 import BeautifulSoup
+from config.core import RackBurn
 
 address_lease = "http://10.43.251.40/lease"
 
@@ -23,8 +24,9 @@ def get_ip_addr(part_list: list, sub_sn: list):
     """
     """
     ipmi_info = get_ipmi_info(part_list, sub_sn)
-    mac_list = ipmi_info['mac']
-    pswd_list = ipmi_info['pswd']
+
+    mac_list = [i for i in ipmi_info['mac']]
+    pswd_list = [i for i in ipmi_info['pswd']]
     ipmi_combo = {
             'ip_address': [],
             'password': []
@@ -40,4 +42,5 @@ def get_ip_addr(part_list: list, sub_sn: list):
             ipmi_combo['password'].append(pswd)
         except Exception as e:
             print(f'Error finding the ip address for {mac}: {e}')
+            
     return ipmi_combo

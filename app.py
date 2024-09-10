@@ -10,7 +10,7 @@ from config.core import *
 from config.cburn_helper import *
 from config.rburn_helper import *
 from config.ftu_helper import *
-from config.tools import get_ip_addr
+from config.tools import *
 
 rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
 
