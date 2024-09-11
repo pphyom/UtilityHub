@@ -83,7 +83,8 @@
     **/
 
     // Assign variables global
-    let b23rburn, cond, intervalId;
+    let b23rburn, cond; 
+    let intervalId;
     let intervalTime = document.getElementById('update-interval').value * 1000;  // Default: 60 seconds
     let rackServer = `http://${document.getElementById("rackServer").value}`;
     
@@ -183,11 +184,13 @@
         if (intervalId) {
             clearInterval(intervalId); // Clear the existing interval if it exists
         }
-        fetchData();
         intervalId = setInterval(fetchData, intervalTime);
     }
      
-    window.addEventListener('load', startFetching);
+    window.addEventListener("load", () => {
+        fetchData();
+        startFetching();
+    });
 
     /**
     *************************************
