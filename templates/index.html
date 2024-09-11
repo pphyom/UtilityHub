@@ -180,17 +180,14 @@
 
     
     function startFetching() {
-        clearInterval(intervalId);
+        if (intervalId) {
+            clearInterval(intervalId); // Clear the existing interval if it exists
+        }
         fetchData();
         intervalId = setInterval(fetchData, intervalTime);
     }
      
-    window.onload = startFetching();
-
-    // Fetch data immediately on page load
-    //window.onload = () => {
-    //    startFetching();
-    //}
+    window.addEventListener('load', startFetching);
 
     /**
     *************************************
@@ -216,7 +213,7 @@
                     .then(() => fullscreenButton.classList.add("is-active"));
             }
         }
-});
+    });
 
 </script>
 
