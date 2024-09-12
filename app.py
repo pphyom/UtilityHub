@@ -85,8 +85,10 @@ def index():
         return render_template("index.html",
                                data=data_set,
                                headings=headings)
-    
-    return render_template("index.html")
+    else:
+        input_list = session.get("user_input", [])
+        data_set = live.filtered_data(input_list)
+        return render_template("index.html", data=data_set)
 
 
 @app.route("/rburn_log", methods=["GET", "POST"])
