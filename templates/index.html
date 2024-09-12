@@ -187,10 +187,10 @@
         intervalId = setInterval(fetchData, intervalTime);
     }
      
-    window.addEventListener("load", () => {
+    window.onload =()=> {
         fetchData();
         startFetching();
-    });
+    }
 
     /**
     *************************************
