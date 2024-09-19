@@ -11,12 +11,38 @@
             <div class="row mb-3">
                 {% include "input_form.html" %}
             </div>
-
+            {% if not data %}
+                {% include "nodata.html" %}
+            {% else %}
             <div class="card mb-4">
                 <div class="table-wrapper">
-                    {% include "construction.html" %}
+                    <table 
+                        id="table"
+                        data-toggle="table"
+                        data-search="true"
+                        data-show-columns="true">
+                        <thead>
+                            <tr>
+                                <th data-sortable="true">Serial Number</th>
+                                <th>MO</th>
+                                <th>ORD</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for k, v in data.items() %}
+                            <tr>
+                                <td>{{ k }}</td>
+                                <td>{{ v[0] }}</td>
+                                <td>{{ v[1] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                    <!-- {% include "construction.html" %} -->
                 </div>
             </div>
+            {% endif %}
         </div><!-- Container Fluid End -->
     </main>
 </div>

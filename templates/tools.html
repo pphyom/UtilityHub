@@ -7,17 +7,18 @@
 <div class="main">
     <main>
         <div class="container-fluid p-4">
-            <h3 class="mb-5">Tools</h3>
-            <div class="row mb-3 d-flex flex-row justify-content-start">
+            <h3 class="mb-xl-1 mb-lg-1 mb-4">Tools</h3>
+            <div class="row mb-3 d-flex flex-row ">
                 <div class="row mb-3">
-                    <ul class="nav nav-tabs nav-fill">
+                    <ul class="nav nav-tabs justify-content-end">
                         <li class="nav-item">
                             <button class="nav-link active" id="ip-lookup"
                                 data-bs-toggle="tab"
                                 data-bs-target="#ip-lookup-pane"
                                 type="button" role="tab"
                                 aria-controls="ip-lookup"
-                                aria-selected="true">IP LOOKUP</button>
+                                aria-selected="true">
+                                <i class="bi bi-search px-2"></i>IP LOOKUP</button>
                         </li>
                         <li class="nav-item drop-down">
                             <button class="nav-link dropdown-toggle"
@@ -25,7 +26,8 @@
                                 data-bs-toggle="dropdown"
                                 type="button" role="button"
                                 aria-controls="ip-lookup"
-                                aria-selected="true">SUM TOOL</button>
+                                aria-selected="true">
+                                <i class="bi bi-terminal-plus px-2"></i>SUM TOOL</button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item"
                                         href="#">BIOS</a></li>
@@ -44,7 +46,8 @@
                                 data-bs-target="#ipmi-tool-pane"
                                 type="button" role="tab"
                                 aria-controls="ipmi-tool"
-                                aria-selected="true">IPMI TOOL</button>
+                                aria-selected="true">
+                                <i class="bi bi-exclamation-circle px-2"></i>IPMI TOOL</button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" id="misc"
@@ -56,13 +59,13 @@
                         </li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card m-0 p-0"> <!-- contents -->
                     <div class="card-body tab-content">
                         <div class="tab-content">
                             <div class="tab-pane fade show active"
                                 id="ip-lookup-pane"
                                 role="tabpanel" aria-labelledby="ip-lookup"
-                                tabindex="0">IP LOOKUP</div>
+                                tabindex="0">{% include "ip_lookup.html" %}</div>
                             <div class="tab-pane fade" id="ipmi-tool-pane"
                                 role="tabpanel"
                                 aria-labelledby="ipmi-tool" tabindex="0">IPMI
