@@ -18,11 +18,14 @@
                 </tr>
             </thead>
             <tbody>
-                {% for k in ip_list %}
+                {% set len = ip_list["system_sn"]|length %}
+                {% for count in range(len) %}
                 <tr>
-                    <td>{{ ip_list["system_sn"][0] }}</td>
-                    <td>{{ ip_list["ip_address"][0] }}</td>
-                    <td>{{ ip_list["password"][0] }}</td>
+                    <td>{{ ip_list["system_sn"][count] }}</td>
+                    <td><a href="http://{{ ip_list['ip_address'][count] }}" target="_blank">
+                            {{ ip_list["ip_address"][count] }}</a>
+                    </td>
+                    <td>{{ ip_list["password"][count] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
