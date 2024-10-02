@@ -201,7 +201,6 @@ def tools():
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
         ip_list = get_ip_addr(outfile["part_list"], outfile["sub_sn"])
         ip_list["system_sn"] = [sn for sn in good_list]
-        print(ip_list)
         return render_template("tools.html", ip_list=ip_list)
     return render_template("tools.html")
 

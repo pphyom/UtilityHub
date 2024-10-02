@@ -1,14 +1,16 @@
 <div>
-    <div class="row mt-3 mb-n5">
-        {% include "input_form.html" %}
-    </div>
+    {% include "input_form.html" %}
     {% if not ip_list %}
-    {% include "nodata.html" %}
+        <div class="table-wrapper">
+            {% include "nodata.html" %}
+        </div>
     {% else %}
-    <table class="table"
+    <table class="table table-striped"
         data-toggle="table"
         data-search="true"
-        data-show-columns="true">
+        data-buttons-class="dark"
+        data-show-columns="true"
+        data-show-search-clear-button="true">
         <thead>
             <tr>
                 <th data-sortable="true">Serial Number</th>
@@ -16,7 +18,7 @@
                 <th>BMC Password</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody data-align="center">
             {% set len = ip_list["system_sn"]|length %}
             {% for count in range(len) %}
             <tr>
