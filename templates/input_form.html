@@ -50,7 +50,7 @@
                 Track
             </button>
 
-            {% block button %}
+            {% block button %}  <!-- For live page only -->
             <button id="custom-btn" type="button" class="btn"
                 {% if not index_page %} style="display: none;" {% endif %}
                 data-bs-toggle="offcanvas" data-bs-target="#config_setting">
@@ -92,7 +92,7 @@
                 </div>
             </div>
             <!--Modal: Setting -->
-            {% endblock %}
+            {% endblock %}  <!-- For live page only -->
             <button id="custom-btn" type="submit" class="btn"
                 {% if not tool_page %} style="display: none;" {% endif %}>
                 <span><i class="bi bi-plus-lg"></i></span>

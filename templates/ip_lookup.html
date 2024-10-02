@@ -1,35 +1,34 @@
 <div>
-    <div class="table-wrapper">
-        <div class="row mt-3 mb-n5">
-            {% include "input_form.html" %}
-        </div>
-        {% if not ip_list %}
-            {% include "nodata.html" %}
-        {% else %}
-        <table class="table"
-            data-toggle="table"
-            data-search="true"
-            data-show-columns="true">
-            <thead>
-                <tr>
-                    <th data-sortable="true">Serial Number</th>
-                    <th>IP</th>
-                    <th>BMC Password</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% set len = ip_list["system_sn"]|length %}
-                {% for count in range(len) %}
-                <tr>
-                    <td>{{ ip_list["system_sn"][count] }}</td>
-                    <td><a href="http://{{ ip_list['ip_address'][count] }}" target="_blank">
-                            {{ ip_list["ip_address"][count] }}</a>
-                    </td>
-                    <td>{{ ip_list["password"][count] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
+    <div class="row mt-3 mb-n5">
+        {% include "input_form.html" %}
     </div>
+    {% if not ip_list %}
+    {% include "nodata.html" %}
+    {% else %}
+    <table class="table"
+        data-toggle="table"
+        data-search="true"
+        data-show-columns="true">
+        <thead>
+            <tr>
+                <th data-sortable="true">Serial Number</th>
+                <th>IP</th>
+                <th>BMC Password</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set len = ip_list["system_sn"]|length %}
+            {% for count in range(len) %}
+            <tr>
+                <td>{{ ip_list["system_sn"][count] }}</td>
+                <td><a href="http://{{ ip_list['ip_address'][count] }}"
+                        target="_blank">
+                        {{ ip_list["ip_address"][count] }}</a>
+                </td>
+                <td>{{ ip_list["password"][count] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 </div>
