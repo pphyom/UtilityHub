@@ -1,14 +1,15 @@
 <div>
     {% include "input_form.html" %}
     {% if not ip_list %}
-        <div class="table-wrapper">
-            {% include "nodata.html" %}
-        </div>
+    <div class="table-wrapper">
+        {% include "nodata.html" %}
+    </div>
     {% else %}
     <table class="table table-striped"
         data-toggle="table"
         data-search="true"
-        data-buttons-class="dark"
+        data-buttons-class="outline-secondary"
+        data-show-export="true"
         data-show-columns="true"
         data-show-search-clear-button="true">
         <thead>

@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-
 {% block head %} Functional Test Logs {% endblock %}
-
 {% block body %}
 
 <div class="main">
@@ -11,11 +9,11 @@
             <div class="row mb-3">
                 {% include "input_form.html" %}
             </div>
-            {% if not data %}
-                {% include "nodata.html" %}
-            {% else %}
             <div class="card mb-4">
                 <div class="table-wrapper">
+                    {% if not data %}
+                        {% include "nodata.html" %}
+                    {% else %}
                     <table 
                         id="table"
                         data-toggle="table"
@@ -39,7 +37,6 @@
                         </tbody>
 
                     </table>
-                    <!-- {% include "construction.html" %} -->
                 </div>
             </div>
             {% endif %}
