@@ -16,6 +16,7 @@
             <tr>
                 <th data-sortable="true">Serial Number</th>
                 <th>IP</th>
+                <th>Login Name</th>
                 <th>BMC Password</th>
             </tr>
         </thead>
@@ -28,6 +29,7 @@
                         target="_blank">
                         {{ ip_list["ip_address"][count] }}</a>
                 </td>
+                <td>{{ ip_list["username"][count] }}</td>
                 <td>{{ ip_list["password"][count] }}</td>
             </tr>
             {% endfor %}

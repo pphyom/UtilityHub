@@ -20,7 +20,7 @@ def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> list[str]:
     return ipmi_info
 
 
-def get_ip_addr(part_list: list, sub_sn: list):
+def get_ip_addr(part_list: list, sub_sn: list, sn_list: list):
     """
     """
     ipmi_info = get_ipmi_info(part_list, sub_sn)
@@ -29,6 +29,7 @@ def get_ip_addr(part_list: list, sub_sn: list):
     pswd_list = [i for i in ipmi_info['pswd']]
     ipmi_combo = {
             'ip_address': [],
+            'username': [],
             'password': []
         }
     for mac, pswd in zip(mac_list, pswd_list):
@@ -39,8 +40,14 @@ def get_ip_addr(part_list: list, sub_sn: list):
             ip_addr = soup.select_one('body > div > div > div > div.card-body > form > '
                                     'div:nth-child(2) > div > span:nth-child(2) > font > b')
             ipmi_combo['ip_address'].append(ip_addr.text.strip('\n'))
+            ipmi_combo['username'].append('ADMIN')
             ipmi_combo['password'].append(pswd)
+            ipmi_combo['system_sn'] = [sn for sn in sn_list]
         except Exception as e:
+            ipmi_combo['ip_address'].append(None)
+            ipmi_combo['username'].append(None)
+            ipmi_combo['password'].append(None)
+            ipmi_combo['system_sn'] = [sn for sn in sn_list]
             print(f'Error finding the ip address for {mac}: {e}')
-            
+
     return ipmi_combo
