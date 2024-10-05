@@ -10,6 +10,7 @@ ip_discover_172 = "http://172.21.0.1/cgi-bin/ipdiscover1.php"
 
 def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> list[str]:
     """
+    Retrieve the IPMI MAC and Password from the system. 
     """
     ipmi_info = {"mac": [], "pswd": []}
     for part, ssn in zip(part_list, sub_sn):
@@ -24,6 +25,7 @@ def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> list[str]:
 
 def get_ip_addr(part_list: list, sub_sn: list, sn_list: list):
     """
+    Discover IP address from connected devices. 
     """
     ipmi_info = get_ipmi_info(part_list, sub_sn)
 

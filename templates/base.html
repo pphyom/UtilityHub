@@ -1,79 +1,85 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <title>{% block head %}{% endblock %}</title>
-  <link rel='icon' href='images/smc.png' type='image/x-icon'>
-  <link rel="stylesheet" href="css/style.css" type="text/css">
-  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
-  <link rel="stylesheet" href="css/bootstrap-icons.css" type="text/css">
-  <link rel="stylesheet" href="css/bootstrap-table.min.css" type="text/css">
-</head>
+    <title>{% block head %}{% endblock %}</title>
+    <link rel='icon' href='images/smc.png' type='image/x-icon'>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/bootstrap-icons.css" type="text/css">
+    <link rel="stylesheet" href="css/bootstrap-table.min.css" type="text/css">
+  </head>
 
-<body>
-  <div class="wrapper">
-    <aside id="sidebar">
-      <div class="d-flex">
-        <button id="toggle-btn" type="button">
-          <i class="bi bi-grid-1x2-fill"></i>
-        </button>
-        <div class="sidebar-logo">
-          <p>Utilities</p>
+  <body>
+    <div class="wrapper">
+      <aside id="sidebar">
+        <div class="d-flex">
+          <button id="toggle-btn" type="button">
+            <i class="bi bi-grid-1x2-fill"></i>
+          </button>
+          <div class="sidebar-logo">
+            <p>Utilities</p>
+          </div>
         </div>
-      </div>
 
-      <ul class="sidebar-nav">
-        <li class="sidebar-item">
-          <a href="/" class="sidebar-link">
-            <i class="bi bi-cast"></i>
-            <span>Live</span>
-          </a>
-        </li>
-        <li class="sidebar-item">
-          <a href="ftu_log" class="sidebar-link">
-            <i class="bi bi-braces"></i>
-            <span>Function Test Logs</span>
-          </a>
-        </li>
-        <li class="sidebar-item">
-          <a href="cburn_log" class="sidebar-link">
-            <i class="bi bi-fire"></i>
-            <span>Cburn Status</span>
-          </a>
-        </li>
-        <li class="sidebar-item">
-          <a href="rburn_log" class="sidebar-link">
-            <i class="bi bi-code-square"></i>
-            <span>Rack Burn Logs</span>
-          </a>
-        </li>
-        <li class="sidebar-item">
-          <a href="tools" class="sidebar-link">
-            <i class="bi bi-tools"></i>
-            <span>Tools</span>
-          </a>
-        </li>
-      </ul>
-    </aside>
+        <ul class="sidebar-nav">
+          <li class="sidebar-item">
+            <a href="/" class="sidebar-link">
+              <i class="bi bi-cast"></i>
+              <span>Live</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="ftu_log" class="sidebar-link">
+              <i class="bi bi-braces"></i>
+              <span>Function Test Logs</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="cburn_log" class="sidebar-link">
+              <i class="bi bi-fire"></i>
+              <span>Cburn Status</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="rburn_log" class="sidebar-link">
+              <i class="bi bi-code-square"></i>
+              <span>Rack Burn Logs</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="tools" class="sidebar-link">
+              <i class="bi bi-tools"></i>
+              <span>Tools</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
 
-    {% block body %}
+      {% block body %}
 
-    {% endblock %}
-  </div><!-- Wrapper End -->
+      {% endblock %}
+    </div><!-- Wrapper End -->
 
-  <script defer src="js/jquery.min.js"></script>
-  <script defer src="js/script.js"></script>
-  <script defer src="js/popper.min.js"></script>
-  <script defer src="js/bootstrap.bundle.min.js"></script>
-  <script defer src="js/bootstrap-table.min.js"></script>
-  <script defer src="js/tableExport.min.js"></script>
-  <script defer src="js/bootstrap-table-export.min.js"></script>
+    <script defer src="js/jquery.min.js"></script>
+    <script defer src="js/script.js"></script>
+    <script defer src="js/popper.min.js"></script>
+    <script defer src="js/bootstrap.bundle.min.js"></script>
+    <script defer src="js/bootstrap-table.min.js"></script>
+    <script defer src="js/tableExport.min.js"></script>
+    <script defer src="js/bootstrap-table-export.min.js"></script>
 
-</body>
+  </body>
+  <footer>
+    <div class="px-2 py-1 bg-custom text-white text-end fixed-bottom">
+      Connected to {{ connected_ip }}
+      <i class="bi bi-globe"></i>
+    </div>
+  </footer>
 
 </html>
