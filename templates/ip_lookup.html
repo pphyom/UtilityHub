@@ -15,7 +15,7 @@
         <thead>
             <tr>
                 <th data-sortable="true">Serial Number</th>
-                <th>IP</th>
+                <th data-sortable="true">IP</th>
                 <th>Login Name</th>
                 <th>BMC Password</th>
             </tr>
@@ -25,9 +25,11 @@
             {% for count in range(len) %}
             <tr>
                 <td>{{ ip_list["system_sn"][count] }}</td>
-                <td><a href="http://{{ ip_list['ip_address'][count] }}"
-                        target="_blank">
-                        {{ ip_list["ip_address"][count] }}</a>
+                <td>{{ ip_list["ip_address"][count] }}
+                    {% if ip_list["ip_address"][count] %}
+                    <a href="http://{{ ip_list['ip_address'][count] }}" target="_blank">
+                        <i class="bi bi-link-45deg"></i></a>
+                    {% endif %}
                 </td>
                 <td>{{ ip_list["username"][count] }}</td>
                 <td>{{ ip_list["password"][count] }}</td>
