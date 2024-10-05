@@ -1,7 +1,8 @@
 
-import requests, re
+import requests
 from bs4 import BeautifulSoup
 from config.core import RackBurn
+from config.cburn_helper import *
 
 ip_discover_10 = "http://10.43.251.40/lease"
 ip_discover_172 = "http://172.21.0.1/cgi-bin/ipdiscover1.php"
@@ -66,14 +67,21 @@ def get_ip_172(part_list: list, sub_sn: list, sn_list: list):
             "username": [],
             "password": []
         }
-    
-    payload = {
-        "address": "7CC2555F4D11",
-        "action": "Search"
-        }
-    response = requests.post(ip_discover_172, data=payload, verify=False)
-    soup = BeautifulSoup(response.text, "html.parser")
-    tt_tag = soup.find("tt")
-    text = tt_tag.get_text(strip=True)
-    print(text)
-    return response.text
+    for mac, pswd in zip(mac_list, pswd_list):
+        payload = {
+            "address": mac,
+            "action": "Search"
+            }
+        try:
+            response = requests.post(ip_discover_172, data=payload, verify=False)
+            soup = BeautifulSoup(response.text, "html.parser")
+            tt_tag = soup.find("tt")
+            parsed_text = tt_tag.get_text().split("\n")
+            ipmi_combo["ip_address"] = [i for i in parsed_text if i != "" and i.startswith("172")]
+            ipmi_combo["username"].append("ADMIN")
+            ipmi_combo["password"].append(pswd)
+            ipmi_combo["system_sn"] = [sn for sn in sn_list]
+        except Exception as e:
+            print(f"Error finding the ip address for {mac}: {e}")
+
+    return ipmi_combo
