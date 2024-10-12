@@ -28,62 +28,27 @@ def get_ip_addr(part_list: list, sub_sn: list, sn_list: list):
     Discover IP address from connected devices. 
     """
     ipmi_info = get_ipmi_info(part_list, sub_sn)
-
     mac_list = [i for i in ipmi_info["mac"]]
     pswd_list = [i for i in ipmi_info["pswd"]]
-    ipmi_combo = {
-            "ip_address": [],
-            "username": [],
-            "password": []
-        }
-    for mac, pswd in zip(mac_list, pswd_list):
+    device_info = []
+    for mac, pswd, sn in zip(mac_list, pswd_list, sn_list):
         payload = {"searchtxt": mac}
         try:
             response = requests.post(ip_discover_10, data=payload, verify=False)
             soup = BeautifulSoup(response.text, "html.parser")
-            ip_addr = soup.select_one("body > div > div > div > div.card-body > form > "
+            ip_addr_raw = soup.select_one("body > div > div > div > div.card-body > form > "
                                     "div:nth-child(2) > div > span:nth-child(2) > font > b")
-            ipmi_combo["ip_address"].append(ip_addr.text.strip("\n"))
-            ipmi_combo["username"].append("ADMIN")
-            ipmi_combo["password"].append(pswd)
-            ipmi_combo["system_sn"] = [sn for sn in sn_list]
-        except Exception as e:
-            ipmi_combo["ip_address"].append(None)
-            ipmi_combo["username"].append(None)
-            ipmi_combo["password"].append(None)
-            ipmi_combo["system_sn"] = [sn for sn in sn_list]
-            print(f"Error finding the ip address for {mac}: {e}")
-
-    return ipmi_combo
-
-
-def get_ip_172(part_list: list, sub_sn: list, sn_list: list):
-    """
-    """
-    ipmi_info = get_ipmi_info(part_list, sub_sn)
-
-    mac_list = [i for i in ipmi_info["mac"]]
-    pswd_list = [i for i in ipmi_info["pswd"]]
-    ipmi_combo = {
-            "ip_address": [],
-            "username": [],
-            "password": []
-        }
-    for mac, pswd in zip(mac_list, pswd_list):
-        payload = {
-            "address": mac,
-            "action": "Search"
+            ip_addr = ip_addr_raw.text.strip("\n")
+            if ip_addr == "":
+                ip_addr = "NA"
+            device_combo = {
+                "ip_address": ip_addr,
+                "username": "ADMIN",
+                "password": pswd,
+                "system_sn": sn
             }
-        try:
-            response = requests.post(ip_discover_172, data=payload, verify=False)
-            soup = BeautifulSoup(response.text, "html.parser")
-            tt_tag = soup.find("tt")
-            parsed_text = tt_tag.get_text().split("\n")
-            ipmi_combo["ip_address"] = [i for i in parsed_text if i != "" and i.startswith("172")]
-            ipmi_combo["username"].append("ADMIN")
-            ipmi_combo["password"].append(pswd)
-            ipmi_combo["system_sn"] = [sn for sn in sn_list]
+            device_info.append(device_combo)
         except Exception as e:
             print(f"Error finding the ip address for {mac}: {e}")
 
-    return ipmi_combo
+    return device_info

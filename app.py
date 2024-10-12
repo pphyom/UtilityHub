@@ -199,16 +199,14 @@ def cburn_log():
 
 @app.route("/tools", methods=["GET", "POST"])
 def tools():
-    CONNECTED_NETWORK = request.remote_addr
-    print(f"You are connected to: {CONNECTED_NETWORK[:2]}.xx.xx.xx network.")
     if request.method == "POST":
         input_list = user_input()
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))
         ip_list = get_ip_addr(outfile["part_list"], outfile["sub_sn"], good_list)
-        # tempIP = get_ip_172(outfile["part_list"], outfile["sub_sn"], good_list)
+        tempIP = get_ip_172(outfile["part_list"], outfile["sub_sn"], good_list)
         # return tempIP
-        return render_template("tools.html", ip_list=ip_list)
+        return render_template("tools.html", ip_list=tempIP)
     return render_template("tools.html")
 
 
