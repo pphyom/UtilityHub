@@ -13,26 +13,29 @@
         data-show-columns="true"
         data-show-search-clear-button="true">
         <thead>
-            <tr>
+            <tr class="text-center">
                 <th data-sortable="true">Serial Number</th>
                 <th data-sortable="true">IP</th>
                 <th>Login Name</th>
                 <th>BMC Password</th>
+                <th>BIOS Ver. <i class="bi bi-cloud-arrow-down-fill"></i></th>
+                <th>BMC Ver. <i class="bi bi-cloud-arrow-down-fill"></i></th>
             </tr>
         </thead>
-        <tbody data-align="center">
-            {% set len = ip_list["system_sn"]|length %}
-            {% for count in range(len) %}
-            <tr>
-                <td>{{ ip_list["system_sn"][count] }}</td>
-                <td>{{ ip_list["ip_address"][count] }}
-                    {% if ip_list["ip_address"][count] %}
-                    <a href="http://{{ ip_list['ip_address'][count] }}" target="_blank">
+        <tbody>
+            {% for item in ip_list %}
+            <tr class="text-center">
+                <td>{{ item["system_sn"] }}</td>
+                <td>{{ item["ip_address"] }}
+                    {% if item["ip_address"] != "NA" %}
+                    <a href="http://{{ item['ip_address'] }}" target="_blank">
                         <i class="bi bi-link-45deg"></i></a>
                     {% endif %}
                 </td>
-                <td>{{ ip_list["username"][count] }}</td>
-                <td>{{ ip_list["password"][count] }}</td>
+                <td>{{ item["username"] }}</td>
+                <td>{{ item["password"] }}</td>
+                <td><span></span><i class="bi bi-cloud-arrow-down"></i></td>
+                <td><span></span><i class="bi bi-cloud-arrow-down"></i></td>
             </tr>
             {% endfor %}
         </tbody>
