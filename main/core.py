@@ -1,3 +1,4 @@
+import os
 import asyncio
 import aiohttp
 import requests
@@ -7,6 +8,11 @@ from bs4 import BeautifulSoup
 from io import StringIO
 from operator import itemgetter
 from threading import Thread, Event
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 
 DATA_ = {
     "live_headings": ("Location", "System SN", "Status", "Rack", "Time Gap", "Log"),
@@ -19,17 +25,16 @@ DATA_ = {
 
 class SPM:
     def __init__(self):
-        self.mo_url = "http://super-spm/order/order_detail.asp?orderno="
-        self.sn_url = "http://super-spm/order/order_item_detail.asp?serialno="
-        self.assembly_rec = ("http://10.2.7.138/order/assembly_record_export.asp?FetchType=OP2&ListType=All&chkSPMWIP"
-                             "=on&MONumber=")
-        self.scanlog = "http://10.2.7.138/order/export_scanlog.asp?print=Export+scan+log&ssn="
-        self.ftu_addr = "http://10.43.251.22/prodfile/FTU/"
-        self.ftu_b23 = "http://172.21.100.1/prodfile/FTU/"
-        self.cburn_addr = "http://10.43.251.20/burnin"
-        self.cburn_addr23 = "http://172.22.0.1/burnin"
-        self.ins_path = "http://10.43.251.20/instructions"
-        self.ins_path_23 = "http://172.22.0.1/instructions"
+        self.mo_url = os.getenv("MO_URL")
+        self.sn_url = os.getenv("SN_URL")
+        self.assembly_rec = os.getenv("ASSEMBLY_REC")
+        self.scanlog = os.getenv("SCANLOG")
+        self.ftu_addr = os.getenv("FTU_ADDR")
+        self.ftu_b23 = os.getenv("FTU_B23")
+        self.cburn_addr = os.getenv("CBURN_ADDR")
+        self.cburn_addr23 = os.getenv("CBURN_ADDR23")
+        self.ins_path = os.getenv("INS_PATH")
+        self.ins_path_23 = os.getenv("INS_PATH23")
 
     async def fetch(self, session, url):
         async with session.get(url) as response:

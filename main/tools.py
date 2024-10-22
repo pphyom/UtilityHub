@@ -1,11 +1,13 @@
-
+import os, dotenv
 import requests
 from bs4 import BeautifulSoup
 from main.core import RackBurn
 from main.cburn_helper import *
 
-ip_discover_10 = "http://10.43.251.40/lease"
-ip_discover_172 = "http://172.21.0.1/cgi-bin/ipdiscover1.php"
+dotenv.load_dotenv()
+
+ip_discover_10 = os.getenv("RBURN_SVR40_LEASE")
+ip_discover_172 = os.getenv("CBURN_LEASE")
 
 
 def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> list[str]:

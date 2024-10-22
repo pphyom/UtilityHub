@@ -14,7 +14,7 @@ from main.tools import *
 from main.extensions import db, sess
 from config import Config
 
-rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
+rburn_live = os.getenv("RBURN_LIVE40")
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
 app.config.from_object(Config)
