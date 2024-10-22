@@ -2,7 +2,7 @@ import requests
 import asyncio
 from requests import HTTPError
 from bs4 import BeautifulSoup
-from config.core import SPM
+from main.core import SPM
 from urllib.error import HTTPError
 
 

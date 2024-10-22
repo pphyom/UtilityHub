@@ -6,34 +6,23 @@ from flask import Flask, render_template, jsonify, session
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta, datetime, timezone
-from config.core import *
-from config.cburn_helper import *
-from config.rburn_helper import *
-from config.ftu_helper import *
-from config.tools import *
+from main.core import *
+from main.cburn_helper import *
+from main.rburn_helper import *
+from main.ftu_helper import *
+from main.tools import *
+from main.extensions import db, sess
+from config import Config
 
 rburn_live = "http://10.43.251.40/input_output?model=Supermicro"
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
+app.config.from_object(Config)
 
-
-# Secret key for session management
-app.config['SECRET_KEY'] = os.urandom(12)
-
-# Configuring the SQLite database for storing session data
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sessions.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-# Configuring Flask-Session to use SQLAlchemy
-app.config['SESSION_TYPE'] = 'sqlalchemy'
-app.config['SESSION_SQLALCHEMY'] = db
-app.config['SESSION_PERMANENT'] = False
-app.config['SESSION_USE_SIGNER'] = True
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=60)
+# Initialize the database
+db.init_app(app)
 
 # Initialize the session extension
-sess = Session()
 sess.init_app(app)
 
 spm = SPM()

@@ -4,7 +4,7 @@ import aiohttp
 import requests
 from io import StringIO
 from bs4 import BeautifulSoup
-from config.core import SPM
+from main.core import SPM
 
 
 spm = SPM()

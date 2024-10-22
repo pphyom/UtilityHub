@@ -1,8 +1,8 @@
 
 import requests
 from bs4 import BeautifulSoup
-from config.core import RackBurn
-from config.cburn_helper import *
+from main.core import RackBurn
+from main.cburn_helper import *
 
 ip_discover_10 = "http://10.43.251.40/lease"
 ip_discover_172 = "http://172.21.0.1/cgi-bin/ipdiscover1.php"
