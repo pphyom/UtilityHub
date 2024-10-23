@@ -1,3 +1,39 @@
+## PROJECT STRUCTURE
+```
+.
+├── main
+│   ├── __init__.py
+│   ├── core.py
+│   ├── extensions.py
+│   ├── ftu_helper.py
+│   ├── cburn_helper.py
+│   ├── rburn_helper.py
+│   ├── tools.py
+│   └── search.py
+├── templates
+│   ├── base.html
+│   ├── index.html
+│   ├── cburn_log.html
+│   ├── ftu_log.html
+│   ├── rburn_log.html
+│   ├── tools.html
+│   ├── construction.html
+│   ├── input_form.html
+│   ├── ip_lookup.html
+│   ├── nodata.html
+│   └── xxxx.html
+├── static
+│   ├── css
+│   ├── js
+│   └── images
+├── instance
+│   └── database.db
+├── rack_data
+│   └── database.db
+├── config.py
+├── app.py
+```
+
 ## Rack Burn Logs Checking
 
 ### HOW THE PROGRAM SCRUTINIZES THE TEST (explaination)
