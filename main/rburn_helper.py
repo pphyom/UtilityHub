@@ -1,8 +1,9 @@
-import requests, os
+import requests, os, dotenv
 from bs4 import BeautifulSoup
 
 
-base_url = "http://10.43.251.35/logs/Supermicro/"
+RBURN_LOG = os.getenv("RBURN_LOG")
+RBURN_SVR40 = os.getenv("RBURN_SVR40")
 
 
 def find_all_a_tag(url: str):
@@ -63,7 +64,7 @@ def get_sys_info(input_list: list, base_data: list, rb_server: str) -> tuple[lis
     Store it in a separate list along with the log ONLY IF it is in the database AND "pass" the test. 
     param: list of serial number/s input from users.
     param: base_data-- the rack burn database.
-    param: rb_server-- the server to get the info from (eg: http://10.43.251.40)
+    param: rb_server-- the server to get the info from.
     """
     get_sn: list = []
     get_rack: list = []
@@ -77,7 +78,7 @@ def get_sys_info(input_list: list, base_data: list, rb_server: str) -> tuple[lis
                 get_sn.append(temp)
                 
                 # get racks belong to each input sn
-                substr = "http://10.43.251.40" + sn_list[4].partition("/R-PRE")[0][:-2]
+                substr = RBURN_SVR40 + sn_list[4].partition("/R-PRE")[0][:-2]
                 get_rack.append(substr)
                 get_rack = list(set(get_rack))
 

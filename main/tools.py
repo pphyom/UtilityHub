@@ -1,7 +1,6 @@
 import os, dotenv
 import requests
 from bs4 import BeautifulSoup
-from main.core import RackBurn
 from main.cburn_helper import *
 
 dotenv.load_dotenv()

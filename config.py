@@ -1,3 +1,5 @@
+# Description: This file contains the configuration settings for the application.
+
 import os
 from datetime import timedelta
 from dotenv import load_dotenv

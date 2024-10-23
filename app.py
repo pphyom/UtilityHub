@@ -3,9 +3,6 @@ import json
 import asyncio
 import requests
 from flask import Flask, render_template, jsonify, session
-from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
-from datetime import timedelta, datetime, timezone
 from main.core import *
 from main.cburn_helper import *
 from main.rburn_helper import *
@@ -17,7 +14,7 @@ from config import Config
 rburn_live = os.getenv("RBURN_LIVE40")
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
-app.config.from_object(Config)
+app.config.from_object(Config)  # Load the configuration from config.py
 
 # Initialize the database
 db.init_app(app)
