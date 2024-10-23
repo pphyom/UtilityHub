@@ -8,5 +8,6 @@ class CustomSession(db.Model):
     data = db.Column(db.LargeBinary, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
 
+
     def __repr__(self):
         return f"<CustomSession {self.session_id}>"

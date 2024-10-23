@@ -14,6 +14,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SESSION_TYPE = "sqlalchemy"
     SESSION_SQLALCHEMY = db
+    # SESSION_SQLALCHEMY_TABLE = "rburn_sessions"
     SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=60)

@@ -1,15 +1,16 @@
 import os
 import json
 import asyncio
-import requests
+import requests, datetime
 from flask import Flask, render_template, jsonify, session
 from main.core import *
 from main.cburn_helper import *
 from main.rburn_helper import *
 from main.ftu_helper import *
 from main.tools import *
-from main.extensions import db, sess
 from config import Config
+from main.extensions import db, sess
+from models.sess import CustomSession
 
 rburn_live = os.getenv("RBURN_LIVE40")
 
@@ -19,12 +20,12 @@ app.config.from_object(Config)  # Load the configuration from config.py
 # Initialize the database
 db.init_app(app)
 
+# Initialize the session extension
+sess.init_app(app)
+
 # Create the tables in the database
 with app.app_context():
     db.create_all()
-
-# Initialize the session extension
-sess.init_app(app)
 
 spm = SPM()
 mo_url = spm.mo_url
