@@ -19,6 +19,10 @@ app.config.from_object(Config)  # Load the configuration from config.py
 # Initialize the database
 db.init_app(app)
 
+# Create the tables in the database
+with app.app_context():
+    db.create_all()
+
 # Initialize the session extension
 sess.init_app(app)
 
