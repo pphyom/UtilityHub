@@ -1,7 +1,7 @@
 import os
 import json
 import asyncio
-import requests, datetime
+import requests
 from flask import Flask, render_template, jsonify, session
 from main.core import *
 from main.cburn_helper import *
@@ -10,7 +10,8 @@ from main.ftu_helper import *
 from main.tools import *
 from config import Config
 from main.extensions import db, sess
-from models.sess import CustomSession
+from sqlalchemy import Column, Integer, String, LargeBinary, DateTime
+
 
 rburn_live = os.getenv("RBURN_LIVE40")
 
@@ -22,6 +23,10 @@ db.init_app(app)
 
 # Initialize the session extension
 sess.init_app(app)
+
+# Import the LiveSession model
+from models.models import LiveSession
+from models.models import User
 
 # Create the tables in the database
 with app.app_context():
