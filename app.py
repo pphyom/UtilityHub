@@ -10,7 +10,6 @@ from main.ftu_helper import *
 from main.tools import *
 from config import Config
 from main.extensions import db, sess
-from sqlalchemy import Column, Integer, String, LargeBinary, DateTime
 
 
 rburn_live = os.getenv("RBURN_LIVE40")
@@ -199,7 +198,7 @@ def tools():
         input_list = user_input()
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))
-        ip_list = get_ip_addr(outfile["part_list"], outfile["sub_sn"], good_list)
+        ip_list = get_ip_10(outfile["part_list"], outfile["sub_sn"], good_list)
         # tempIP = get_ip_172(outfile["part_list"], outfile["sub_sn"], good_list)
         # return tempIP
         print(ip_list)
