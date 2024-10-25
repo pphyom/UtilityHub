@@ -18,8 +18,8 @@
                 <th data-sortable="true">IP</th>
                 <th>Login Name</th>
                 <th>BMC Password</th>
-                <th>BIOS Ver. <i class="bi bi-cloud-arrow-down-fill"></i></th>
-                <th>BMC Ver. <i class="bi bi-cloud-arrow-down-fill"></i></th>
+                <th>BIOS Ver.</th>
+                <th>BMC Ver.</th>
             </tr>
         </thead>
         <tbody>
@@ -33,9 +33,12 @@
                     {% endif %}
                 </td>
                 <td>{{ item["username"] }}</td>
-                <td>{{ item["password"] }}</td>
-                <td><span></span><i class="bi bi-cloud-arrow-down"></i></td>
-                <td><span></span><i class="bi bi-cloud-arrow-down"></i></td>
+                <td class="user-select-all">{{ item["password"] }}</td>
+                <td>
+                    <i class="bi bi-cloud-arrow-down icon-btn" onclick="getBiosVer()"></i>
+                    <span id="get-bios-ver"></span>
+                </td>
+                <td id="get-ipmi-ver"><i class="bi bi-cloud-arrow-down icon-btn" onclick="getIpmiVer()"></i></td>
             </tr>
             {% endfor %}
         </tbody>

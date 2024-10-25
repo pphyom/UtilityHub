@@ -122,4 +122,29 @@
         </div><!-- Container Fluid End -->
     </main>
 </div>
+
+<script>
+
+    /**
+    *************************************
+    * JS functions for tools.html
+    *************************************
+    **/
+
+    /** IP Lookup page **/
+    const ipmiVer = document.getElementById("get-ipmi-ver");
+
+    function getBiosVer() {
+        alert("Searching for BIOS version...");
+        document.querySelector(".icon-btn").style.display = "none";
+        document.getElementById("get-bios-ver").innerHTML = "PISS OFF";
+
+    }
+
+    function getIpmiVer() {
+        alert("Searching for IPMI version...");
+    }
+
+</script>
+
 {% endblock %}

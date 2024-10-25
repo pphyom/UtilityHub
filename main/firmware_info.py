@@ -15,7 +15,7 @@ ipmitool_cmd = {
     }
 
 
-def sum_ipmi_ver(device, cmd):
+def sum_bios_ipmi_ver(device, cmd):
     """ Get the firmware version of the device using SUM tool. """
 
     if device["ip_address"] != "NA" or check_connectivity(device["ip_address"]):
@@ -45,7 +45,7 @@ def sum_ipmi_ver(device, cmd):
         print("Not connected!")
 
 
-def ipmi_ver(device, cmd):
+def get_bios_ipmi_ver(device, cmd):
     """ Get the firmware version of the device using IPMI tool. """
 
     if device["ip_address"] != "NA" or check_connectivity(device["ip_address"]):
