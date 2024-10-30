@@ -133,12 +133,16 @@
 
     /** IP Lookup page **/
     const ipmiVer = document.getElementById("get-ipmi-ver");
+    document.querySelector(".bios-spinner").style.visibility = "hidden";
 
     function getBiosVer() {
-        alert("Searching for BIOS version...");
         document.querySelector(".icon-btn").style.display = "none";
-        document.getElementById("get-bios-ver").innerHTML = "PISS OFF";
-
+        document.querySelector(".bios-spinner").style.visibility = "visible";
+        setTimeout(() => {
+            document.getElementById("get-bios-ver").innerHTML = "1.0.0";
+            document.querySelector(".bios-spinner").style.visibility = "hidden";
+        }, 2000);
+        //document.getElementById("get-bios-ver").innerHTML = "PISS OFF";
     }
 
     function getIpmiVer() {

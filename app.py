@@ -199,9 +199,8 @@ def tools():
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))
         ip_list = get_ip_10(outfile["part_list"], outfile["sub_sn"], good_list)
-        # tempIP = get_ip_172(outfile["part_list"], outfile["sub_sn"], good_list)
-        # return tempIP
-        print(ip_list)
+        tempIP = get_ip_172(outfile["part_list"], outfile["sub_sn"], good_list)
+        # print(tempIP)
         return render_template("tools.html", ip_list=ip_list)
     return render_template("tools.html")
 
