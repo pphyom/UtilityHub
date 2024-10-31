@@ -35,14 +35,42 @@
                 <td>{{ item["username"] }}</td>
                 <td class="user-select-all">{{ item["password"] }}</td>
                 <td>
-                    <i class="bi bi-cloud-arrow-down icon-btn" onclick="getBiosVer()"></i>
-                    <div class="spinner-border spinner-border-sm bios-spinner" role="status"></div>
+                    <i class="bi bi-cloud-arrow-down icon-btn bios-ver"></i>
+                    <div class="spinner-border spinner-border-sm spinner" role="status"></div>
                     <span id="get-bios-ver"></span>
                 </td>
-                <td id="get-ipmi-ver"><i class="bi bi-cloud-arrow-down icon-btn" onclick="getIpmiVer()"></i></td>
+                <td><i class="bi bi-cloud-arrow-down icon-btn ipmi-ver"></i></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <script>
+
+        /** IP Lookup **/
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const biosVer = document.querySelector(".bios-ver");
+            const ipmiVer = document.querySelector(".ipmi-ver");
+            const spinner = document.querySelector(".spinner");
+
+            spinner.style.display = "none";
+
+            biosVer.addEventListener("click", function() {
+                spinner.style.display = "block";
+                biosVer.style.display = "none";
+                const getBiosVer = document.getElementById("get-bios-ver");
+                getBiosVer.textContent = "";
+                fetch(`/get_bios_ver`)
+                    .then(response => response.json())
+                    .then(data => {
+                        spinner.style.display = "none";
+                        //console.log(data[0]);
+                        getBiosVer.textContent = data[0].password;
+                    });
+            });
+
+        });
+    </script>
     {% endif %}
 </div>

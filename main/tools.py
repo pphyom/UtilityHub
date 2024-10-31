@@ -7,8 +7,10 @@ from main.cburn_helper import *
 
 dotenv.load_dotenv()
 
-ip_discover_10 = os.getenv("RBURN_SVR40_LEASE")
+# ip_discover_10 = os.getenv("RBURN_SVR40_LEASE")
+ip_discover_10 = "http://10.43.251.42/lease"
 ip_discover_172 = os.getenv("CBURN_LEASE")
+
 
 def check_connectivity(host, port=80, timeout=5) -> bool:
     """
