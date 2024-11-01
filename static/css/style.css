@@ -398,7 +398,11 @@ tbody tr.hide {
 /* Search function table */
 
 /* Interaction */
-.icon-btn {
+.bdownload, .ipmidownload {
     cursor: pointer;
     font-size: 1.1rem;
+}
+
+.bdownload:hover, .ipmidownload:hover {
+    opacity: 50%;
 }

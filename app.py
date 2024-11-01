@@ -194,8 +194,12 @@ def cburn_log():
 
 @app.route("/get_bios_ver", methods=["GET"])
 def get_bios_ver():
-    ip_list = session.get("ip_list", [])
-    return jsonify(ip_list)
+    return "bios ver"
+
+
+@app.route("/get_ipmi_ver", methods=["GET"])
+def get_ipmi_ver():
+    return "ipmi ver"
 
 
 @app.route("/tools", methods=["GET", "POST"])

@@ -5,7 +5,7 @@
         {% include "nodata.html" %}
     </div>
     {% else %}
-    <table class="table table-striped"
+    <table class="table table-striped ip-lookup-table"
         data-toggle="table"
         data-search="true"
         data-buttons-class="outline-secondary"
@@ -35,42 +35,53 @@
                 <td>{{ item["username"] }}</td>
                 <td class="user-select-all">{{ item["password"] }}</td>
                 <td>
-                    <i class="bi bi-cloud-arrow-down icon-btn bios-ver"></i>
-                    <div class="spinner-border spinner-border-sm spinner" role="status"></div>
-                    <span id="get-bios-ver"></span>
+                    <i class="bi bi-cloud-arrow-down bdownload"></i>
+                    <span
+                        class="spinner-border spinner-border-sm spinner mx-auto"
+                        style="display: none;"></span>
+                    <span class="get-bios-ver"></span>
                 </td>
-                <td><i class="bi bi-cloud-arrow-down icon-btn ipmi-ver"></i></td>
+                <td>
+                    <i class="bi bi-cloud-arrow-down ipmidownload"></i>
+                    <span
+                        class="spinner-border spinner-border-sm spinner mx-auto"
+                        style="display: none;"></span>
+                    <span class="get-ipmi-ver"></span>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
     <script>
-
-        /** IP Lookup **/
-
+        /**
+         * Fetch BIOS and BMC version from the server. 
+         */
         document.addEventListener("DOMContentLoaded", function() {
-            const biosVer = document.querySelector(".bios-ver");
-            const ipmiVer = document.querySelector(".ipmi-ver");
-            const spinner = document.querySelector(".spinner");
-
-            spinner.style.display = "none";
-
-            biosVer.addEventListener("click", function() {
-                spinner.style.display = "block";
-                biosVer.style.display = "none";
-                const getBiosVer = document.getElementById("get-bios-ver");
-                getBiosVer.textContent = "";
-                fetch(`/get_bios_ver`)
-                    .then(response => response.json())
-                    .then(data => {
-                        spinner.style.display = "none";
-                        //console.log(data[0]);
-                        getBiosVer.textContent = data[0].password;
-                    });
+            document.querySelector(".ip-lookup-table").addEventListener("click", function(event) {
+                const target = event.target;
+                if (target.classList.contains("bdownload") || target.classList.contains("ipmidownload")) {
+                    const row = target.closest("td");
+                    const spinner = row.querySelector(".spinner");
+                    const versionSpan = target.classList.contains("bdownload") ? row.querySelector(".get-bios-ver") : row.querySelector(".get-ipmi-ver");
+                    const url = target.classList.contains("bdownload") ? "/get_bios_ver" : "/get_ipmi_ver";
+    
+                    spinner.style.display = "block";
+                    target.style.display = "none";
+                    versionSpan.textContent = "";
+    
+                    fetch(url)
+                        .then(response => response.text())
+                        .then(data => {
+                            setTimeout(() => {
+                                spinner.style.display = "none";
+                                versionSpan.textContent = data;
+                            }, 1000);
+                        });
+                }
             });
-
         });
+    
     </script>
     {% endif %}
 </div>
