@@ -201,10 +201,13 @@ def get_bios_ver():
 @app.route("/get_ipmi_ver", methods=["GET"])
 def get_ipmi_ver():
     ip_list = session.get("ip_list", [])
+    temp = []
     for i in ip_list:
         ver = get_bios_ipmi_ver(i, ipmitool_cmd["ipmi_ver"])
         # print(ver)
-        return jsonify(ver)
+        temp.append(ver)
+    print(temp)
+    return jsonify(temp)
 
 
 @app.route("/tools", methods=["GET", "POST"])
