@@ -1,6 +1,7 @@
 # This file contains functions to get firmware information of a device.
 
 import subprocess
+import icecream as ic
 from main.cburn_helper import *
 from main.tools import check_connectivity
 
@@ -65,8 +66,8 @@ def get_bios_ipmi_ver(device, cmd):
                 case " ipmi ver":
                     firmware_ver = stdout.split("\n")[0].split()[-1]
                 case _:
-                    firmware_version = "NA"
-            print(firmware_ver)
+                    firmware_ver = "NA"
+            return firmware_ver
 
         except subprocess.CalledProcessError as e:
             print(f"Error occured: {e}")

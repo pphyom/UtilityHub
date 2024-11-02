@@ -8,6 +8,7 @@ from main.cburn_helper import *
 from main.rburn_helper import *
 from main.ftu_helper import *
 from main.tools import *
+from main.firmware_info import *
 from config import Config
 from main.extensions import db, sess
 
@@ -199,7 +200,11 @@ def get_bios_ver():
 
 @app.route("/get_ipmi_ver", methods=["GET"])
 def get_ipmi_ver():
-    return "ipmi ver"
+    ip_list = session.get("ip_list", [])
+    for i in ip_list:
+        ver = get_bios_ipmi_ver(i, ipmitool_cmd["ipmi_ver"])
+        # print(ver)
+        return jsonify(ver)
 
 
 @app.route("/tools", methods=["GET", "POST"])
@@ -209,10 +214,14 @@ def tools():
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
         outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))
         ip_list = get_ip_10(outfile["part_list"], outfile["sub_sn"], good_list)
+        # temp = get_bios_ipmi_ver(ip_list[0], ipmitool_cmd["ipmi_ver"])
         session["ip_list"] = ip_list
         # tempIP = get_ip_172(outfile["part_list"], outfile["sub_sn"], good_list)
-        # print(tempIP)
-        return render_template("tools.html", ip_list=ip_list)
+        # print(temp)
+        return render_template("tools.html", 
+                               ip_list=ip_list,
+                               mo_url=mo_url,
+                               sn_url=sn_url)
     return render_template("tools.html")
 
 

@@ -25,7 +25,10 @@
         <tbody>
             {% for item in ip_list %}
             <tr class="text-center">
-                <td>{{ item["system_sn"] }}</td>
+                <td>{{ item["system_sn"] }}
+                    <a href="{{ sn_url + item['system_sn'] }}" target="_blank">
+                        <i class="bi bi-link-45deg"></i></a>
+                </td>
                 <td>{{ item["ip_address"] }}
                     {% if item["ip_address"] != "NA" %}
                     <a href="http://{{ item['ip_address'] }}" target="_blank">
@@ -35,14 +38,14 @@
                 <td>{{ item["username"] }}</td>
                 <td class="user-select-all">{{ item["password"] }}</td>
                 <td>
-                    <i class="bi bi-cloud-arrow-down bdownload"></i>
+                    <i class="bi bi-cloud-arrow-down getBiosVer"></i>
                     <span
                         class="spinner-border spinner-border-sm spinner mx-auto"
                         style="display: none;"></span>
                     <span class="get-bios-ver"></span>
                 </td>
                 <td>
-                    <i class="bi bi-cloud-arrow-down ipmidownload"></i>
+                    <i class="bi bi-cloud-arrow-down getIpmiVer"></i>
                     <span
                         class="spinner-border spinner-border-sm spinner mx-auto"
                         style="display: none;"></span>
@@ -60,23 +63,25 @@
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelector(".ip-lookup-table").addEventListener("click", function(event) {
                 const target = event.target;
-                if (target.classList.contains("bdownload") || target.classList.contains("ipmidownload")) {
+                if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
                     const row = target.closest("td");
                     const spinner = row.querySelector(".spinner");
-                    const versionSpan = target.classList.contains("bdownload") ? row.querySelector(".get-bios-ver") : row.querySelector(".get-ipmi-ver");
-                    const url = target.classList.contains("bdownload") ? "/get_bios_ver" : "/get_ipmi_ver";
+                    const versionSpan = target.classList.contains("getBiosVer") ? row.querySelector(".get-bios-ver") : row.querySelector(".get-ipmi-ver");
+                    const url = target.classList.contains("getBiosVer") ? "/get_bios_ver" : "/get_ipmi_ver";
     
                     spinner.style.display = "block";
                     target.style.display = "none";
                     versionSpan.textContent = "";
     
                     fetch(url)
-                        .then(response => response.text())
+                        .then(response => response.json())
                         .then(data => {
-                            setTimeout(() => {
+                            /* setTimeout(() => {
                                 spinner.style.display = "none";
                                 versionSpan.textContent = data;
-                            }, 1000);
+                            }, 1000); */
+                            spinner.style.display = "none";
+                            versionSpan.textContent = data;
                         });
                 }
             });

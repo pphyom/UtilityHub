@@ -398,11 +398,11 @@ tbody tr.hide {
 /* Search function table */
 
 /* Interaction */
-.bdownload, .ipmidownload {
+.getBiosVer, .getIpmiVer {
     cursor: pointer;
     font-size: 1.1rem;
 }
 
-.bdownload:hover, .ipmidownload:hover {
+.getBiosVer:hover, .getIpmiVer:hover {
     opacity: 50%;
 }

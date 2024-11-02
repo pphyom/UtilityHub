@@ -34,14 +34,14 @@
                             {% for row in data %}
                             <tr>
                                 <td>
+                                    {{ row["sn"] }}
                                     <a class="text-decoration-none" href="{{ sn_url + row['sn'] }}" target="_blank">
-                                        {{ row["sn"] }}
                                         <i class="bi bi-link-45deg"></i>
                                     </a>
                                 </td>
                                 <td>
+                                    {{ row["ord"] }}
                                     <a class="text-decoration-none" href="{{ mo_url + row['ord'] }}" target="_blank">
-                                        {{ row["ord"] }}
                                         <i class="bi bi-link-45deg"></i>
                                     </a>
                                 </td>
