@@ -204,27 +204,29 @@ def get_ipmi_ver():
     temp = []
     for i in ip_list:
         ver = get_bios_ipmi_ver(i, ipmitool_cmd["ipmi_ver"])
-        # print(ver)
         temp.append(ver)
-    print(temp)
     return jsonify(temp)
 
 
 @app.route("/tools", methods=["GET", "POST"])
 def tools():
+    from icecream import ic
     if request.method == "POST":
         input_list = user_input()
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
-        outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))
-        ip_list = get_ip_10(outfile["part_list"], outfile["sub_sn"], good_list)
-        # temp = get_bios_ipmi_ver(ip_list[0], ipmitool_cmd["ipmi_ver"])
+        ip_list = []
+        for sn in good_list:
+            outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))
+            ip = get_ip_10(outfile["part_list"], outfile["sub_sn"], sn)
+            ip_list.append(ip)
+            # ipmi_ver = get_bios_ipmi_ver(ip_list, ipmitool_cmd["ipmi_ver"])
         session["ip_list"] = ip_list
         # tempIP = get_ip_172(outfile["part_list"], outfile["sub_sn"], good_list)
-        # print(temp)
+        #     temp.append(outfile["order_num"])
         return render_template("tools.html", 
-                               ip_list=ip_list,
-                               mo_url=mo_url,
-                               sn_url=sn_url)
+                            ip_list=ip_list,
+                            mo_url=mo_url,
+                            sn_url=sn_url)
     return render_template("tools.html")
 
 
