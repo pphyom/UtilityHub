@@ -192,10 +192,14 @@ def cburn_log():
 
     return render_template("cburn_log.html")
 
+import random
+
+item = random.randint(0, 10)
 
 @app.route("/get_bios_ver", methods=["GET"])
 def get_bios_ver():
-    return "bios ver"
+    data = {"test": "test"}
+    return jsonify(data)
 
 
 @app.route("/get_ipmi_ver", methods=["GET"])

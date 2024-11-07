@@ -25,31 +25,31 @@
         <tbody>
             {% for item in ip_list %}
             <tr class="text-center">
-                <td>{{ item["system_sn"] }}
-                    <a href="{{ sn_url + item['system_sn'] }}" target="_blank">
+                <td>{{ item.system_sn }}
+                    <a href="{{ sn_url + item.system_sn }}" target="_blank">
                         <i class="bi bi-link-45deg"></i></a>
                 </td>
-                <td>{{ item["ip_address"] }}
-                    {% if item["ip_address"] != "NA" %}
-                    <a href="http://{{ item['ip_address'] }}" target="_blank">
+                <td>{{ item.ip_address }}
+                    {% if item.ip_address != "NA" %}
+                    <a href="http://{{ item.ip_address }}" target="_blank">
                         <i class="bi bi-link-45deg"></i></a>
                     {% endif %}
                 </td>
-                <td>{{ item["username"] }}</td>
-                <td class="user-select-all">{{ item["password"] }}</td>
+                <td>{{ item.username }}</td>
+                <td class="user-select-all">{{ item.password }}</td>
                 <td>
                     <i class="bi bi-cloud-arrow-down getBiosVer"></i>
                     <span
                         class="spinner-border spinner-border-sm spinner mx-auto"
                         style="display: none;"></span>
-                    <span class="get-bios-ver"></span>
+                    <span class="show-bios-ver"></span>
                 </td>
                 <td>
                     <i class="bi bi-cloud-arrow-down getIpmiVer"></i>
                     <span
                         class="spinner-border spinner-border-sm spinner mx-auto"
                         style="display: none;"></span>
-                    <span class="get-ipmi-ver"></span>
+                    <span class="show-ipmi-ver"></span>
                 </td>
             </tr>
             {% endfor %}
@@ -57,16 +57,26 @@
     </table>
 
     <script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+            //const getIpmiVer = document.querySelectorAll('.getIpmiVer');
+            document.querySelector(".getIpmiVer").addEventListener('click', () => {
+                alert('clicked');
+            });
+            
+        });
+
+
         /**
          * Fetch BIOS and BMC version from the server. 
-         */
+         
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelector(".ip-lookup-table").addEventListener("click", function(event) {
                 const target = event.target;
                 if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
                     const row = target.closest("td");
                     const spinner = row.querySelector(".spinner");
-                    const versionSpan = target.classList.contains("getBiosVer") ? row.querySelector(".get-bios-ver") : row.querySelector(".get-ipmi-ver");
+                    const versionSpan = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
                     const url = target.classList.contains("getBiosVer") ? "/get_bios_ver" : "/get_ipmi_ver";
     
                     spinner.style.display = "block";
@@ -76,17 +86,18 @@
                     fetch(url)
                         .then(response => response.json())
                         .then(data => {
-                            /* setTimeout(() => {
+                            setTimeout(() => {
                                 spinner.style.display = "none";
                                 versionSpan.textContent = data;
-                            }, 1000); */
+                            }, 1000);
                             spinner.style.display = "none";
                             versionSpan.textContent = data;
                         });
                 }
             });
         });
-    
+    */
     </script>
+
     {% endif %}
 </div>
