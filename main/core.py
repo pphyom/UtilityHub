@@ -95,7 +95,7 @@ class RackBurn:
     def __init__(self, url: str, refresh_interval: int):
         self.url = url
         self.refresh_interval = refresh_interval
-        self.rburn_server = os.getenv("RBURN_SVR40")
+        self.rburn_server = os.getenv("RBURN_SVR40_LIVE")
         self.live_data = []
         self.user_input_ = []
         self.event = Event()
