@@ -52,6 +52,7 @@ def get_ip_10(part_list: list, sub_sn: list, sn) -> dict:
         ip_addr_raw = soup.select_one("body > div > div > div > div.card-body > form > "
                                 "div:nth-child(2) > div > span:nth-child(2) > font > b")
         ip_addr = ip_addr_raw.text.strip("\n")
+        # ic(ip_addr)
         if ip_addr == "":
             ip_addr = "NA"
         device_info = {
@@ -63,7 +64,13 @@ def get_ip_10(part_list: list, sub_sn: list, sn) -> dict:
         return device_info
     except Exception as e:
         print(f"Error finding the ip address for {mac}: {e}")
-        return None
+        device_info = {
+            "ip_address": "NA",
+            "username": "ADMIN",
+            "password": pswd,
+            "system_sn": sn
+        }
+        return device_info
 
 
 def get_ip_172(part_list: list, sub_sn: list, sn_list: list) -> list[str]:
