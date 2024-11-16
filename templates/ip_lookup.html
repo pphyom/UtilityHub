@@ -58,6 +58,24 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+
+            // Asynchronous function to fetch IP list
+            const getIpList = async () => {
+                try {
+                    const response = await fetch("/get_ip_list");
+                    const data = await response.json();
+                    return data;  // Return the fetched data
+                } catch (error) {
+                    console.error('Error fetching IP list:', error);
+                    return null; // Return null if an error occurs
+                }
+            };
+
+            const getIpListHelper = async () => {
+                const ipList = await getIpList();
+                return ipList; 
+            };
+
             document.querySelector(".ip-lookup-table").addEventListener('click', function(event) {
                 const target = event.target;
                 if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
@@ -72,14 +90,18 @@
                     spinner.style.display = "block";
                     target.style.display = "none";
                     versionSpan.textContent = "";
-
+                    
                     fetch(url)
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
                         .then(data => {
                             spinner.style.display = "none";
                             versionSpan.textContent = data[rowIndex];
                         });
-
                 }
             });
         });

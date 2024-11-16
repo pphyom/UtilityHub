@@ -192,7 +192,11 @@ def cburn_log():
 
     return render_template("cburn_log.html")
 
-import random
+
+@app.route("/get_ip_list")
+def get_ip_list():
+    ip_list = session.get("ip_list", [])
+    return jsonify(ip_list)
 
 
 @app.route("/get_bios_ver", methods=["GET"])
@@ -228,9 +232,7 @@ def tools():
             ip_list.append(ip)
             # ipmi_ver = get_bios_ipmi_ver(ip_list, ipmitool_cmd["ipmi_ver"])
         session["ip_list"] = ip_list
-        # ic(ip_list)
-        # tempIP = get_ip_172(outfile["part_list"], outfile["sub_sn"], good_list)
-        #     temp.append(outfile["order_num"])
+
         return render_template("tools.html", 
                             ip_list=ip_list,
                             mo_url=mo_url,
