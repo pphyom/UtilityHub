@@ -197,22 +197,22 @@ import random
 
 @app.route("/get_bios_ver", methods=["GET"])
 def get_bios_ver():
-    item = random.randint(0, 10)
-    data = {"test": item}
-    return jsonify(data)
+    ip_list = session.get("ip_list", [])
+    temp = []
+    for ip in ip_list:
+        ver = get_bios_ipmi_ver(ip, ipmitool_cmd["bios_ver"])
+        temp.append(ver)
+    return jsonify(temp)
 
 
 @app.route("/get_ipmi_ver", methods=["GET"])
 def get_ipmi_ver():
-    # ip_list = session.get("ip_list", [])
-    # temp = []
-    # for ip in ip_list:
-    #     ver = get_bios_ipmi_ver(ip, ipmitool_cmd["ipmi_ver"])
-    #     temp.append(ver)
-    # return jsonify(temp)
-    item = random.randint(0, 10)
-    data = {"test": item}
-    return jsonify(data)
+    ip_list = session.get("ip_list", [])
+    temp = []
+    for ip in ip_list:
+        ver = get_bios_ipmi_ver(ip, ipmitool_cmd["ipmi_ver"])
+        temp.append(ver)
+    return jsonify(temp)
 
 
 @app.route("/tools", methods=["GET", "POST"])
@@ -228,7 +228,7 @@ def tools():
             ip_list.append(ip)
             # ipmi_ver = get_bios_ipmi_ver(ip_list, ipmitool_cmd["ipmi_ver"])
         session["ip_list"] = ip_list
-        ic(ip_list)
+        # ic(ip_list)
         # tempIP = get_ip_172(outfile["part_list"], outfile["sub_sn"], good_list)
         #     temp.append(outfile["order_num"])
         return render_template("tools.html", 
