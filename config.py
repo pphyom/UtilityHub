@@ -1,6 +1,6 @@
 # Description: This file contains the configuration settings for the application.
 
-import os
+import os, secrets
 from datetime import timedelta
 from dotenv import load_dotenv
 from main.extensions import db
@@ -9,7 +9,7 @@ load_dotenv()
 
 class Config:
     # configuration go here
-    SECRET_KEY = os.urandom(24)
+    SECRET_KEY = secrets.token_urlsafe(16)
     SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SESSION_TYPE = "sqlalchemy"
