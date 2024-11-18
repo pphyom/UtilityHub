@@ -192,6 +192,9 @@ def cburn_log():
 
     return render_template("cburn_log.html")
 
+#####################
+###   Tool Page   ###
+#####################
 
 @app.route("/get_ip_list")
 def get_ip_list():
