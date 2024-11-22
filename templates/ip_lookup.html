@@ -60,36 +60,29 @@
         document.addEventListener("DOMContentLoaded", function() {
 
             // Asynchronous function to fetch IP list
-            /*const getIpList = async () => {
+            let ipList = null;
+            
+            async function getIpList() {
                 try {
                     const response = await fetch("/get_ip_list");
-                    const data = await response.json();
-                    return data;  // Return the fetched data
-                } catch (error) {
-                    console.error('Error fetching IP list:', error);
-                    return null; // Return null if an error occurs
-                }
-            };
-
-            const getIpListHelper = async () => {
-                const ipList = await getIpList();
-                return ipList; 
-            };*/
-
-            fetch("/get_ip_list")
-                .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => {
+                    ipList = await response.json();
+                    return ipList;
+                } catch (error) {
                     console.error('Error fetching IP list:', error);
-                });
-                
+                }
+            };
+
+            // Helper function to get IP list
+            async function getIpListHelper() {
+                const ipList = await getIpList();
+                console.log(ipList[0].system_sn);
+            };
+
+            getIpListHelper();
+
 
             document.querySelector(".ip-lookup-table").addEventListener('click', function(event) {
                 const target = event.target;
@@ -100,6 +93,7 @@
                     const versionSpan = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
                     const url = target.classList.contains("getBiosVer") ? "/get_bios_ver" : "/get_ipmi_ver";
 
+                    // Get the row index
                     const rowIndex = Array.from(row.parentElement.children).indexOf(row);
                     
                     spinner.style.display = "block";
