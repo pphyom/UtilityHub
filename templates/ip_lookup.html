@@ -60,7 +60,7 @@
         document.addEventListener("DOMContentLoaded", function() {
 
             // Asynchronous function to fetch IP list
-            const getIpList = async () => {
+            /*const getIpList = async () => {
                 try {
                     const response = await fetch("/get_ip_list");
                     const data = await response.json();
@@ -74,7 +74,22 @@
             const getIpListHelper = async () => {
                 const ipList = await getIpList();
                 return ipList; 
-            };
+            };*/
+
+            fetch("/get_ip_list")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching IP list:', error);
+                });
+                
 
             document.querySelector(".ip-lookup-table").addEventListener('click', function(event) {
                 const target = event.target;
