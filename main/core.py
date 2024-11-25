@@ -41,18 +41,9 @@ class SPM:
             return await response.text()
         
     async def retrieve_data_from_file(self, addr, sn):
-        # assembly_data = {"order_num": [], "sub_sn": [], "part_list": [], "ord_": []}
-        # temp = []
+        ''' Retrieve server info from SPM by its serial number '''
         async with aiohttp.ClientSession() as session:
-            # tasks = [self.fetch(session, (addr + sn)) for sn in sn_list]
             response = await self.fetch(session, (addr + sn))
-            # print("OUTPUT ",response)
-            # responses = await asyncio.gather(*tasks)
-
-        # for response in responses:
-        #     if isinstance(response, Exception):
-        #         print(f"Error while getting data for {sn}: {response}")
-        #         continue
 
             content = pd.read_html(StringIO(response), header=0)[0]
             order_num = content["ORDERNUM"]
@@ -70,11 +61,6 @@ class SPM:
                 "part_list": part_list,
                 "ord_": ord_,
             }
-            # temp.append(assembly_data)
-            # assembly_data["order_num"].append(str(order_num.iloc[0]))  # Assuming there's always at least one element
-            # assembly_data["sub_sn"].append(sub_sn)
-            # assembly_data['part_list'].append(part_list)
-            # assembly_data["ord_"].append(ord_)
 
             return assembly_data
 

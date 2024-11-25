@@ -36,7 +36,7 @@
                     {% endif %}
                 </td>
                 <td>{{ item.username }}</td>
-                <td class="user-select-all">{{ item.password }}</td>
+                <td id="txt-to-copy" class="user-select-all">{{ item.password }}</td>
                 <td>
                     <i class="bi bi-cloud-arrow-down getBiosVer"></i>
                     <span
@@ -58,6 +58,14 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+
+            // Copy selected text to clipboard
+            const selectedText = document.getElementById("txt-to-copy");
+            document.querySelectorAll("#txt-to-copy").forEach(function(selectedText) {
+                selectedText.addEventListener("click", function() {
+                    navigator.clipboard.writeText(selectedText.textContent);
+                });
+            });
 
             // Asynchronous function to fetch system IPMI info
             async function getsysIpmiInfo() {

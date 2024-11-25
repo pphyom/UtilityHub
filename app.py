@@ -133,44 +133,45 @@ def ftu_log():
     if request.method == "POST":
         input_list = user_input()
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
-        outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, good_list))   
-        mac_list = get_mac_address(outfile["part_list"], outfile["sub_sn"])
+        test = {} # return value
+        for sn in good_list:
+            outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))   
+            mac_list = get_mac_address(outfile["part_list"], outfile["sub_sn"])
         
-        test = {}
         for i in range(len(good_list)):
             serial_num = good_list[i]
-            order_num = outfile["order_num"][i]
-            ord = outfile["ord_"][i]
+            order_num = outfile["order_num"]
+            ord = outfile["ord_"]
 
             test[serial_num] = [order_num, ord]
             
 
-        #  get validated instruction file
-        ins_file_url = [
-            ins_file for mac in mac_list 
-            if requests.get(ins_file := f"{ins_path}/ins-{mac}".lower())
-        ]  
+            #  get validated instruction file
+            ins_file_url = [
+                ins_file for mac in mac_list 
+                if requests.get(ins_file := f"{ins_path}/ins-{mac}".lower())
+            ]  
 
-        #  get the directory (path) from the instruction file for each system
-        directory = [
-            line[5:-1]
-            for elem in ins_file_url 
-            for line in get_each_line_from_page(elem) 
-            if "DIR=" in line
-        ]
+            #  get the directory (path) from the instruction file for each system
+            directory = [
+                line[5:-1]
+                for elem in ins_file_url 
+                for line in get_each_line_from_page(elem) 
+                if "DIR=" in line
+            ]
 
-        #  create the ftu urls
-        ftu_paths = [(ftu_addr + "/".join(d.split("/")[:2])) for d in directory]
-        # ftu_dir = list(dict.fromkeys(ftu_paths))  # remove duplicates
+            #  create the ftu urls
+            # ftu_paths = [(ftu_addr + "/".join(d.split("/")[:2])) for d in directory]
+            # ftu_dir = list(dict.fromkeys(ftu_paths))  # remove duplicates
         
-        final = []
-        for sn, dir in zip(good_list, ftu_paths):
-            temp = {}
-            link = f"{dir}/{sn}/"
-            js, found = asyncio.run(ftu.json_lookup(link))
-            # temp["MO"] = js["MO"]
-            temp["ftu_data"] = js
-            final.append(temp)
+        # final = []
+        # for sn, dir in zip(good_list, ftu_paths):
+        #     temp = {}
+        #     link = f"{dir}/{sn}/"
+        #     js, found = asyncio.run(ftu.json_lookup(link))
+        #     # temp["MO"] = js["MO"]
+        #     temp["ftu_data"] = js
+        #     final.append(temp)
 
 
         return render_template("ftu_log.html", data=test)
