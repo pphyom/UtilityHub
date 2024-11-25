@@ -1,6 +1,6 @@
 <div>
     {% include "input_form.html" %}
-    {% if not ip_list %}
+    {% if not sys_list %}
     <div class="table-wrapper">
         {% include "nodata.html" %}
     </div>
@@ -14,10 +14,10 @@
         data-show-search-clear-button="true">
         <thead>
             <tr class="text-center">
-                <th data-sortable="true">Serial Number</th>
-                <th data-sortable="true">IP</th>
-                <th>Login Name</th>
-                <th>BMC Password</th>
+                <th data-sortable="true"><i class="bi bi-upc"></i>Serial Number</th>
+                <th data-sortable="true"><i class="bi bi-exclamation-square"></i>IP</th>
+                <th><i class="bi bi-person-circle"></i>Login Name</th>
+                <th><i class="bi bi-file-lock2"></i>BMC Password</th>
                 <th>BIOS Ver.</th>
                 <th>BMC Ver.</th>
             </tr>

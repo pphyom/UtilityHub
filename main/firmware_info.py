@@ -71,8 +71,8 @@ def get_bios_ipmi_ver(device, cmd):
 
         except subprocess.CalledProcessError as e:
             print(f"Error occured: {e}")
-            return None
+            return "NA"
     else:
         print("Host Disconnected!")
-        return None
+        return "NA"
     

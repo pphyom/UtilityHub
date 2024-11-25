@@ -56,6 +56,7 @@ def connected_network():
     return {"connected_ip": request.remote_addr}
 
 
+##### Index Page #####
 @app.route("/get_data", methods=["GET"])
 def get_data():
     data_helper = {
@@ -90,7 +91,7 @@ def index():
         data_set = live.filtered_data(input_list)
         return render_template("index.html", data=data_set)
 
-
+##### RBurn Page #####
 @app.route("/rburn_log", methods=["GET", "POST"])
 def rburn_log():
     if request.method == "POST":
@@ -126,7 +127,7 @@ def rburn_log():
 
     return render_template("rburn_log.html")
 
-
+##### FTU Page #####
 @app.route("/ftu_log", methods=["GET", "POST"])
 def ftu_log():
     if request.method == "POST":
@@ -176,7 +177,7 @@ def ftu_log():
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
 
-
+##### Cburn Page #####
 @app.route("/cburn_log", methods=["GET", "POST"])
 def cburn_log():
     if request.method == "POST":
@@ -204,9 +205,12 @@ def get_sys_ipmi_info():
 @app.route("/get_bios_ver", methods=["POST"])
 def get_bios_ver():
     ''' Get the BIOS version of the system. '''
-    system_to_parse = request.get_json()
-    ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["bios_ver"])
-    return jsonify(ver)
+    try:
+        system_to_parse = request.get_json()
+        ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["bios_ver"])
+        return jsonify(ver)
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 
 @app.route("/get_ipmi_ver", methods=["POST"])
