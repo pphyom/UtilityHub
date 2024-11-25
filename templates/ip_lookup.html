@@ -23,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in ip_list %}
+            {% for item in sys_list %}
             <tr class="text-center">
                 <td>{{ item.system_sn }}
                     <a href="{{ sn_url + item.system_sn }}" target="_blank">
@@ -59,32 +59,21 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
-            // Asynchronous function to fetch IP list
-            let ipList = null;
-            
-            async function getIpList() {
+            // Asynchronous function to fetch system IPMI info
+            async function getsysIpmiInfo() {
                 try {
-                    const response = await fetch("/get_ip_list");
+                    const response = await fetch("/get_sys_ipmi_info");
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    ipList = await response.json();
-                    return ipList;
+                    return await response.json();
                 } catch (error) {
                     console.error('Error fetching IP list:', error);
                 }
             };
 
-            // Helper function to get IP list
-            async function getIpListHelper() {
-                const ipList = await getIpList();
-                console.log(ipList[0].system_sn);
-            };
 
-            getIpListHelper();
-
-
-            document.querySelector(".ip-lookup-table").addEventListener('click', function(event) {
+            document.querySelector(".ip-lookup-table").addEventListener('click', async function(event) {
                 const target = event.target;
                 if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
                     const row = target.closest("tr");
@@ -92,6 +81,7 @@
                     const spinner = col.querySelector(".spinner");
                     const versionSpan = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
                     const url = target.classList.contains("getBiosVer") ? "/get_bios_ver" : "/get_ipmi_ver";
+                    const sysIpmiInfo = await getsysIpmiInfo();   // Get IP list from session data
 
                     // Get the row index
                     const rowIndex = Array.from(row.parentElement.children).indexOf(row);
@@ -99,8 +89,18 @@
                     spinner.style.display = "block";
                     target.style.display = "none";
                     versionSpan.textContent = "";
-                    
-                    fetch(url)
+
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            ip_address: sysIpmiInfo[rowIndex].ip_address,
+                            username: sysIpmiInfo[rowIndex].username,
+                            password: sysIpmiInfo[rowIndex].password
+                        })
+                    })
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error('Network response was not ok');
@@ -109,7 +109,7 @@
                         })
                         .then(data => {
                             spinner.style.display = "none";
-                            versionSpan.textContent = data[rowIndex];
+                            versionSpan.textContent = data;
                         });
                 }
             });

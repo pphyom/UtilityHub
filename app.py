@@ -96,7 +96,7 @@ def rburn_log():
     if request.method == "POST":
         # 1. get the user input: get_sn for sn, path to json, and rack name, 
         #    get_rack for rack path to each unit.
-        get_sn, get_rack = get_sys_info(user_input(), live.live_data, live.rburn_server)
+        get_sn, get_rack = get_sys_ipmi_info(user_input(), live.live_data, live.rburn_server)
 
         # retrieve at least 5 passed units from the rack including the user's input
         # to create the test data if not exist
@@ -192,48 +192,45 @@ def cburn_log():
 
     return render_template("cburn_log.html")
 
-#####################
-###   Tool Page   ###
-#####################
 
-@app.route("/get_ip_list")
-def get_ip_list():
-    ip_list = session.get("ip_list", [])
-    return jsonify(ip_list)
+##### Tool Page #####
+@app.route("/get_sys_ipmi_info")
+def get_sys_ipmi_info():
+    ''' Get system's IPMI information from session. '''
+    sys_list = session.get("sys_list", [])
+    return jsonify(sys_list)
 
 
-@app.route("/get_bios_ver", methods=["GET"])
+@app.route("/get_bios_ver", methods=["POST"])
 def get_bios_ver():
-    ip_list = session.get("ip_list", [])
-    temp = []
-    for ip in ip_list:
-        ver = get_bios_ipmi_ver(ip, ipmitool_cmd["bios_ver"])
-        temp.append(ver)
-    return jsonify(temp)
+    ''' Get the BIOS version of the system. '''
+    system_to_parse = request.get_json()
+    ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["bios_ver"])
+    return jsonify(ver)
 
 
-@app.route("/get_ipmi_ver", methods=["GET"])
-def get_ipmi_ver(system_to_parse):
+@app.route("/get_ipmi_ver", methods=["POST"])
+def get_ipmi_ver():
+    ''' Get the IPMI version of the system. '''
+    system_to_parse = request.get_json()
     ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["ipmi_ver"])
     return jsonify(ver)
 
 
 @app.route("/tools", methods=["GET", "POST"])
 def tools():
-    from icecream import ic
     if request.method == "POST":
         input_list = user_input()
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
-        ip_list = []
+        sys_list = []
         for sn in good_list:
             outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))
             ip = get_ip_10(outfile["part_list"], outfile["sub_sn"], sn)
-            ip_list.append(ip)
-            # ipmi_ver = get_bios_ipmi_ver(ip_list, ipmitool_cmd["ipmi_ver"])
-        session["ip_list"] = ip_list
+            sys_list.append(ip)
+        session["sys_list"] = sys_list
 
         return render_template("tools.html", 
-                            ip_list=ip_list,
+                            sys_list=sys_list,
                             mo_url=mo_url,
                             sn_url=sn_url)
     return render_template("tools.html")

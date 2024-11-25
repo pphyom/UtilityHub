@@ -74,3 +74,5 @@ def get_bios_ipmi_ver(device, cmd):
             return None
     else:
         print("Host Disconnected!")
+        return None
+    
