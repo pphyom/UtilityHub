@@ -37,7 +37,7 @@ def get_last_line_from_file(in_file: str) -> str:
 def get_cburn_path(mac_list: list[str], ins_path: str, cburn_addr: str) -> list[dict[str, str]]:
     
     temp = []
-    cburn_path = dict(screendump=[], ins_to_sn=[])
+    # cburn_path = dict(screendump=[], ins_to_sn=[])
     screen_dump = "/screen-1.dump"
 
     for mac in mac_list:
@@ -88,9 +88,7 @@ def screendump_wrapper(sn_list: list, assembly_rec_addr: str, ins_path: str, cbu
         return final
     
     except HTTPError as e:
-        match e.code:
-            case 500:
-                print("Internal Server Error. Server cannot be found!")
+        print(f"Internal Server Error: {e}")
 
 
 def get_mac_address(part_list: list[str], sub_sn: list[str]) -> list[str]:

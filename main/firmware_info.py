@@ -1,19 +1,16 @@
 # This file contains functions to get firmware information of a device.
 
 import subprocess
-import icecream as ic
 from main.cburn_helper import *
 from main.tools import check_connectivity
-
 
 ipmi_tool = "SMCIPMITool_2.28.0/SMCIPMITool.exe"
 sum_tool = "sum_2.14.0/sum.exe"
 
-
 ipmitool_cmd = {
-    "ipmi_ver": " ipmi ver", 
+    "ipmi_ver": " ipmi ver",
     "bios_ver": " bios ver",
-    }
+}
 
 
 def sum_bios_ipmi_ver(device, cmd):
@@ -21,15 +18,14 @@ def sum_bios_ipmi_ver(device, cmd):
 
     if device["ip_address"] != "NA" or check_connectivity(device["ip_address"]):
         try:
-            output = subprocess.Popen([sum_tool] + 
-                                    ["-i", device["ip_address"], "-U", "ADMIN", "-P", device["password"]] + 
-                                    ["-c", cmd],
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE,
-                                    text=True)
+            output = subprocess.Popen([sum_tool] +
+                                      ["-i", device["ip_address"], "-U", "ADMIN", "-P", device["password"]] +
+                                      ["-c", cmd],
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE,
+                                      text=True)
             output.poll()
             stdout, stderr = output.communicate()
-            firmware_version = ""
             match cmd:
                 case "GetBmcInfo":
                     firmware_version = stdout.split("\n")[-4].strip()[21:]
@@ -38,7 +34,7 @@ def sum_bios_ipmi_ver(device, cmd):
                 case _:
                     firmware_version = "NA"
             print(firmware_version)
-        
+
         except subprocess.CalledProcessError as e:
             print(f"Error occured: {e}")
             return None
@@ -51,14 +47,13 @@ def get_bios_ipmi_ver(device, cmd):
 
     if device["ip_address"] != "NA" or check_connectivity(device["ip_address"]):
         try:
-            output = subprocess.Popen([ipmi_tool] + 
+            output = subprocess.Popen([ipmi_tool] +
                                       [device["ip_address"], " ADMIN ", device["password"], cmd],
-                                      stdout=subprocess.PIPE, 
+                                      stdout=subprocess.PIPE,
                                       stderr=subprocess.PIPE,
                                       text=True)
             output.poll()
             stdout, stderr = output.communicate()
-            firmware_ver = "NA"
             match cmd:
                 case " bios ver":
                     f = stdout.split()[-1].replace("\x00", "").strip()
@@ -70,9 +65,8 @@ def get_bios_ipmi_ver(device, cmd):
             return firmware_ver
 
         except subprocess.CalledProcessError as e:
-            print(f"Error occured: {e}")
+            print(f"Error occurred: {e}")
             return "NA"
     else:
         print("Host Disconnected!")
         return "NA"
-    

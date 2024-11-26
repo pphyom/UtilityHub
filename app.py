@@ -1,7 +1,3 @@
-import os
-import json
-import asyncio
-import requests
 from flask import Flask, render_template, jsonify, session
 from main.core import *
 from main.cburn_helper import *
@@ -11,7 +7,6 @@ from main.tools import *
 from main.firmware_info import *
 from config import Config
 from main.extensions import db, sess
-from icecream import ic
 
 rburn_live = os.getenv("RBURN_SVR40_LIVE")
 
@@ -56,7 +51,7 @@ def connected_network():
     return {"connected_ip": request.remote_addr}
 
 
-##### Index Page #####
+# Index Page #
 @app.route("/get_data", methods=["GET"])
 def get_data():
     data_helper = {
@@ -91,7 +86,8 @@ def index():
         data_set = live.filtered_data(input_list)
         return render_template("index.html", data=data_set)
 
-##### RBurn Page #####
+
+# RBurn Page #
 @app.route("/rburn_log", methods=["GET", "POST"])
 def rburn_log():
     if request.method == "POST":
@@ -127,65 +123,65 @@ def rburn_log():
 
     return render_template("rburn_log.html")
 
-##### FTU Page #####
+
+# FTU Page #
 @app.route("/ftu_log", methods=["GET", "POST"])
 def ftu_log():
     if request.method == "POST":
         input_list = user_input()
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
-        test = {} # return value
+        test = {}  # return value
         for sn in good_list:
-            outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))   
+            outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))
             mac_list = get_mac_address(outfile["part_list"], outfile["sub_sn"])
-        
-        for i in range(len(good_list)):
-            serial_num = good_list[i]
-            order_num = outfile["order_num"]
-            ord = outfile["ord_"]
 
-            test[serial_num] = [order_num, ord]
-            
+            for i in range(len(good_list)):
+                serial_num = good_list[i]
+                order_num = outfile["order_num"]
+                ord_ = outfile["ord_"]
 
-            #  get validated instruction file
-            ins_file_url = [
-                ins_file for mac in mac_list 
-                if requests.get(ins_file := f"{ins_path}/ins-{mac}".lower())
-            ]  
+                test[serial_num] = [order_num, ord_]
 
-            #  get the directory (path) from the instruction file for each system
-            directory = [
-                line[5:-1]
-                for elem in ins_file_url 
-                for line in get_each_line_from_page(elem) 
-                if "DIR=" in line
-            ]
+                #  get validated instruction file
+                ins_file_url = [
+                    ins_file for mac in mac_list
+                    if requests.get(ins_file := f"{ins_path}/ins-{mac}".lower())
+                ]
 
-            #  create the ftu urls
-            # ftu_paths = [(ftu_addr + "/".join(d.split("/")[:2])) for d in directory]
-            # ftu_dir = list(dict.fromkeys(ftu_paths))  # remove duplicates
-        
-        # final = []
-        # for sn, dir in zip(good_list, ftu_paths):
-        #     temp = {}
-        #     link = f"{dir}/{sn}/"
-        #     js, found = asyncio.run(ftu.json_lookup(link))
-        #     # temp["MO"] = js["MO"]
-        #     temp["ftu_data"] = js
-        #     final.append(temp)
+                #  get the directory (path) from the instruction file for each system
+                directory = [
+                    line[5:-1]
+                    for elem in ins_file_url
+                    for line in get_each_line_from_page(elem)
+                    if "DIR=" in line
+                ]
 
+                #  create the ftu urls
+                # ftu_paths = [(ftu_addr + "/".join(d.split("/")[:2])) for d in directory]
+                # ftu_dir = list(dict.fromkeys(ftu_paths))  # remove duplicates
+
+            # final = []
+            # for sn, dir in zip(good_list, ftu_paths):
+            #     temp = {}
+            #     link = f"{dir}/{sn}/"
+            #     js, found = asyncio.run(ftu.json_lookup(link))
+            #     # temp["MO"] = js["MO"]
+            #     temp["ftu_data"] = js
+            #     final.append(temp)
 
         return render_template("ftu_log.html", data=test)
         # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
     return render_template("ftu_log.html")
 
-##### Cburn Page #####
+
+# Cburn Page #
 @app.route("/cburn_log", methods=["GET", "POST"])
 def cburn_log():
     if request.method == "POST":
         sn_list: list[str] = user_input()
         good_list = asyncio.run(ftu.validation(sn_list, scan_log))
         cburn_result = screendump_wrapper(good_list, assembly_rec, ins_path, cburn_addr)
-        
+
         return render_template("cburn_log.html",
                                headings=cburn_headings,
                                data=cburn_result,
@@ -195,17 +191,17 @@ def cburn_log():
     return render_template("cburn_log.html")
 
 
-##### Tool Page #####
+# Tool Page #
 @app.route("/get_sys_ipmi_info")
 def get_sys_ipmi_info():
-    ''' Get system's IPMI information from session. '''
+    """ Get system's IPMI information from session. """
     sys_list = session.get("sys_list", [])
     return jsonify(sys_list)
 
 
 @app.route("/get_bios_ver", methods=["POST"])
 def get_bios_ver():
-    ''' Get the BIOS version of the system. '''
+    """ Get the BIOS version of the system. """
     try:
         system_to_parse = request.get_json()
         ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["bios_ver"])
@@ -216,7 +212,7 @@ def get_bios_ver():
 
 @app.route("/get_ipmi_ver", methods=["POST"])
 def get_ipmi_ver():
-    ''' Get the IPMI version of the system. '''
+    """ Get the IPMI version of the system. """
     system_to_parse = request.get_json()
     ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["ipmi_ver"])
     return jsonify(ver)
@@ -234,10 +230,10 @@ def tools():
             sys_list.append(ip)
         session["sys_list"] = sys_list
 
-        return render_template("tools.html", 
-                            sys_list=sys_list,
-                            mo_url=mo_url,
-                            sn_url=sn_url)
+        return render_template("tools.html",
+                               sys_list=sys_list,
+                               mo_url=mo_url,
+                               sn_url=sn_url)
     return render_template("tools.html")
 
 

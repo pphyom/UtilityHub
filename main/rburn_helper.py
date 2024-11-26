@@ -1,6 +1,6 @@
-import requests, os, dotenv
+import os
+import requests
 from bs4 import BeautifulSoup
-
 
 RBURN_LOG = os.getenv("RBURN_LOG")
 RBURN_SVR40 = os.getenv("RBURN_SVR40")

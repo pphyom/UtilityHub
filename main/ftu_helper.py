@@ -6,8 +6,8 @@ from io import StringIO
 from bs4 import BeautifulSoup
 from main.core import SPM
 
-
 spm = SPM()
+
 
 class FTU:
     def __init__(self):
@@ -25,7 +25,7 @@ class FTU:
 
     async def json_lookup(self, url: str) -> tuple[list, bool]:
         """
-        Search .json file in a given url. Download it and return true if found. 
+        Search .json file in a given url. Download it and return true if found.
         Return none and false if not found.
         """
         found: bool = False
@@ -56,16 +56,16 @@ class FTU:
         spd_drop = 0
 
         for elem in range(0, pcie_total):
-            pcie_cap_ = js[f"PCIE_{elem}_CAP"]    # front half
-            pcie_sta_ = js[f"PCIE_{elem}_STA"]    # rear half
+            pcie_cap_ = js[f"PCIE_{elem}_CAP"]  # front half
+            pcie_sta_ = js[f"PCIE_{elem}_STA"]  # rear half
 
-            pcie_dict = {"Gen": [pcie_cap_[0:4], pcie_sta_[0:4]],   # Gen4 x2
-                        "Spd": [pcie_cap_[5:], pcie_sta_[5:]]}     # Gen4x 2
+            pcie_dict = {"Gen": [pcie_cap_[0:4], pcie_sta_[0:4]],  # Gen4 x2
+                         "Spd": [pcie_cap_[5:], pcie_sta_[5:]]}  # Gen4x 2
 
             if pcie_dict["Gen"][0] not in pcie_dict["Gen"][1]:
                 gen_drop += 1
 
             if pcie_dict["Spd"][0] not in pcie_dict["Spd"][1]:
                 spd_drop += 1
-            
+
         return gen_drop, spd_drop

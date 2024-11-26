@@ -1,8 +1,8 @@
 # Description: This file contains the helper functions to support firmware_info and firmware_update files.
 
-import os, dotenv
-import requests, socket
-from bs4 import BeautifulSoup
+import dotenv
+import os
+import socket
 from main.cburn_helper import *
 
 dotenv.load_dotenv()
@@ -20,7 +20,7 @@ def check_connectivity(host, port=80, timeout=5) -> bool:
         return False
 
 
-def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> list[str]:
+def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> dict[str, str]:
     """ Retrieve the IPMI MAC and Password from the system. """
     ipmi_info = {"mac": "", "pswd": ""}
     for part, ssn in zip(part_list, sub_sn):
@@ -42,7 +42,7 @@ def get_ip_10(part_list: list, sub_sn: list, sn) -> dict:
         response = requests.post(ip_discover_10, data=payload, verify=False)
         soup = BeautifulSoup(response.text, "html.parser")
         ip_addr_raw = soup.select_one("body > div > div > div > div.card-body > form > "
-                                "div:nth-child(2) > div > span:nth-child(2) > font > b")
+                                      "div:nth-child(2) > div > span:nth-child(2) > font > b")
         ip_addr = ip_addr_raw.text.strip("\n")
         if ip_addr == "":
             ip_addr = "NA"
@@ -64,7 +64,7 @@ def get_ip_10(part_list: list, sub_sn: list, sn) -> dict:
         return device_info
 
 
-def get_ip_172(part_list: list, sub_sn: list, sn_list: list) -> list[str]:
+def get_ip_172(part_list: list, sub_sn: list, sn_list: list) -> list[dict[str, str]]:
     """ SUBNET 172. Discover IP address from connected devices. """
     ipmi_info = get_ipmi_info(part_list, sub_sn)
 
@@ -75,7 +75,7 @@ def get_ip_172(part_list: list, sub_sn: list, sn_list: list) -> list[str]:
         payload = {
             "address": mac,
             "action": "Search"
-            }
+        }
         try:
             response = requests.post(ip_discover_172, data=payload, verify=False)
             soup = BeautifulSoup(response.text, "html.parser")
@@ -84,11 +84,11 @@ def get_ip_172(part_list: list, sub_sn: list, sn_list: list) -> list[str]:
             if parsed_text == "":
                 parsed_text = "NA"
             device_combo = {
-                "ip_address": parsed_text, 
+                "ip_address": parsed_text,
                 "username": "ADMIN",
                 "password": pswd,
                 "system_sn": sn
-                }
+            }
             device_info.append(device_combo)
         except Exception as e:
             print(f"Error finding the ip address for {mac}: {e}")

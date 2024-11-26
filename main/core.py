@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-
 DATA_ = {
     "live_headings": ("Location", "System SN", "Status", "Rack", "Time Gap", "Log"),
     "rburn_headings": ("System SN", "Test Result", "CPU Speed", "CPU Linpack", "DIMM", "GPU Thresholds",
@@ -38,9 +37,9 @@ class SPM:
     async def fetch(self, session, url):
         async with session.get(url) as response:
             return await response.text()
-        
+
     async def retrieve_data_from_file(self, addr, sn):
-        ''' Retrieve server info from SPM by its serial number '''
+        """ Retrieve server info from SPM by its serial number """
         async with aiohttp.ClientSession() as session:
             response = await self.fetch(session, (addr + sn))
 
@@ -142,11 +141,12 @@ class RackBurn:
 
         return data_set
 
-def configuration(self):
+
+def configuration():
     setting = {
-        "rack_server": request.form.get("rackServer"), 
+        "rack_server": request.form.get("rackServer"),
         "refresh_itvl": request.form.get("refreshInterval"),
-        }
+    }
     return setting
 
 
