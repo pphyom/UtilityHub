@@ -118,7 +118,7 @@ def get_sn_models_from_rack(rack_list: list):
                     }
                 }
 
-    for rack in rack_list:  # rack = http://10.43.251.40/logs/Supermicro/2024/May/6U8801322401/
+    for rack in rack_list:
         path_to_mac = find_mac_summary_log(rack)
 
         for full_path in path_to_mac:
