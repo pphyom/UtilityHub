@@ -1,5 +1,4 @@
 import os
-import asyncio
 import aiohttp
 import requests
 import pandas as pd

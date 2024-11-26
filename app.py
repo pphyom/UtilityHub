@@ -11,7 +11,7 @@ from main.tools import *
 from main.firmware_info import *
 from config import Config
 from main.extensions import db, sess
-
+from icecream import ic
 
 rburn_live = os.getenv("RBURN_SVR40_LIVE")
 
@@ -97,7 +97,7 @@ def rburn_log():
     if request.method == "POST":
         # 1. get the user input: get_sn for sn, path to json, and rack name, 
         #    get_rack for rack path to each unit.
-        get_sn, get_rack = get_sys_ipmi_info(user_input(), live.live_data, live.rburn_server)
+        get_sn, get_rack = get_sys_info(user_input(), live.live_data, live.rburn_server)
 
         # retrieve at least 5 passed units from the rack including the user's input
         # to create the test data if not exist
