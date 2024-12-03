@@ -49,7 +49,7 @@ def find_mac_summary_log(rack_url: str) -> list:
                 # Validating if the system passed the test. Only passed unit will be added to the list.
                 temp = requests.get(f"{link}system_final-test-result.txt")
                 if "PASS" in temp.text and count != 5:
-                    path_to_mac.append(link)
+                    path_to_mac.append(link + "system_test-summary-json-full.json")
                     count += 1
 
         return path_to_mac
@@ -85,10 +85,14 @@ def get_sys_info(input_list: list, base_data: list, rb_server: str) -> tuple[lis
     return get_sn, get_rack
 
 
-def get_sn_models_from_rack(rack_list: list):
-    # Create a directory that stores test data for each rack
+def create_directory():
+    """ Create a directory that stores test data for each rack. """
     if not os.path.exists("rack_data"):
         os.makedirs("rack_data")
+    return "Directory created successfully!"
+
+
+def get_sn_models_from_rack(rack_list: list):
 
     test_dict = {
                     "CPU": {
@@ -122,7 +126,7 @@ def get_sn_models_from_rack(rack_list: list):
         path_to_mac = find_mac_summary_log(rack)
 
         for full_path in path_to_mac:
-            elem = full_path + "system_test-summary-json-full.json"
-            print(elem)
+        #     elem = full_path + "system_test-summary-json-full.json"
+            print(full_path)
         
     return "Hello"

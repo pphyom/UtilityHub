@@ -95,34 +95,49 @@ def rburn_log():
         # 1. get the user input: get_sn for sn, path to json, and rack name, 
         #    get_rack for rack path to each unit.
         get_sn, get_rack = get_sys_info(user_input(), live.live_data, live.rburn_server)
-        # ic(get_sn)
-        # ic(get_rack)
-        # retrieve at least 5 passed units from the rack including the user's input
-        # to create the test data if not exist
-        rack_addr = get_sn_models_from_rack(get_rack)
-        ic(rack_addr)
 
         # 2. if the rack_data is not on database, create it.
-        if not os.path.exists("rack_data"):
-            os.makedirs("rack_data")
+        create_directory()
+
+        def do_operation(item_sn):
+            print(f"{item_sn} created.")
 
         # 3. Retrieve the rack name from each server and search if the comparison file exists.
         for item in get_sn:
             for key in item.values():
                 rack = key["rack"]
 
-                # if the file exists, will be used to compare test data.
+                ## FILE EXISTS => 
+                # 1. Get the JSON file from the new user input SN.
+                # 2. Compare the JSON file with the existing JSON files in the rack.
+                # 3. Display the result on the page.
                 if os.path.exists(f"rack_data\\{rack}.json"):
                     print("file exist")
+                    do_operation(list(item.keys())[0])
+                    # do_something()
 
-                # if not exist, create an empty file using the rack name.
+                ## FILE NOT EXIST => 
+                # 1. Create an empty JSON file using the rack name.
+                # 2. Get a minimal of 5 passed units from the rack with their JSON files. 
+                # 3. Pass the JSON file to the each function for the result and create the temp JSON file.
+                # 4. Pass the temp JSON file to the comparison function. 
+                # 5. Store the most common data into the JSON file created in number 1.
+                # 6. Get the JSON file from the new user input SN.
+                # 7. Compare the JSON file with the existing JSON files in the rack.
+                # 8. Display the result on the page.
                 else:
                     print("file not exist")
                     with open(f"rack_data\\{rack}.json", "w") as db_file:
                         # json.dump(data, db_file)
                         db_file.write(json.dumps({}))
+                    do_operation(list(item.keys())[0])
+                    # do_something()
 
-        return get_sn
+        # retrieve at least 5 passed units from the rack including the user's input
+        # to create the test data if not exist
+        # rack_addr = get_sn_models_from_rack(get_rack)
+
+        return render_template("rburn_log.html", data=get_rack)
 
     return render_template("rburn_log.html")
 
