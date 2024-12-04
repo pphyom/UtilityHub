@@ -63,7 +63,7 @@
             const cells = document.querySelectorAll("td.user-select-all");
             cells.forEach(cell => {
                 cell.addEventListener("click", () => {
-                    selectedText = window.getSelection().toString();
+                    let selectedText = cell.textContent;
                     if (selectedText) {
                         navigator.clipboard.writeText(selectedText);
                     }
@@ -71,17 +71,22 @@
             });
 
             // Asynchronous function to fetch system IPMI info
+            let cachedSysIpmiInfo = null;
             async function getsysIpmiInfo() {
+                if (cachedSysIpmiInfo) {
+                    return cachedSysIpmiInfo;
+                }
                 try {
                     const response = await fetch("/get_sys_ipmi_info");
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    return await response.json();
+                    cachedSysIpmiInfo = await response.json();
+                    return cachedSysIpmiInfo;
                 } catch (error) {
                     console.error('Error fetching IP list:', error);
                 }
-            };
+            }
 
 
             document.querySelector(".ip-lookup-table").addEventListener('click', async function(event) {
