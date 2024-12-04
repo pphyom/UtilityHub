@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, session
+from flask import Flask, render_template, jsonify, session, request
 from main.core import *
 from main.cburn_helper import *
 from main.rburn_helper import *
@@ -231,9 +231,12 @@ def get_bios_ver():
 @app.route("/get_ipmi_ver", methods=["POST"])
 def get_ipmi_ver():
     """ Get the IPMI version of the system. """
-    system_to_parse = request.get_json()
-    ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["ipmi_ver"])
-    return jsonify(ver)
+    try:
+        system_to_parse = request.get_json()
+        ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["ipmi_ver"])
+        return jsonify(ver)
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 
 @app.route("/tools", methods=["GET", "POST"])

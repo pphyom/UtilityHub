@@ -97,7 +97,7 @@
                     const spinner = col.querySelector(".spinner");
                     const versionSpan = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
                     const url = target.classList.contains("getBiosVer") ? "/get_bios_ver" : "/get_ipmi_ver";
-                    const sysIpmiInfo = await getsysIpmiInfo();   // Get IP list from session data
+                    var sysIpmiInfo = await getsysIpmiInfo();   // Get IP list from session data
 
                     // Get the row index
                     const rowIndex = Array.from(row.parentElement.children).indexOf(row);
@@ -105,7 +105,7 @@
                     spinner.style.display = "block";
                     target.style.display = "none";
                     versionSpan.textContent = "";
-
+                    
                     fetch(url, {
                         method: "POST",
                         headers: {
@@ -124,6 +124,7 @@
                             return response.json();
                         })
                         .then(data => {
+                            //console.log(data);
                             spinner.style.display = "none";
                             versionSpan.textContent = data;
                         });
