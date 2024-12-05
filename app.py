@@ -215,6 +215,8 @@ def cburn_log():
 
 
 # Tool Page #
+
+## Web socket for the tools page
 @socketio.on('connect')
 def handle_connect():
     session['user_id'] = str(uuid.uuid4())

@@ -14,8 +14,10 @@
         data-show-search-clear-button="true">
         <thead>
             <tr class="text-center">
-                <th data-sortable="true"><i class="bi bi-upc"></i>Serial Number</th>
-                <th data-sortable="true"><i class="bi bi-exclamation-square"></i>IP</th>
+                <th data-sortable="true"><i class="bi bi-upc"></i>Serial
+                    Number</th>
+                <th data-sortable="true"><i
+                        class="bi bi-exclamation-square"></i>IP</th>
                 <th><i class="bi bi-person-circle"></i>Login Name</th>
                 <th><i class="bi bi-file-lock2"></i>BMC Password</th>
                 <th>BIOS Ver.</th>
@@ -64,17 +66,6 @@
             console.log('Connected user ID:', data.user_id);
         });
 
-        // Copy selected text to clipboard
-        const cells = document.querySelectorAll("td.user-select-all");
-        cells.forEach(cell => {
-            cell.addEventListener("click", () => {
-                let selectedText = cell.textContent;
-                if (selectedText) {
-                    navigator.clipboard.writeText(selectedText);
-                }
-            });
-        });
-
         
         // Asynchronous function to fetch system IPMI info
         let cachedSysIpmiInfo = null;
@@ -93,9 +84,28 @@
                 console.error('Error fetching IP list:', error);
             }
         }
-
-
+        
+        
         document.addEventListener("DOMContentLoaded", function() {
+            // Copy selected text to clipboard
+            const table = document.querySelector(".ip-lookup-table");
+            const cells = table.querySelectorAll("td.user-select-all");
+            cells.forEach(cell => {
+                cell.addEventListener("click", () => {
+                    let selectedText = cell.textContent;
+                    if (selectedText) {
+                        navigator.clipboard.writeText(selectedText)
+                            .then(() => {
+                                console.log('Text copied to clipboard');
+                            })
+                            .catch(err => {
+                                console.error('Error copying text: ', err);
+                            });
+                    }
+                });
+            });
+
+
             document.querySelector(".ip-lookup-table").addEventListener('click', async function(event) {
                 const target = event.target;
                 if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
