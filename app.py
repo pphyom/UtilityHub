@@ -1,4 +1,6 @@
+import uuid
 from flask import Flask, render_template, jsonify, session, request
+from flask_socketio import SocketIO, emit, join_room
 from main.core import *
 from main.cburn_helper import *
 from main.rburn_helper import *
@@ -19,6 +21,9 @@ db.init_app(app)
 
 # Initialize the session extension
 sess.init_app(app)
+
+# Initialize the socketio extension
+socketio = SocketIO(app)
 
 # Import the LiveSession model
 from models.models import LiveSession
@@ -210,6 +215,13 @@ def cburn_log():
 
 
 # Tool Page #
+@socketio.on('connect')
+def handle_connect():
+    session['user_id'] = str(uuid.uuid4())
+    join_room(session['user_id'])  # Create a room for the user
+    emit('connected', {'user_id': session['user_id']})
+
+
 @app.route("/get_sys_ipmi_info")
 def get_sys_ipmi_info():
     """ Get system's IPMI information from session. """
@@ -260,6 +272,6 @@ def tools():
 
 if __name__ == "__main__":
     try:
-        app.run(host="0.0.0.0", debug=True)
+        socketio.run((app), host="0.0.0.0", debug=True)
     finally:
         live.stop()
