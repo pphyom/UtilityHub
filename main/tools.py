@@ -3,8 +3,13 @@
 import dotenv
 import os
 import socket
+from flask import jsonify
 from main.cburn_helper import *
+from main.ftu_helper import *
+from main.core import *
 
+ftu = FTU()
+spm = SPM()
 dotenv.load_dotenv()
 
 ip_discover_10 = os.getenv("RBURN_SVR40_LEASE")
@@ -93,3 +98,19 @@ def get_ip_172(part_list: list, sub_sn: list, sn_list: list) -> list[dict[str, s
         except Exception as e:
             print(f"Error finding the ip address for {mac}: {e}")
     return device_info
+
+
+def screen_data_helper():
+    """ Filter the data based on the user input. """
+    scan_log = spm.scanlog
+    try:
+        input_list = user_input()
+        good_list = asyncio.run(ftu.validation(input_list, scan_log))
+        sys_list = []
+        for sn in good_list:
+            outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))
+            ip = get_ip_10(outfile["part_list"], outfile["sub_sn"], sn)
+            sys_list.append(ip)
+        return sys_list
+    except Exception as e:
+        return jsonify({"error": str(e)})

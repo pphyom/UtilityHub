@@ -224,53 +224,30 @@ def handle_connect():
     emit('connected', {'user_id': session['user_id']})
 
 
-@app.route("/get_sys_ipmi_info")
-def get_sys_ipmi_info():
-    """ Get system's IPMI information from session. """
-    sys_list = session.get("sys_list", [])
-    return jsonify(sys_list)
-
-
-@app.route("/get_bios_ver", methods=["POST"])
-def get_bios_ver():
-    """ Get the BIOS version of the system. """
-    try:
-        system_to_parse = request.get_json()
+@socketio.on('lookup_fw_ver')
+def handle_fw_ver(data):
+    system_to_parse = data['system']
+    version = data['version']
+    event_name = data['eventName']
+    
+    if "show-bios-ver" in version:
         ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["bios_ver"])
-        return jsonify(ver)
-    except Exception as e:
-        return jsonify({"error": str(e)})
-
-
-@app.route("/get_ipmi_ver", methods=["POST"])
-def get_ipmi_ver():
-    """ Get the IPMI version of the system. """
-    try:
-        system_to_parse = request.get_json()
+        emit(event_name, ver)
+    else:
         ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["ipmi_ver"])
-        return jsonify(ver)
-    except Exception as e:
-        return jsonify({"error": str(e)})
+        emit(event_name, ver)
+        
 
-
-@app.route("/tools", methods=["GET", "POST"])
+@app.route("/tools", methods=["POST", "GET"])
 def tools():
     if request.method == "POST":
-        input_list = user_input()
-        good_list = asyncio.run(ftu.validation(input_list, scan_log))
-        sys_list = []
-        for sn in good_list:
-            outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))
-            ip = get_ip_10(outfile["part_list"], outfile["sub_sn"], sn)
-            sys_list.append(ip)
-        session["sys_list"] = sys_list
-
-        return render_template("tools.html",
-                               sys_list=sys_list,
-                               mo_url=mo_url,
-                               sn_url=sn_url)
+        sys_list = screen_data_helper()
+        return render_template("tools.html", 
+                               sys_list=sys_list, 
+                               sn_url=sn_url, 
+                               mo_url=mo_url)
     return render_template("tools.html")
-
+    
 
 if __name__ == "__main__":
     try:

@@ -58,33 +58,15 @@
         </tbody>
     </table>
 
-    <script>
+    <script type="text/javascript">
 
+        // Socket
         const socket = io();
 
         socket.on('connected', function(data) {
             console.log('Connected user ID:', data.user_id);
         });
 
-        
-        // Asynchronous function to fetch system IPMI info
-        let cachedSysIpmiInfo = null;
-        async function getsysIpmiInfo() {
-            if (cachedSysIpmiInfo) {
-                return cachedSysIpmiInfo;
-            }
-            try {
-                const response = await fetch("/get_sys_ipmi_info");
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                cachedSysIpmiInfo = await response.json();
-                return cachedSysIpmiInfo;
-            } catch (error) {
-                console.error('Error fetching IP list:', error);
-            }
-        }
-        
         
         document.addEventListener("DOMContentLoaded", function() {
             // Copy selected text to clipboard
@@ -95,56 +77,42 @@
                     let selectedText = cell.textContent;
                     if (selectedText) {
                         navigator.clipboard.writeText(selectedText)
-                            .then(() => {
-                                console.log('Text copied to clipboard');
-                            })
+                        .then(() => {
+                            console.log('Text copied to clipboard');
+                        })
                             .catch(err => {
                                 console.error('Error copying text: ', err);
-                            });
+                        });
                     }
                 });
             });
 
-
+            
             document.querySelector(".ip-lookup-table").addEventListener('click', async function(event) {
+                var sysList = {{ sys_list | tojson }};  // Convert Python list to JS array
                 const target = event.target;
                 if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
                     const row = target.closest("tr");
                     const col = target.closest("td");
                     const spinner = col.querySelector(".spinner");
                     const versionSpan = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
-                    const url = target.classList.contains("getBiosVer") ? "/get_bios_ver" : "/get_ipmi_ver";
-                    var sysIpmiInfo = await getsysIpmiInfo();   // Get IP list from session data
-
-                    // Get the row index
+                    const url = target.classList.contains("getBiosVer") ? "bios_ver_result" : "ipmi_ver_result";
                     const rowIndex = Array.from(row.parentElement.children).indexOf(row);
+                    const uniqueEventName = `${url}_${rowIndex}`;
                     
                     spinner.style.display = "block";
                     target.style.display = "none";
                     versionSpan.textContent = "";
                     
-                    fetch(url, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            ip_address: sysIpmiInfo[rowIndex].ip_address,
-                            username: sysIpmiInfo[rowIndex].username,
-                            password: sysIpmiInfo[rowIndex].password
-                        })
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            //console.log(data);
+                    socket.emit("lookup_fw_ver", { system: sysList[rowIndex], version: versionSpan.classList[0], eventName: uniqueEventName });
+            
+                    (function(versionSpan, spinner, uniqueEventName) {
+                        socket.on(uniqueEventName, function(data) {
                             spinner.style.display = "none";
                             versionSpan.textContent = data;
+                            socket.off(uniqueEventName);  // Remove the listener after it is called
                         });
+                    })(versionSpan, spinner, uniqueEventName);
                 }
             });
         });
