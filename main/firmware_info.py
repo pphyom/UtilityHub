@@ -36,7 +36,7 @@ def sum_bios_ipmi_ver(device, cmd):
             print(firmware_version)
 
         except subprocess.CalledProcessError as e:
-            print(f"Error occured: {e}")
+            print(f"Error occurred: {e}")
             return None
     else:
         print("Not connected!")

@@ -1,5 +1,5 @@
 import uuid
-from flask import Flask, render_template, jsonify, session, request
+from flask import Flask, render_template, session
 from flask_socketio import SocketIO, emit, join_room
 from main.core import *
 from main.cburn_helper import *
@@ -112,7 +112,7 @@ def rburn_log():
             for key in item.values():
                 rack = key["rack"]
 
-                ## FILE EXISTS => 
+                # FILE EXISTS =>
                 # 1. Get the JSON file from the new user input SN.
                 # 2. Compare the JSON file with the existing JSON files in the rack.
                 # 3. Display the result on the page.
@@ -121,10 +121,10 @@ def rburn_log():
                     do_operation(list(item.keys())[0])
                     # do_something()
 
-                ## FILE NOT EXIST => 
+                # FILE NOT EXIST =>
                 # 1. Create an empty JSON file using the rack name.
                 # 2. Get a minimal of 5 passed units from the rack with their JSON files. 
-                # 3. Pass the JSON file to the each function for the result and create the temp JSON file.
+                # 3. Pass the JSON file to each function for the result and create the temp JSON file.
                 # 4. Pass the temp JSON file to the comparison function. 
                 # 5. Store the most common data into the JSON file created in number 1.
                 # 6. Get the JSON file from the new user input SN.
@@ -197,7 +197,7 @@ def ftu_log():
     return render_template("ftu_log.html")
 
 
-# Cburn Page #
+# CBurn Page #
 @app.route("/cburn_log", methods=["GET", "POST"])
 def cburn_log():
     if request.method == "POST":
@@ -216,7 +216,7 @@ def cburn_log():
 
 # Tool Page #
 
-## Web socket for the tools page
+# Web socket for the tools page
 @socketio.on('connect')
 def handle_connect():
     session['user_id'] = str(uuid.uuid4())
@@ -252,6 +252,6 @@ def tools():
 
 if __name__ == "__main__":
     try:
-        socketio.run((app), host="0.0.0.0", debug=True)
+        socketio.run(app, host="0.0.0.0", debug=True)
     finally:
         live.stop()
