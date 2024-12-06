@@ -94,22 +94,22 @@
                     const row = target.closest("tr");
                     const col = target.closest("td");
                     const spinner = col.querySelector(".spinner");
-                    const versionSpan = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
+                    const firmwareType = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
                     const url = target.classList.contains("getBiosVer") ? "bios_ver_result" : "ipmi_ver_result";
                     const rowIndex = Array.from(row.parentElement.children).indexOf(row);
                     const uniqueEventName = `${url}_${rowIndex}`;
                     
                     spinner.style.display = "block";
                     target.style.display = "none";
-                    versionSpan.textContent = "";
+                    firmwareType.textContent = "";
                     
                     // Emit the lookup_fw_ver event with system details, version class name, and unique event name
-                    socket.emit("lookup_fw_ver", { system: sysList[rowIndex], version: versionSpan.classList[0], eventName: uniqueEventName });
+                    socket.emit("lookup_fw_ver", { system: sysList[rowIndex], fwType: firmwareType.classList[0], eventName: uniqueEventName });
             
                     socket.once(uniqueEventName, function(data) {
                         spinner.style.display = "none";
-                        versionSpan.textContent = data;
-                    })(versionSpan, spinner, uniqueEventName);
+                        firmwareType.textContent = data;
+                    })(firmwareType, spinner, uniqueEventName);
                 };
             }); // End of click event listener
         });

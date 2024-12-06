@@ -225,12 +225,16 @@ def handle_connect():
 
 @socketio.on('lookup_fw_ver')
 def handle_fw_ver(data):
+    ''' 
+    Pass the data from JS for each row index.
+    Get the FW version from the system and emit it back to the JS.
+    '''
     system_to_parse = data['system']
-    version = data['version']
+    fw_type = data['fwType']
     event_name = data['eventName']
     user_id = session['user_id']
     
-    if "show-bios-ver" in version:
+    if "show-bios-ver" in fw_type:
         ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["bios_ver"])
         emit(event_name, ver, room=user_id)
     else:
