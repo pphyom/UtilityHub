@@ -62,7 +62,6 @@
 
         // Socket
         const socket = io();
-
         socket.on('connected', function(data) {
             console.log('Connected user ID:', data.user_id);
         });
@@ -85,36 +84,34 @@
                         });
                     }
                 });
-            });
+            }); // End of copy selected text to clipboard
 
             
             document.querySelector(".ip-lookup-table").addEventListener('click', async function(event) {
-                var sysList = {{ sys_list | tojson }};  // Convert Python list to JS array
+                var sysList = JSON.parse("{{ sys_list | tojson | safe }}");  // Convert Python list to JS array
                 const target = event.target;
                 if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
                     const row = target.closest("tr");
                     const col = target.closest("td");
                     const spinner = col.querySelector(".spinner");
-                    const versionSpan = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
+                    const firmwareType = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
                     const url = target.classList.contains("getBiosVer") ? "bios_ver_result" : "ipmi_ver_result";
                     const rowIndex = Array.from(row.parentElement.children).indexOf(row);
                     const uniqueEventName = `${url}_${rowIndex}`;
                     
                     spinner.style.display = "block";
                     target.style.display = "none";
-                    versionSpan.textContent = "";
+                    firmwareType.textContent = "";
                     
-                    socket.emit("lookup_fw_ver", { system: sysList[rowIndex], version: versionSpan.classList[0], eventName: uniqueEventName });
+                    // Emit the lookup_fw_ver event with system details, version class name, and unique event name
+                    socket.emit("lookup_fw_ver", { system: sysList[rowIndex], fwType: firmwareType.classList[0], eventName: uniqueEventName });
             
-                    (function(versionSpan, spinner, uniqueEventName) {
-                        socket.on(uniqueEventName, function(data) {
-                            spinner.style.display = "none";
-                            versionSpan.textContent = data;
-                            socket.off(uniqueEventName);  // Remove the listener after it is called
-                        });
-                    })(versionSpan, spinner, uniqueEventName);
-                }
-            });
+                    socket.once(uniqueEventName, function(data) {
+                        spinner.style.display = "none";
+                        firmwareType.textContent = data;
+                    })(firmwareType, spinner, uniqueEventName);
+                };
+            }); // End of click event listener
         });
 
     </script>
