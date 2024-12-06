@@ -229,14 +229,15 @@ def handle_fw_ver(data):
     system_to_parse = data['system']
     version = data['version']
     event_name = data['eventName']
+    user_id = session['user_id']
     
     if "show-bios-ver" in version:
         ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["bios_ver"])
-        emit(event_name, ver)
+        emit(event_name, ver, room=user_id)
     else:
         ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["ipmi_ver"])
-        emit(event_name, ver)
-        
+        emit(event_name, ver, room=user_id)
+
 
 @app.route("/tools", methods=["POST", "GET"])
 def tools():
