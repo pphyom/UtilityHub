@@ -88,7 +88,7 @@
 
             
             document.querySelector(".ip-lookup-table").addEventListener('click', async function(event) {
-                var sysList = JSON.parse("{{ sys_list | tojson | safe }}");  // Convert Python list to JS array
+                var sysList = {{ sys_list | tojson | safe }};  // Convert Python list to JS array
                 const target = event.target;
                 if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
                     const row = target.closest("tr");
@@ -106,12 +106,14 @@
                     // Emit the lookup_fw_ver event with system details, version class name, and unique event name
                     socket.emit("lookup_fw_ver", { system: sysList[rowIndex], fwType: firmwareType.classList[0], eventName: uniqueEventName });
             
-                    socket.once(uniqueEventName, function(data) {
-                        spinner.style.display = "none";
-                        firmwareType.textContent = data;
-                    })(firmwareType, spinner, uniqueEventName);
-                };
-            }); // End of click event listener
+                    (function(versionSpan, spinner, uniqueEventName) {
+                        socket.once(uniqueEventName, function(data) {
+                            spinner.style.display = "none";
+                            versionSpan.textContent = data;
+                        });
+                    })(versionSpan, spinner, uniqueEventName);
+                }
+            });
         });
 
     </script>
