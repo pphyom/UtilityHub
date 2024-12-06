@@ -1,6 +1,6 @@
 import uuid
 from flask import Flask, render_template, session
-from flask_socketio import SocketIO, emit, join_room
+from flask_socketio import SocketIO, emit, join_room, leave_room
 from main.core import *
 from main.cburn_helper import *
 from main.rburn_helper import *
@@ -216,30 +216,43 @@ def cburn_log():
 
 # Tool Page #
 # Web socket for the tools page
-@socketio.on('connect')
-def handle_connect():
-    session['user_id'] = str(uuid.uuid4())
-    join_room(session['user_id'])  # Create a room for the user
-    emit('connected', {'user_id': session['user_id']})
+
+@socketio.on("connect")
+def connect():
+    session["user_id"] = str(uuid.uuid4())
+    join_room(session["user_id"])
+    emit("connected", {"user_id": session["user_id"]})
 
 
-@socketio.on('lookup_fw_ver')
-def handle_fw_ver(data):
-    ''' 
-    Pass the data from JS for each row index.
-    Get the FW version from the system and emit it back to the JS.
-    '''
-    system_to_parse = data['system']
-    fw_type = data['fwType']
-    event_name = data['eventName']
-    user_id = session['user_id']
-    
-    if "show-bios-ver" in fw_type:
+@socketio.on("disconnect")
+def disconnect():
+    user_id = session.get("user_id")
+    if user_id:
+        # print(f"User {user_id} disconnected.")
+        leave_room(user_id)
+        session.pop("user_id", None)  # Remove user_id from session if it exists.
+
+
+@app.route("/get_bios_ver", methods=["POST"])
+def get_bios_ver():
+    """ Get the BIOS version of the system. """
+    try:
+        system_to_parse = request.get_json()
         ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["bios_ver"])
-        emit(event_name, ver, room=user_id)
-    else:
+        return jsonify(ver)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+@app.route("/get_ipmi_ver", methods=["POST"])
+def get_ipmi_ver():
+    """ Get the IPMI version of the system. """
+    try:
+        system_to_parse = request.get_json()
         ver = get_bios_ipmi_ver(system_to_parse, ipmitool_cmd["ipmi_ver"])
-        emit(event_name, ver, room=user_id)
+        return jsonify(ver)
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 
 @app.route("/tools", methods=["POST", "GET"])

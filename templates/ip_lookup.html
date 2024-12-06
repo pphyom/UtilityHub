@@ -57,17 +57,20 @@
             {% endfor %}
         </tbody>
     </table>
-
+    {% endif %}
     <script type="text/javascript">
 
-        // Socket
-        const socket = io();
-        socket.on('connected', function(data) {
-            console.log('Connected user ID:', data.user_id);
-        });
-
-        
         document.addEventListener("DOMContentLoaded", function() {
+            // Socket
+            const socket = io();
+            socket.on('connected', function(data) {
+                console.log('Connected user ID:', data.user_id);
+            });
+
+            socket.on('disconnect', function() {
+                console.log('Disconnected from the server');
+            });
+
             // Copy selected text to clipboard
             const table = document.querySelector(".ip-lookup-table");
             const cells = table.querySelectorAll("td.user-select-all");
@@ -95,28 +98,37 @@
                     const col = target.closest("td");
                     const spinner = col.querySelector(".spinner");
                     const firmwareType = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
-                    const url = target.classList.contains("getBiosVer") ? "bios_ver_result" : "ipmi_ver_result";
+                    const url = target.classList.contains("getBiosVer") ? "/get_bios_ver" : "/get_ipmi_ver";
                     const rowIndex = Array.from(row.parentElement.children).indexOf(row);
-                    const uniqueEventName = `${url}_${rowIndex}`;
                     
                     spinner.style.display = "block";
                     target.style.display = "none";
                     firmwareType.textContent = "";
-                    
-                    // Emit the lookup_fw_ver event with system details, version class name, and unique event name
-                    socket.emit("lookup_fw_ver", { system: sysList[rowIndex], fwType: firmwareType.classList[0], eventName: uniqueEventName });
-            
-                    (function(versionSpan, spinner, uniqueEventName) {
-                        socket.once(uniqueEventName, function(data) {
-                            spinner.style.display = "none";
-                            versionSpan.textContent = data;
-                        });
-                    })(versionSpan, spinner, uniqueEventName);
+                    // console.log(sysList)
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            ip_address: sysList[rowIndex].ip_address,
+                            username: sysList[rowIndex].username,
+                            password: sysList[rowIndex].password
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        spinner.style.display = "none";
+                        firmwareType.textContent = data;
+                    })
                 }
             });
         });
 
     </script>
-
-    {% endif %}
 </div>
