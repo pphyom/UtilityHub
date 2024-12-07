@@ -367,6 +367,11 @@ tbody tr.hide {
     color: var(--btn-hover);
 }
 
+.tool-header th {
+    font-weight: normal;
+}
+
+
 /* Search function table */
 
 #fullscreen-wrapper .input-group {

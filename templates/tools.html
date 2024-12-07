@@ -56,13 +56,12 @@
                         <li class="nav-item">
                             <button class="nav-link" id="ipmi-tool"
                                 data-bs-toggle="tab"
-                                data-bs-target="#ipmi-tool-pane"
+                                data-bs-target="#firmware-update-pane"
                                 type="button" role="tab"
                                 aria-controls="ipmi-tool"
                                 aria-selected="true">
                                 <i
-                                    class="bi bi-exclamation-circle px-2"></i>IPMI
-                                TOOL</button>
+                                    class="bi bi-exclamation-circle px-2"></i>FIRMWARE UPDATE</button>
                         </li>
                         <!-- MISC -->
                         <li class="nav-item">
@@ -75,52 +74,123 @@
                         </li>
                     </ul>
                 </div>
-                <div class="card m-0 p-0"> <!-- contents -->
-                    <div class="card-body tab-content">
-                        <div class="tab-content">
+                <div class="row"> <!-- contents -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active"
+                            id="ip-lookup-pane"
+                            role="tabpanel" aria-labelledby="ip-lookup"
+                            tabindex="0">
+                            {% include "ip_lookup.html" %}
+                        </div>
+                        <!-- dropdown contents -->
+                        <div class="tab-pane fade" id="bios-pane"
+                            role="tabpanel"
+                            aria-labelledby="bios-sum"
+                            tabindex="0">
+                            {% include "sum_tool.html" %}
+                        </div>
+                        <div class="tab-pane fade" id="ipmi-pane"
+                            role="tabpanel"
+                            aria-labelledby="bios-sum"
+                            tabindex="0">IPMI</div>
+                        <div class="tab-pane fade" id="cpld-pane"
+                            role="tabpanel"
+                            aria-labelledby="bios-sum"
+                            tabindex="0">CPLD</div>
+                        <div class="tab-pane fade" id="gpu-pane"
+                            role="tabpanel"
+                            aria-labelledby="bios-sum"
+                            tabindex="0">GPU</div>
 
-                            <div class="tab-pane fade show active"
-                                id="ip-lookup-pane"
-                                role="tabpanel" aria-labelledby="ip-lookup"
-                                tabindex="0">
-                                {% include "ip_lookup.html" %}
-                            </div>
-                            <!-- dropdown contents -->
-                            <div class="tab-pane fade" id="bios-pane"
-                                role="tabpanel"
-                                aria-labelledby="bios-sum"
-                                tabindex="0">
-                                {% include "sum_bios.html" %}
-                            </div>
-                            <div class="tab-pane fade" id="ipmi-pane"
-                                role="tabpanel"
-                                aria-labelledby="bios-sum"
-                                tabindex="0">IPMI</div>
-                            <div class="tab-pane fade" id="cpld-pane"
-                                role="tabpanel"
-                                aria-labelledby="bios-sum"
-                                tabindex="0">CPLD</div>
-                            <div class="tab-pane fade" id="gpu-pane"
-                                role="tabpanel"
-                                aria-labelledby="bios-sum"
-                                tabindex="0">GPU</div>
-
-                            <!-- dropdown contents end -->
-                            <div class="tab-pane fade" id="ipmi-tool-pane"
-                                role="tabpanel"
-                                aria-labelledby="ipmi-tool" tabindex="0">IPMI
-                                TOOL</div>
-
-                            <div class="tab-pane fade" id="misc-pane"
-                                role="tabpanel" aria-labelledby="misc"
-                                tabindex="0">MISCELLANEOUS</div>
+                        <!-- dropdown contents end -->
+                        <div class="tab-pane fade" id="firmware-update-pane"
+                            role="tabpanel"
+                            aria-labelledby="firmware-update" tabindex="0">
+                            {% include "firmware_update.html" %}
                         </div>
 
+                        <div class="tab-pane fade" id="misc-pane"
+                            role="tabpanel" aria-labelledby="misc"
+                            tabindex="0">MISCELLANEOUS</div>
                     </div>
                 </div>
             </div>
         </div><!-- Container Fluid End -->
     </main>
 </div>
+
+<script>
+    // IP Lookup page
+    document.addEventListener("DOMContentLoaded", function() {
+        // Socket
+        const socket = io();
+        socket.on('connected', function(data) {
+            console.log('Connected user ID:', data.user_id);
+        });
+
+        socket.on('disconnect', function() {
+            console.log('Disconnected from the server');
+        });
+
+        // Copy selected text to clipboard
+        const table = document.querySelector(".ip-lookup-table");
+        const cells = table.querySelectorAll("td.user-select-all");
+        cells.forEach(cell => {
+            cell.addEventListener("click", () => {
+                let selectedText = cell.textContent;
+                if (selectedText) {
+                    navigator.clipboard.writeText(selectedText)
+                    .then(() => {
+                        console.log('Text copied to clipboard');
+                    })
+                        .catch(err => {
+                            console.error('Error copying text: ', err);
+                    });
+                }
+            });
+        }); // End of copy selected text to clipboard
+
+        
+        document.querySelector(".ip-lookup-table").addEventListener('click', async function(event) {
+            var sysList = {{ sys_list | safe }};  // Convert Python list to JS array
+            const target = event.target;
+            if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
+                const row = target.closest("tr");
+                const col = target.closest("td");
+                const spinner = col.querySelector(".spinner");
+                const firmwareType = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
+                const url = target.classList.contains("getBiosVer") ? "/get_bios_ver" : "/get_ipmi_ver";
+                const rowIndex = Array.from(row.parentElement.children).indexOf(row);
+                
+                spinner.style.display = "block";
+                target.style.display = "none";
+                firmwareType.textContent = "";
+                // console.log(sysList)
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        ip_address: sysList[rowIndex].ip_address,
+                        username: sysList[rowIndex].username,
+                        password: sysList[rowIndex].password
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    spinner.style.display = "none";
+                    firmwareType.textContent = data;
+                })
+            }
+        });
+    });
+
+</script>
 
 {% endblock %}

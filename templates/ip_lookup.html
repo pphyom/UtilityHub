@@ -1,134 +1,69 @@
-<div>
-    {% include "input_form.html" %}
-    {% if not sys_list %}
-    <div class="table-wrapper">
-        {% include "nodata.html" %}
+<div class="row">
+    <div class="col-12">
+        <div class="pt-2">
+            {% include "input_form.html" %}
+        </div>
+        <div class="card mt-4">
+            <div class="table-wrapper">
+                {% if not sys_list %}
+                    {% include "nodata.html" %}
+                {% else %}
+                <table class="table table-striped ip-lookup-table"
+                    data-toggle="table"
+                    data-search="true"
+                    data-buttons-class="outline-secondary"
+                    data-show-export="true"
+                    data-show-columns="true"
+                    data-show-search-clear-button="true">
+                    <thead class="tool-header">
+                        <tr class="text-center">
+                            <th data-sortable="true"><i class="bi bi-upc"></i>SERIAL NUMBER</th>
+                            <th data-sortable="true"><i class="bi bi-exclamation-square"></i>IP</th>
+                            <th><i class="bi bi-person-circle"></i>LOGIN NAME</th>
+                            <th><i class="bi bi-file-lock2"></i>BMC PASSWORD</th>
+                            <th>BIOS VER.</th>
+                            <th>BMC VER.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in sys_list %}
+                        <tr class="text-center">
+                            <td>{{ item.system_sn }}
+                                <a href="{{ sn_url + item.system_sn }}"
+                                    target="_blank">
+                                    <i class="bi bi-link-45deg"></i></a>
+                            </td>
+                            <td>{{ item.ip_address }}
+                                {% if item.ip_address != "NA" %}
+                                <a href="http://{{ item.ip_address }}"
+                                    target="_blank">
+                                    <i class="bi bi-link-45deg"></i></a>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.username }}</td>
+                            <td class="user-select-all">{{ item.password }}</td>
+                            <td>
+                                <i
+                                    class="bi bi-cloud-arrow-down getBiosVer"></i>
+                                <span
+                                    class="spinner-border spinner-border-sm spinner mx-auto"
+                                    style="display: none;"></span>
+                                <span class="show-bios-ver"></span>
+                            </td>
+                            <td>
+                                <i
+                                    class="bi bi-cloud-arrow-down getIpmiVer"></i>
+                                <span
+                                    class="spinner-border spinner-border-sm spinner mx-auto"
+                                    style="display: none;"></span>
+                                <span class="show-ipmi-ver"></span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    {% else %}
-    <table class="table table-striped ip-lookup-table"
-        data-toggle="table"
-        data-search="true"
-        data-buttons-class="outline-secondary"
-        data-show-export="true"
-        data-show-columns="true"
-        data-show-search-clear-button="true">
-        <thead>
-            <tr class="text-center">
-                <th data-sortable="true"><i class="bi bi-upc"></i>Serial
-                    Number</th>
-                <th data-sortable="true"><i
-                        class="bi bi-exclamation-square"></i>IP</th>
-                <th><i class="bi bi-person-circle"></i>Login Name</th>
-                <th><i class="bi bi-file-lock2"></i>BMC Password</th>
-                <th>BIOS Ver.</th>
-                <th>BMC Ver.</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in sys_list %}
-            <tr class="text-center">
-                <td>{{ item.system_sn }}
-                    <a href="{{ sn_url + item.system_sn }}" target="_blank">
-                        <i class="bi bi-link-45deg"></i></a>
-                </td>
-                <td>{{ item.ip_address }}
-                    {% if item.ip_address != "NA" %}
-                    <a href="http://{{ item.ip_address }}" target="_blank">
-                        <i class="bi bi-link-45deg"></i></a>
-                    {% endif %}
-                </td>
-                <td>{{ item.username }}</td>
-                <td class="user-select-all">{{ item.password }}</td>
-                <td>
-                    <i class="bi bi-cloud-arrow-down getBiosVer"></i>
-                    <span
-                        class="spinner-border spinner-border-sm spinner mx-auto"
-                        style="display: none;"></span>
-                    <span class="show-bios-ver"></span>
-                </td>
-                <td>
-                    <i class="bi bi-cloud-arrow-down getIpmiVer"></i>
-                    <span
-                        class="spinner-border spinner-border-sm spinner mx-auto"
-                        style="display: none;"></span>
-                    <span class="show-ipmi-ver"></span>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% endif %}
-    <script type="text/javascript">
-
-        document.addEventListener("DOMContentLoaded", function() {
-            // Socket
-            const socket = io();
-            socket.on('connected', function(data) {
-                console.log('Connected user ID:', data.user_id);
-            });
-
-            socket.on('disconnect', function() {
-                console.log('Disconnected from the server');
-            });
-
-            // Copy selected text to clipboard
-            const table = document.querySelector(".ip-lookup-table");
-            const cells = table.querySelectorAll("td.user-select-all");
-            cells.forEach(cell => {
-                cell.addEventListener("click", () => {
-                    let selectedText = cell.textContent;
-                    if (selectedText) {
-                        navigator.clipboard.writeText(selectedText)
-                        .then(() => {
-                            console.log('Text copied to clipboard');
-                        })
-                            .catch(err => {
-                                console.error('Error copying text: ', err);
-                        });
-                    }
-                });
-            }); // End of copy selected text to clipboard
-
-            
-            document.querySelector(".ip-lookup-table").addEventListener('click', async function(event) {
-                var sysList = {{ sys_list | tojson | safe }};  // Convert Python list to JS array
-                const target = event.target;
-                if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
-                    const row = target.closest("tr");
-                    const col = target.closest("td");
-                    const spinner = col.querySelector(".spinner");
-                    const firmwareType = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
-                    const url = target.classList.contains("getBiosVer") ? "/get_bios_ver" : "/get_ipmi_ver";
-                    const rowIndex = Array.from(row.parentElement.children).indexOf(row);
-                    
-                    spinner.style.display = "block";
-                    target.style.display = "none";
-                    firmwareType.textContent = "";
-                    // console.log(sysList)
-                    fetch(url, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            ip_address: sysList[rowIndex].ip_address,
-                            username: sysList[rowIndex].username,
-                            password: sysList[rowIndex].password
-                        })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        spinner.style.display = "none";
-                        firmwareType.textContent = data;
-                    })
-                }
-            });
-        });
-
-    </script>
 </div>

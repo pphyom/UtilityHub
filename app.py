@@ -255,7 +255,7 @@ def get_ipmi_ver():
         return jsonify({"error": str(e)})
 
 
-@app.route("/tools", methods=["POST", "GET"])
+@app.route("/tools", methods=["GET", "POST"])
 def tools():
     if request.method == "POST":
         sys_list = screen_data_helper()
@@ -263,7 +263,8 @@ def tools():
                                sys_list=sys_list, 
                                sn_url=sn_url, 
                                mo_url=mo_url)
-    return render_template("tools.html")
+    else:
+        return render_template("tools.html")
     
 
 if __name__ == "__main__":
