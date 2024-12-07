@@ -1,28 +1,59 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header bg-white">
                 <div class="d-flex justify-content-between pt-2">
-                    <div class="h5">
-                        <i class="bi bi-app-indicator"></i>
-                        FIRMWARE UPDATE
+                    <div class="h6">
+                        <div>
+                            <i class="bi bi-collection-fill fs-small"></i>
+                            <span>FIRMWARE UPDATE</span>
+                        </div>
                     </div>
-                    <!-- <div class="d-flex">
-                        <button class="btn btn-outline-dark text-center" id="refresh-firmware">
-                            <i class="bi bi-arrow-clockwise"></i>
-                            Refresh
-                        </button>
-                    </div> -->
+                    <div class="d-flex mb-2">
+                        <i class="bi bi-exclamation-triangle fs-small" data-bs-toggle="tooltip" data-bs-placement="left" title="WARNING MESSAGE!"></i>
+                    </div>
                 </div>
             </div>
             <div class="card-body p-4">
                 <div class="row">
                     <div class="col-12">
                         <div class="table-wrapper">
-                            {% include "nodata.html" %}
+                            <input type="text" id="inputText" placeholder="Type something..." oninput="updateTable()">
+                            <table id="dynamicTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ITEM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Rows will be added here dynamically -->
+                                </tbody>
+                            </table>
                         </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function updateTable() {
+        // Get the value from the input box
+        let input = document.getElementById('inputText').value;
+        // Split the input by spaces or commas to get individual items
+        let items = input.split(/\s*,\s*|\s+/);  // Splitting by comma or space
+        let tableBody = document.getElementById('dynamicTable').getElementsByTagName('tbody')[0];
+
+        // Clear current table rows
+        tableBody.innerHTML = '';
+
+        // Loop through the items and create rows for each
+        items.forEach(item => {
+            if (item.trim() !== "") {  // Avoid empty strings
+                let row = tableBody.insertRow();
+                let cell = row.insertCell(0);
+                cell.textContent = item;
+            }
+        });
+    }
+</script>
