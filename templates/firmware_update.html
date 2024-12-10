@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-12">
+    <div class="col">
         <div class="card">
             <div class="card-header bg-white">
                 <div class="d-flex justify-content-between pt-2">
@@ -9,27 +9,83 @@
                             <span>FIRMWARE UPDATE</span>
                         </div>
                     </div>
-                    <div class="d-flex mb-2">
+                    <!-- <div class="d-flex mb-2">
                         <i class="bi bi-exclamation-triangle fs-small" data-bs-toggle="tooltip" data-bs-placement="left" title="WARNING MESSAGE!"></i>
+                    </div> -->
+                </div>
+            </div>
+            <div class="card-body">    <!-- body -->
+                <div class="row">
+                    <div class="row text-center m-0 p-0">
+                        <div class="col-12 col-xl-7 col-lg-7 col-md-12 col-sm-12">
+                            <div class="col-12 d-flex flex-column flex-md-row">
+                                <div class="flex-grow-1 d-grid gap-2 mb-2">
+                                    <input type="text" id="inputText" class="form-control" placeholder="System serial number/s...">
+                                </div>
+                                <div id="custom-btn" class="d-grid gap-2 mb-2">
+                                    <button type="button" class="btn text-white" onclick="updateTable()">
+                                        <i class="bi bi-plus-circle"></i>
+                                        <span>Add System</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex flex-column flex-md-row">
+                                <div class="d-grid gap-2 mb-2">
+                                    <select class="form-select form-control w-auto" aria-label="Firmware type"> <!-- Make this width fix contents -->
+                                        <option selected value="1">BIOS</option>
+                                        <option value="2">IPMI</option>
+                                        <option value="3">CPLD</option>
+                                        <option value="4">GPU</option>
+                                    </select>
+                                </div>
+                                <div class="flex-grow-1 d-grid gap-2 mb-2">
+                                    <input type="file" class="form-control" id="choose-fw" name="filename" >
+                                </div>
+                                <div id="custom-btn" class="d-grid gap-2 mb-2">
+                                    <button type="button" class="btn text-white" id="upload-fw">
+                                        <i class="bi bi-arrow-up-circle"></i>
+                                        <span>Upload</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-5 col-lg-5 col-md-12 col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <i class="bi bi-exclamation-triangle fs-small"></i>
+                                            <span>DETAIL INFO</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="card-body text-start">
+                                    <p>Here will be the detail information about the update progress: </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="card-body p-4">
+        </div>
+        <div class="card my-3">
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-12">
-                        <div class="table-wrapper">
-                            <input type="text" id="inputText" placeholder="Type something..." oninput="updateTable()">
-                            <table id="dynamicTable" class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>ITEM</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Rows will be added here dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
+                    <table id="dynamicTable" class="table table-striped">
+                        <thead class="tool-header">
+                            <tr class="text-center">
+                                <th>#</th>
+                                <th data-sortable="true"><i class="bi bi-upc"></i>SERIAL NUMBER</th>
+                                <th data-sortable="true"><i class="bi bi-exclamation-square"></i>IP</th>
+                                <th><i class="bi bi-person-circle"></i>LOGIN NAME</th>
+                                <th><i class="bi bi-file-lock2"></i>BMC PASSWORD</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be added here dynamically -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

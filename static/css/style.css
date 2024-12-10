@@ -352,7 +352,7 @@ tbody tr.hide {
 
 #custom-btn {
     background-color: var(--theme-color); 
-    color: var(--main-color);
+    border-radius: .3rem;
 }
 
 #custom-btn i {
