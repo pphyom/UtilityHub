@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col">
         <div class="card">
-            <div class="card-header bg-custom-teal pb-1 mb-2">
+            <div class="card-header bg-custom-teal pb-1">
                 <div class="d-flex justify-content-between">
                     <div class="h6">
                         <div>
@@ -14,7 +14,7 @@
                     </div> -->
                 </div>
             </div>
-            <div class="card-body"> <!-- body -->
+            <div class="card-body my-3"> <!-- body -->
                 <div class="row">
                     <div class="row text-center m-0 p-0">
                         <div class="col-12 col-xl-7 col-lg-7 col-md-12 col-sm-12">
@@ -36,7 +36,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-12 d-flex flex-column flex-md-row">
+                            <div class="col-12 d-flex flex-column flex-md-row mb-2">
                                 <div class="d-grid gap-2 mb-2">
                                     <select class="form-select form-control w-auto" aria-label="Firmware type"> <!-- Make this width fix contents -->
                                         <option selected value="1">BIOS</option>
@@ -50,7 +50,7 @@
                                 </div>
                                 <div id="custom-btn" class="d-grid gap-2 mb-2">
                                     <button type="button" class="btn text-white" style="min-width: 150px;" id="upload-fw">
-                                        <i class="bi bi-arrow-up-circle"></i>
+                                        <i class="bi bi-arrow-down-circle"></i>
                                         <span>Upload</span>
                                     </button>
                                 </div>
@@ -83,10 +83,11 @@
                         <thead class="tool-header">
                             <tr class="text-center">
                                 <th>#</th>
+                                <th><i class="bi bi-exclamation-square"></i>IP</th>
                                 <th data-sortable="true"><i class="bi bi-upc"></i>SERIAL NUMBER</th>
-                                <th data-sortable="true"><i class="bi bi-exclamation-square"></i>PROGRESS</th>
-                                <th><i class="bi bi-person-circle"></i>IP</th>
-                                <th><i class="bi bi-file-lock2"></i>STATUS</th>
+                                <th data-sortable="true"><i class="bi bi-activity"></i>PROGRESS</th>
+                                <th><i class="bi bi-file-lock2"></i>CURRENT FIRMWARE</th>
+                                <th><i class="bi bi-question-square"></i>STATUS</th>
                             </tr>
                         </thead>
                         <tbody>

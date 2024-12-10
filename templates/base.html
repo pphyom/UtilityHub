@@ -78,9 +78,17 @@
     
   </body>
   <footer>
-    <div class="px-2 py-1 bg-custom text-white text-end fixed-bottom">
-      Connected to {{ connected_ip }}
-      <i class="bi bi-globe"></i>
+    <div class="d-flex justify-content-between fixed-bottom px-3 pt-3 bg-custom text-white">
+      <div>
+        <p>Developed by Pyae Maung | B23 PROD.</p>
+      </div>
+      <div>
+        <p>&copy; {{ g.current_year }} SMC Utilities</p>
+      </div>
+      <div>
+        Connected to {{ connected_ip }}
+        <i class="bi bi-globe"></i>
+      </div>
     </div>
   </footer>
 

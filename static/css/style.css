@@ -15,6 +15,7 @@
     --font-red: #b30021;
     --bg-red: #d893a3;
     --bg-blue: #6fcaea;
+    --bg-teal: #b2d8d8
 }
 
 a {
@@ -411,4 +412,10 @@ tbody tr.hide {
 
 .getBiosVer:hover, .getIpmiVer:hover {
     opacity: 50%;
+}
+/* Interaction */
+
+/* Tool page nav bar */
+.nav-tabs li button {
+    color: var(--theme-color);
 }

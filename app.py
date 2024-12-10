@@ -1,5 +1,6 @@
 import uuid
-from flask import Flask, render_template, session
+from datetime import datetime
+from flask import Flask, render_template, session, g
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from main.core import *
 from main.cburn_helper import *
@@ -55,6 +56,12 @@ ftu = FTU()
 @app.context_processor
 def connected_network():
     return {"connected_ip": request.remote_addr}
+
+
+@app.before_request
+def set_year():
+    current_year = datetime.now().year
+    g.current_year = current_year
 
 
 # Index Page #
