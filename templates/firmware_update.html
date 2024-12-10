@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col">
         <div class="card">
-            <div class="card-header bg-white">
-                <div class="d-flex justify-content-between pt-2">
+            <div class="card-header bg-custom-teal pb-1 mb-2">
+                <div class="d-flex justify-content-between">
                     <div class="h6">
                         <div>
                             <i class="bi bi-collection-fill fs-small"></i>
@@ -14,18 +14,25 @@
                     </div> -->
                 </div>
             </div>
-            <div class="card-body">    <!-- body -->
+            <div class="card-body"> <!-- body -->
                 <div class="row">
                     <div class="row text-center m-0 p-0">
                         <div class="col-12 col-xl-7 col-lg-7 col-md-12 col-sm-12">
-                            <div class="col-12 d-flex flex-column flex-md-row">
+                            <div class="col-12 d-flex flex-column flex-md-row mb-2">
                                 <div class="flex-grow-1 d-grid gap-2 mb-2">
                                     <input type="text" id="inputText" class="form-control" placeholder="System serial number/s...">
                                 </div>
-                                <div id="custom-btn" class="d-grid gap-2 mb-2">
-                                    <button type="button" class="btn text-white" onclick="updateTable()">
+                                <div id="custom-btn" class="d-grid gap-2 mb-2 ms-md-2 ms-lg-2 ms-xl-2">
+                                    <!-- Button trigger modal -->
+                                    <button type="button" id="custom-btn" class="btn"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                        <i class="bi bi-three-dots"></i>
+                                    </button>
+                                </div>
+                                <div id="custom-btn" class="d-grid gap-2 mb-2 ms-md-2 ms-lg-2 ms-xl-2">
+                                    <button type="button" class="btn text-white" style="min-width: 100px;" onclick="updateTable()">
                                         <i class="bi bi-plus-circle"></i>
-                                        <span>Add System</span>
+                                        <span>Add</span>
                                     </button>
                                 </div>
                             </div>
@@ -38,11 +45,11 @@
                                         <option value="4">GPU</option>
                                     </select>
                                 </div>
-                                <div class="flex-grow-1 d-grid gap-2 mb-2">
+                                <div class="flex-grow-1 d-grid gap-2 mb-2 mx-md-2 mx-lg-2 mx-xl-2">
                                     <input type="file" class="form-control" id="choose-fw" name="filename" >
                                 </div>
                                 <div id="custom-btn" class="d-grid gap-2 mb-2">
-                                    <button type="button" class="btn text-white" id="upload-fw">
+                                    <button type="button" class="btn text-white" style="min-width: 150px;" id="upload-fw">
                                         <i class="bi bi-arrow-up-circle"></i>
                                         <span>Upload</span>
                                     </button>
@@ -50,7 +57,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-xl-5 col-lg-5 col-md-12 col-sm-12">
-                            <div class="card">
+                            <div class="card bg-light">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between">
                                         <div>
@@ -69,7 +76,7 @@
                 </div>
             </div>
         </div>
-        <div class="card my-3">
+        <div class="card my-5">
             <div class="card-body">
                 <div class="row">
                     <table id="dynamicTable" class="table table-striped">
@@ -77,9 +84,9 @@
                             <tr class="text-center">
                                 <th>#</th>
                                 <th data-sortable="true"><i class="bi bi-upc"></i>SERIAL NUMBER</th>
-                                <th data-sortable="true"><i class="bi bi-exclamation-square"></i>IP</th>
-                                <th><i class="bi bi-person-circle"></i>LOGIN NAME</th>
-                                <th><i class="bi bi-file-lock2"></i>BMC PASSWORD</th>
+                                <th data-sortable="true"><i class="bi bi-exclamation-square"></i>PROGRESS</th>
+                                <th><i class="bi bi-person-circle"></i>IP</th>
+                                <th><i class="bi bi-file-lock2"></i>STATUS</th>
                             </tr>
                         </thead>
                         <tbody>
