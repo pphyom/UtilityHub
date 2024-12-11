@@ -419,3 +419,26 @@ tbody tr.hide {
 .nav-tabs li button {
     color: var(--theme-color);
 }
+
+
+/* Progress bar */
+.custom-progress-bar {
+    border-radius: 0%;
+    width: 100%;
+    height: .3rem;
+}
+
+/* Target the progress bar and change its color */
+.custom-progress-bar::-webkit-progress-value {
+    background-color: #757575; /* Light blue */
+}
+
+/* Style the background of the progress bar (empty part) */
+.custom-progress-bar::-webkit-progress-bar {
+    background-color: transparent; /* Light grey */
+}
+
+/* For Firefox */
+.custom-progress-bar::-moz-progress-bar {
+    background-color: #757575; /* Green color */
+}

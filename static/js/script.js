@@ -99,7 +99,7 @@ function updateData () {
 
 
 
-function user_input() {
+function userInput() {
     // Get the value from the input box, remove leading and trailing spaces, and convert to uppercase
     let input = document.getElementById("inputSerialNum").value.toUpperCase().trim();
     // Split the input by spaces or commas to get individual items
@@ -110,14 +110,14 @@ function user_input() {
 }
 
 
-async function getIpmiInfo() {
-    let items = user_input();
-    const response = await fetch('/firmware_transaction', {
+async function getIpmiInfo(sn) {
+    // let items = userInput();
+    const response = await fetch('/get_ipmi_info', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({system_sn: items})
+        body: JSON.stringify({system_sn: sn})
     });
     const data = await response.json();
     return data;
@@ -126,17 +126,21 @@ async function getIpmiInfo() {
 
 async function updateTable() {
     // Get the value from the input box
-    let items = await getIpmiInfo();
+    let items = userInput();
     let tableBody = document.getElementById("dynamicTable");
     // Clear current table rows
     tableBody.innerHTML = "";
     
     for (let ind = 0; ind < items.length; ind++) {
+        let item = await getIpmiInfo(items[ind]);
+        let ipAddress = item[0].ip_address;
+        let systemSn = items[ind];
+
         let newRow = tableBody.insertRow();
         newRow.innerHTML = `
             <td>${ind + 1}</td>
-            <td>${items[ind].ip_address}</td>
-            <td>${items[ind].system_sn}</td>
+            <td>${ipAddress}</td>
+            <td>${systemSn}</td>
             <td>
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning text-dark" 

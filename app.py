@@ -264,11 +264,15 @@ def get_ipmi_ver():
         return jsonify({"error": str(e)})
 
 
-@app.route("/firmware_transaction", methods=["POST"])
-def firmware_transaction():
+@app.route("/get_ipmi_info", methods=["POST"])
+def get_ipmi_info():
+    """ 
+    Get the IPMI info of the system.
+    Pass the system from JS, get the IP address, and pass it back to the JS. 
+    """
     input_data = request.get_json()
-    good_list = asyncio.run(ftu.validation(input_data["system_sn"], scan_log))
-    sys_list = screen_data_helper(good_list)
+    serial_num = asyncio.run(ftu.validation([input_data["system_sn"]], scan_log)) # change input to list for function requirement
+    sys_list = screen_data_helper(serial_num)
     return jsonify(sys_list)
 
 
