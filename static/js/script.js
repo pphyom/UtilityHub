@@ -97,8 +97,6 @@ function updateData () {
 *************************************************
 **/
 
-
-
 function userInput() {
     // Get the value from the input box, remove leading and trailing spaces, and convert to uppercase
     let input = document.getElementById("inputSerialNum").value.toUpperCase().trim();
@@ -128,13 +126,22 @@ async function updateTable() {
     // Get the value from the input box
     let items = userInput();
     let tableBody = document.getElementById("dynamicTable");
+    let progressBarWrapper = document.getElementById("custom-progress-bar");
+    let progressPB = document.querySelector(".custom-pb");
+    let progress = 0;
+
     // Clear current table rows
     tableBody.innerHTML = "";
-    
+    progressBarWrapper.classList.remove('d-none');
+
     for (let ind = 0; ind < items.length; ind++) {
         let item = await getIpmiInfo(items[ind]);
         let ipAddress = item[0].ip_address;
         let systemSn = items[ind];
+        progress += 100 / items.length;
+        progressPB.style.width = `${progress}%`;
+        progressPB.setAttribute("aria-valuenow", progress);
+
 
         let newRow = tableBody.insertRow();
         newRow.innerHTML = `
