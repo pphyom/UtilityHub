@@ -96,6 +96,9 @@ function updateData () {
 * Firmware update page functions under tools.html
 *************************************************
 **/
+
+
+
 function user_input() {
     // Get the value from the input box, remove leading and trailing spaces, and convert to uppercase
     let input = document.getElementById("inputSerialNum").value.toUpperCase().trim();
