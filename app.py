@@ -240,6 +240,8 @@ def disconnect():
         session.pop("user_id", None)  # Remove user_id from session if it exists.
 
 
+# Routes for firmware updates
+
 @app.route("/get_bios_ver", methods=["POST"])
 def get_bios_ver():
     """ Get the BIOS version of the system. """
@@ -262,10 +264,20 @@ def get_ipmi_ver():
         return jsonify({"error": str(e)})
 
 
+@app.route("/firmware_transaction", methods=["POST"])
+def firmware_transaction():
+    input_data = request.get_json()
+    good_list = asyncio.run(ftu.validation(input_data["system_sn"], scan_log))
+    sys_list = screen_data_helper(good_list)
+    return jsonify(sys_list)
+
+
 @app.route("/tools", methods=["GET", "POST"])
 def tools():
     if request.method == "POST":
-        sys_list = screen_data_helper()
+        input_list = user_input()
+        good_list = asyncio.run(ftu.validation(input_list, scan_log))
+        sys_list = screen_data_helper(good_list)
         return render_template("tools.html", 
                                sys_list=sys_list, 
                                sn_url=sn_url, 

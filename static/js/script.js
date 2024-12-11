@@ -90,3 +90,98 @@ function updateData () {
     rackServer = newServerIP;
     startFetching();
 }
+
+/**
+*************************************************
+* Firmware update page functions under tools.html
+*************************************************
+**/
+function user_input() {
+    // Get the value from the input box, remove leading and trailing spaces, and convert to uppercase
+    let input = document.getElementById("inputSerialNum").value.toUpperCase().trim();
+    // Split the input by spaces or commas to get individual items
+    let items = input.split(/\s*,\s*|\s+/);
+    // Remove duplicates -- [...] turn the set back into an array
+    let uniqueItems = [...new Set(items)];
+    return uniqueItems;
+}
+
+
+async function getIpmiInfo() {
+    let items = user_input();
+    const response = await fetch('/firmware_transaction', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({system_sn: items})
+    });
+    const data = await response.json();
+    return data;
+}
+
+
+async function updateTable() {
+    // Get the value from the input box
+    let items = await getIpmiInfo();
+    let tableBody = document.getElementById("dynamicTable");
+    // Clear current table rows
+    tableBody.innerHTML = "";
+    
+    for (let ind = 0; ind < items.length; ind++) {
+        let newRow = tableBody.insertRow();
+        newRow.innerHTML = `
+            <td>${ind + 1}</td>
+            <td>${items[ind].ip_address}</td>
+            <td>${items[ind].system_sn}</td>
+            <td>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning text-dark" 
+                    role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </td>
+            <td>NA</td>
+            <td>NA</td>
+            <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${ind}"></td>
+        `;
+
+        let checkbox = document.getElementById(`checkbox-${ind}`);
+        checkbox.addEventListener('change', function() {
+            let row = this.closest('tr');
+            if (this.checked) {
+                row.classList.add('table-secondary');
+                runFirmwareUpdate(row);
+            } else {
+                row.classList.remove('table-secondary');
+                resetProgressBar(row);
+            }
+        });
+    }
+}
+
+
+// Dummy function to simulate firmware update
+async function runFirmwareUpdate(row) {
+    let progressBar = row.querySelector('.progress-bar');
+    let progress = 0;
+    
+    // Simulate progress update with setInterval
+    let interval = setInterval(() => {
+        if (progress < 100) {
+            progress += 5;
+            progressBar.style.width = `${progress}%`;
+            progressBar.setAttribute('aria-valuenow', progress);
+            progressBar.innerText = `${progress}%`;
+        } else {
+            clearInterval(interval);
+        }
+    }, 500);  // Update progress every 0.5 seconds
+}
+
+// Reset progress bar if the checkbox is unchecked
+function resetProgressBar(row) {
+    let progressBar = row.querySelector('.progress-bar');
+    progressBar.style.width = `0%`;
+    progressBar.setAttribute('aria-valuenow', 0);
+    progressBar.innerText = `0%`;
+}

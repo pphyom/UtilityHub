@@ -100,14 +100,11 @@ def get_ip_172(part_list: list, sub_sn: list, sn_list: list) -> list[dict[str, s
     return device_info
 
 
-def screen_data_helper():
+def screen_data_helper(sn_list: list) -> list:
     """ Filter the data based on the user input. """
-    scan_log = spm.scanlog
     try:
-        input_list = user_input()
-        good_list = asyncio.run(ftu.validation(input_list, scan_log))
         sys_list = []
-        for sn in good_list:
+        for sn in sn_list:
             outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))
             ip = get_ip_10(outfile["part_list"], outfile["sub_sn"], sn)
             sys_list.append(ip)
