@@ -281,13 +281,15 @@ def upload_firmware():
     """ Upload the firmware to the system. """
     if request.method == "POST":
         filesize = request.cookies.get("filesize")
-        file = request.files["file"]
+        fw = request.files["file"] # Get the file from the request
+        file_content = fw.read()  # Read the file content in binary
+
+        with open(fw.filename, "wb") as f: # Write the file content to the server
+            f.write(file_content)
         
-        print(f"File size: {filesize}")
-        print(file)
+        get_firmware_info(fw.filename, cmd="GetBiosInfo")
         
-        response = make_response(jsonify({"message": "File uploaded"}), 200)
-        
+        response = make_response(jsonify({"alertMessage": "File Uploaded"}), 200)
         return response
 
 

@@ -4,8 +4,8 @@ import subprocess
 from main.cburn_helper import *
 from main.tools import check_connectivity
 
-ipmi_tool = "SMCIPMITool_2.28.0/SMCIPMITool.exe"
-sum_tool = "sum_2.14.0/sum.exe"
+ipmi_tool = "tools/SMCIPMITool_2.28.0/SMCIPMITool.exe"
+sum_tool = "tools/SUM_2.14.0/sum.exe"
 
 ipmitool_cmd = {
     "ipmi_ver": " ipmi ver",
@@ -70,3 +70,22 @@ def get_bios_ipmi_ver(device, cmd):
     else:
         print("Host Disconnected!")
         return "NA"
+
+
+def get_firmware_info(firmware_file, cmd):
+    print("firmware file: ", firmware_file)
+    output = subprocess.Popen([sum_tool] +
+                            ["-c", cmd, "--file", firmware_file, "--file_only"],
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            text=True)
+    output.poll()
+    stdout, stderr = output.communicate()
+    # match cmd:
+    #     case "GetBmcInfo":
+    #         firmware_version = stdout.split("\n")[-4].strip()[21:]
+    #     case "GetBiosInfo":
+    #         firmware_version = stdout.split("\n")[-2].strip()[36:]
+    #     case _:
+    #         firmware_version = "NA"
+    print(stdout)

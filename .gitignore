@@ -159,4 +159,5 @@ cython_debug/
 .db
 
 # folders
-SMCIPMITool_2.28.0
+tools/*
+tools/

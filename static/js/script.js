@@ -104,16 +104,20 @@ let uploadingFw = document.getElementById("uploading-fw")
 let alertElement = document.getElementById("alert-element");
 let progressUploadWrapper = document.getElementById("progress-upload-wrapper");
 let progressUpload = document.querySelector(".progress-upload");
+let selectedValue = selectFw.value;
 
-selectFw.addEventListener("change", function() {
-    let selectedValue = selectFw.value;
+console.log(selectedValue);
+
+selectFw.addEventListener("change", () => {
+    selectedValue = selectFw.value;
     console.log(selectedValue);
 });
 
 
+
 uploadFw.addEventListener("click", function() {
     if (!chooseFw.files.length) {
-        showAlert("Please select a file to upload!", "danger");
+        showAlert("Please select a file to upload!", "warning", "bi-exclamation-triangle-fill");
         return;
     }
     dismissAlert();
@@ -132,6 +136,7 @@ uploadFw.addEventListener("click", function() {
 
     document.cookie = `filesize=${filesize}`;
     data.append("file", file);
+    data.append("filename", filename);
 
     request.upload.addEventListener("progress", function(event) {
         // calculate the percentage of the uploaded file
@@ -143,9 +148,9 @@ uploadFw.addEventListener("click", function() {
 
     request.addEventListener("load", function(event) {
         if (request.status === 200) {
-            showAlert(`${request.response.alertMessage}`, "success");
+            showAlert(`${request.response.alertMessage}`, "success", "bi-check-circle");
         } else {
-            showAlert("File upload failed!", "danger");
+            showAlert("File upload failed!", "danger", "bi-exclamation-triangle-fill");
         }
         chooseFw.disabled = false;
         uploadFw.classList.remove("d-none");
@@ -154,7 +159,7 @@ uploadFw.addEventListener("click", function() {
     });
 
     request.addEventListener("error", function(event) {
-        showAlert("File upload failed!", "danger");
+        showAlert("File upload failed!", "danger", "bi-exclamation-triangle-fill");
         chooseFw.disabled = false;
         uploadFw.classList.remove("d-none");
         uploadingFw.classList.add("d-none");
@@ -167,9 +172,10 @@ uploadFw.addEventListener("click", function() {
 });
 
 
-function showAlert(alertMessage, alertType) {
+function showAlert(alertMessage, alertType, icon) {
     alertElement.innerHTML = `
         <div class="alert alert-${alertType} alert-dismissible fade show" role="alert">
+            <i class="bi ${icon}"></i>
             <span>${alertMessage}</span>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`;
