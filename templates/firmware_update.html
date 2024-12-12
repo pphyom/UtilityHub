@@ -74,7 +74,7 @@
                                     </select>
                                 </div>
                                 <div class="flex-grow-1 d-grid gap-2 mb-2 mx-md-2 mx-lg-2 mx-xl-2">
-                                    <input type="file" class="form-control" id="choose-fw" name="filename" >
+                                    <input type="file" class="form-control" id="choose-fw" name="filename">
                                 </div>
                                 <div id="custom-btn" class="d-grid gap-2 mb-2">
                                     <button type="button" class="btn text-white" style="min-width: 150px;" id="upload-fw">
@@ -90,7 +90,11 @@
                                     </button>
                                 </div>
                             </div>
-            
+                            <div class="col-12 mb-2" id="alert-element"></div> <!-- Alert message will be displayed here -->
+                            <div id="progress-upload-wrapper" class="progress d-none">
+                                <div class="progress-bar progress-upload progress-bar-striped progress-bar-animated" 
+                                role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
                         </div>
                         <div class="col-12 col-xl-5 col-lg-5 col-md-12 col-sm-12">
                             <div class="card bg-light">
@@ -114,7 +118,6 @@
         </div>
         <div class="card my-5">
             <div class="card-header bg-custom-grayblue"></div>
-            <!-- <progress id="custom-progress-bar" class="d-none" min="0" max="100"></progress> -->
             <div id="custom-progress-bar" class="progress d-none" style="height: .3rem;">
                 <div class="progress-bar custom-pb progress-bar-striped progress-bar-animated bg-custom-purple" 
                 role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>

@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from flask import Flask, render_template, session, g
+from flask import Flask, render_template, session, g, make_response, request, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from main.core import *
 from main.cburn_helper import *
@@ -274,6 +274,21 @@ def get_ipmi_info():
     serial_num = asyncio.run(ftu.validation([input_data["system_sn"]], scan_log)) # change input to list for function requirement
     sys_list = screen_data_helper(serial_num)
     return jsonify(sys_list)
+
+
+@app.route("/upload_firmware", methods=["POST"])
+def upload_firmware():
+    """ Upload the firmware to the system. """
+    if request.method == "POST":
+        filesize = request.cookies.get("filesize")
+        file = request.files["file"]
+        
+        print(f"File size: {filesize}")
+        print(file)
+        
+        response = make_response(jsonify({"message": "File uploaded"}), 200)
+        
+        return response
 
 
 @app.route("/tools", methods=["GET", "POST"])

@@ -101,16 +101,85 @@ let selectFw = document.getElementById("select-fw")
 let chooseFw = document.getElementById("choose-fw")
 let uploadFw = document.getElementById("upload-fw")
 let uploadingFw = document.getElementById("uploading-fw")
-
-uploadFw.addEventListener("click", function() {
-    uploadFw.classList.add("d-none");
-    uploadingFw.classList.remove("d-none");
-});
+let alertElement = document.getElementById("alert-element");
+let progressUploadWrapper = document.getElementById("progress-upload-wrapper");
+let progressUpload = document.querySelector(".progress-upload");
 
 selectFw.addEventListener("change", function() {
     let selectedValue = selectFw.value;
     console.log(selectedValue);
 });
+
+
+uploadFw.addEventListener("click", function() {
+    if (!chooseFw.files.length) {
+        showAlert("Please select a file to upload!", "danger");
+        return;
+    }
+    dismissAlert();
+    let data = new FormData();
+    let request = new XMLHttpRequest();
+    request.responseType = "json";
+    chooseFw.disabled = true;
+    
+    uploadFw.classList.add("d-none");
+    uploadingFw.classList.remove("d-none");
+    progressUploadWrapper.classList.remove("d-none");
+
+    let file = chooseFw.files[0];
+    let filename = file.name;
+    const filesize = file.size;
+
+    document.cookie = `filesize=${filesize}`;
+    data.append("file", file);
+
+    request.upload.addEventListener("progress", function(event) {
+        // calculate the percentage of the uploaded file
+        let progress = Math.round((event.loaded / event.total) * 100);
+        progressUpload.style.width = `${progress}%`;
+        progressUpload.setAttribute("aria-valuenow", progress);
+        progressUpload.innerText = `${progress}%`;
+    });
+
+    request.addEventListener("load", function(event) {
+        if (request.status === 200) {
+            showAlert(`${request.response.alertMessage}`, "success");
+        } else {
+            showAlert("File upload failed!", "danger");
+        }
+        chooseFw.disabled = false;
+        uploadFw.classList.remove("d-none");
+        uploadingFw.classList.add("d-none");
+        progressUploadWrapper.classList.add("d-none");
+    });
+
+    request.addEventListener("error", function(event) {
+        showAlert("File upload failed!", "danger");
+        chooseFw.disabled = false;
+        uploadFw.classList.remove("d-none");
+        uploadingFw.classList.add("d-none");
+        progressUploadWrapper.classList.add("d-none");
+    });
+
+    request.open("POST", "/upload_firmware");
+    request.send(data);
+
+});
+
+
+function showAlert(alertMessage, alertType) {
+    alertElement.innerHTML = `
+        <div class="alert alert-${alertType} alert-dismissible fade show" role="alert">
+            <span>${alertMessage}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+}
+
+
+function dismissAlert() {
+    alertElement.innerHTML = "";
+}
+
 
 function userInput() {
     // Get the value from the input box, remove leading and trailing spaces, and convert to uppercase
