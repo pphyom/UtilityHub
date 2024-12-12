@@ -66,9 +66,9 @@
                             </div>
                             <div class="col-12 d-flex flex-column flex-md-row mb-2">
                                 <div class="d-grid gap-2 mb-2">
-                                    <select class="form-select form-control w-auto" aria-label="Firmware type"> <!-- Make this width fix contents -->
+                                    <select id="select-fw" class="form-select form-control w-auto" aria-label="Firmware type"> <!-- Make this width fix contents -->
                                         <option selected value="1">BIOS</option>
-                                        <option value="2">IPMI</option>
+                                        <option value="IPMI">IPMI</option>
                                         <option value="3">CPLD</option>
                                         <option value="4">GPU</option>
                                     </select>
@@ -83,13 +83,14 @@
                                     </button>
                                 </div>
                                 <!-- loading button -->
-                                <div id="custom-btn" class="d-none d-grid gap-2 mb-2">
-                                    <button type="button" class="btn text-white" style="min-width: 150px;" id="upload-fw">
+                                <div id="custom-btn" class="d-grid gap-2 mb-2">
+                                    <button type="button" class="btn text-white d-none" style="min-width: 150px;" id="uploading-fw">
                                         <div class="spinner-border spinner-border-sm text-light" role="status"></div>
                                         <span>Uploading...</span>
                                     </button>
                                 </div>
                             </div>
+            
                         </div>
                         <div class="col-12 col-xl-5 col-lg-5 col-md-12 col-sm-12">
                             <div class="card bg-light">
@@ -97,13 +98,13 @@
                                     <div class="d-flex justify-content-between">
                                         <div>
                                             <i class="bi bi-exclamation-triangle fs-small"></i>
-                                            <span>DETAIL INFO</span>
+                                            <span>FIRMWARE INFO</span>
                                         </div>
 
                                     </div>
                                 </div>
                                 <div class="card-body text-start">
-                                    <p>Here will be the detail information about the update progress... </p>
+                                    <p>The detail information about the firmware... </p>
                                 </div>
                             </div>
                         </div>
@@ -115,7 +116,7 @@
             <div class="card-header bg-custom-grayblue"></div>
             <!-- <progress id="custom-progress-bar" class="d-none" min="0" max="100"></progress> -->
             <div id="custom-progress-bar" class="progress d-none" style="height: .3rem;">
-                <div class="progress-bar custom-pb progress-bar-striped progress-bar-animated bg-custom-teal" 
+                <div class="progress-bar custom-pb progress-bar-striped progress-bar-animated bg-custom-purple" 
                 role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
 

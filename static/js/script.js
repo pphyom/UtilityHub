@@ -97,6 +97,21 @@ function updateData () {
 *************************************************
 **/
 
+let selectFw = document.getElementById("select-fw")
+let chooseFw = document.getElementById("choose-fw")
+let uploadFw = document.getElementById("upload-fw")
+let uploadingFw = document.getElementById("uploading-fw")
+
+uploadFw.addEventListener("click", function() {
+    uploadFw.classList.add("d-none");
+    uploadingFw.classList.remove("d-none");
+});
+
+selectFw.addEventListener("change", function() {
+    let selectedValue = selectFw.value;
+    console.log(selectedValue);
+});
+
 function userInput() {
     // Get the value from the input box, remove leading and trailing spaces, and convert to uppercase
     let input = document.getElementById("inputSerialNum").value.toUpperCase().trim();
