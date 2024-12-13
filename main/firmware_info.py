@@ -73,7 +73,6 @@ def get_bios_ipmi_ver(device, cmd):
 
 
 def get_firmware_info(firmware_file, cmd):
-    print("firmware file: ", firmware_file)
     output = subprocess.Popen([sum_tool] +
                             ["-c", cmd, "--file", firmware_file, "--file_only"],
                             stdout=subprocess.PIPE,
@@ -86,6 +85,9 @@ def get_firmware_info(firmware_file, cmd):
     #         firmware_version = stdout.split("\n")[-4].strip()[21:]
     #     case "GetBiosInfo":
     #         firmware_version = stdout.split("\n")[-2].strip()[36:]
+    #    case "GetCpldInfo":
+    #         firmware_version = stdout.split("\n")[-2].strip
     #     case _:
     #         firmware_version = "NA"
-    print(stdout)
+    # print(stdout)
+    return stdout

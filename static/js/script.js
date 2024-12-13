@@ -104,16 +104,12 @@ let uploadingFw = document.getElementById("uploading-fw")
 let alertElement = document.getElementById("alert-element");
 let progressUploadWrapper = document.getElementById("progress-upload-wrapper");
 let progressUpload = document.querySelector(".progress-upload");
-let selectedValue = selectFw.value;
-
-console.log(selectedValue);
+let firmwareDetails = document.getElementById("firmware-details");
+let selectedFwType = selectFw.value;
 
 selectFw.addEventListener("change", () => {
-    selectedValue = selectFw.value;
-    console.log(selectedValue);
+    selectedFwType = selectFw.value;
 });
-
-
 
 uploadFw.addEventListener("click", function() {
     if (!chooseFw.files.length) {
@@ -137,6 +133,8 @@ uploadFw.addEventListener("click", function() {
     document.cookie = `filesize=${filesize}`;
     data.append("file", file);
     data.append("filename", filename);
+    
+    request.open("POST", "/upload_firmware");
 
     request.upload.addEventListener("progress", function(event) {
         // calculate the percentage of the uploaded file
@@ -152,24 +150,35 @@ uploadFw.addEventListener("click", function() {
         } else {
             showAlert("File upload failed!", "danger", "bi-exclamation-triangle-fill");
         }
-        chooseFw.disabled = false;
-        uploadFw.classList.remove("d-none");
-        uploadingFw.classList.add("d-none");
-        progressUploadWrapper.classList.add("d-none");
+        resetUploadUI();
     });
 
     request.addEventListener("error", function(event) {
         showAlert("File upload failed!", "danger", "bi-exclamation-triangle-fill");
-        chooseFw.disabled = false;
-        uploadFw.classList.remove("d-none");
-        uploadingFw.classList.add("d-none");
-        progressUploadWrapper.classList.add("d-none");
+        resetUploadUI();
     });
 
-    request.open("POST", "/upload_firmware");
-    request.send(data);
+    // Get the firmware data back from the server
+    request.onload = function() {
+        if (request.status === 200) {
+            let firmware_info = request.response;
+            console.log(firmware_info);
+            firmwareDetails.innerHTML = `${firmware_info}`;
+        } else {
+            console.log("Error: " + request.status);
+        }
+    };
 
+    request.send(data);
 });
+
+
+function resetUploadUI() {
+    chooseFw.disabled = false;
+    uploadFw.classList.remove("d-none");
+    uploadingFw.classList.add("d-none");
+    progressUploadWrapper.classList.add("d-none");
+}
 
 
 function showAlert(alertMessage, alertType, icon) {

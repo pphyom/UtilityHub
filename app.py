@@ -280,17 +280,28 @@ def get_ipmi_info():
 def upload_firmware():
     """ Upload the firmware to the system. """
     if request.method == "POST":
-        filesize = request.cookies.get("filesize")
-        fw = request.files["file"] # Get the file from the request
-        file_content = fw.read()  # Read the file content in binary
+        try:
+            fw = request.files["file"]  # Get the file from the request
+            fw.save(fw.filename)  # Save the file to the server
 
-        with open(fw.filename, "wb") as f: # Write the file content to the server
-            f.write(file_content)
+            firmware_info = get_firmware_info(fw.filename, cmd="GetBiosInfo")
+            return jsonify(firmware_info)
+            # return jsonify({"alertMessage": "File Uploaded."})
+        except:
+            return jsonify({"alertMessage": "Error occurred."})
         
-        get_firmware_info(fw.filename, cmd="GetBiosInfo")
+
+        # # filesize = request.cookies.get("filesize")
+        # fw = request.files["file"] # Get the file from the request
+        # # file_content = fw.read()  # Read the file content in binary)
+
+        # # with open(fw.filename, "wb") as f: # Write the file content to the server
+        # #     f.write(file_content)
+
+        # get_firmware_info(fw.filename, cmd="GetBiosInfo")
         
-        response = make_response(jsonify({"alertMessage": "File Uploaded"}), 200)
-        return response
+        # response = make_response(jsonify({"alertMessage": "File Uploaded."}), 200)
+        # return response
 
 
 @app.route("/tools", methods=["GET", "POST"])
