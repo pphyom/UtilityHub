@@ -90,4 +90,4 @@ def get_firmware_info(firmware_file, cmd):
     #     case _:
     #         firmware_version = "NA"
     # print(stdout)
-    return stdout
+    return stdout, stderr

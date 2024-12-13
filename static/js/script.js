@@ -128,9 +128,10 @@ uploadFw.addEventListener("click", function() {
 
     let file = chooseFw.files[0];
     let filename = file.name;
-    const filesize = file.size;
+    // const filesize = file.size;
 
-    document.cookie = `filesize=${filesize}`;
+    // document.cookie = `filesize=${filesize}`;
+    document.cookie = `fw-type=${selectedFwType}`;
     data.append("file", file);
     data.append("filename", filename);
     
@@ -161,8 +162,8 @@ uploadFw.addEventListener("click", function() {
     // Get the firmware data back from the server
     request.onload = function() {
         if (request.status === 200) {
-            let firmware_info = request.response;
-            console.log(firmware_info);
+            let fwData = request.response;
+            firmware_info = fwData["firmware_info"];
             firmwareDetails.innerHTML = `${firmware_info}`;
         } else {
             console.log("Error: " + request.status);
@@ -227,7 +228,7 @@ async function updateTable() {
     // Get the value from the input box
     let items = userInput();
     if (items.length === 0) {
-        showAlert("Please enter serial numbers!", "warning", "bi-exclamation-triangle-fill");
+        showAlert("No input detected! Please enter system serial number/s.", "warning", "bi-exclamation-triangle-fill");
         return;
     }
     dismissAlert();

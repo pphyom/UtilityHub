@@ -433,9 +433,9 @@ tbody tr.hide {
 .custom-pb {
     border-top-left-radius: 10rem;
     border-top-right-radius: 10rem;
-    background: linear-gradient(45deg, #f6d51f, #e73b2c, #b2d8d8);
+    background: linear-gradient(45deg, #ff6232, #00258a, #b2c5d8);
     background-size: 200% 200%;
-    animation: gradientAnimation 3s ease infinite;
+    animation: gradientAnimation 3s ease-in-out infinite;
 }
 
 @keyframes gradientAnimation {
