@@ -423,5 +423,33 @@ tbody tr.hide {
 
 /* Progress bar */
 #custom-progress-bar {
-    border-radius: 0%;
+    border-top-left-radius: 10rem;
+    border-top-right-radius: 10rem;
+    /* background: linear-gradient(45deg, #ff7e5f, #feb47b);
+    background-size: 200% 200%;
+    animation: gradientAnimation 3s ease infinite; */
+}
+
+.custom-pb {
+    border-top-left-radius: 10rem;
+    border-top-right-radius: 10rem;
+    background: linear-gradient(45deg, #f6d51f, #e73b2c, #b2d8d8);
+    background-size: 200% 200%;
+    animation: gradientAnimation 3s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.special-card {
+    box-shadow: 0 .1rem .4rem #0002;
 }

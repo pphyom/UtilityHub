@@ -144,7 +144,7 @@ uploadFw.addEventListener("click", function() {
         progressUpload.innerText = `${progress}%`;
     });
 
-    request.addEventListener("load", function(event) {
+    request.addEventListener("load", () => {
         if (request.status === 200) {
             showAlert(`${request.response.alertMessage}`, "success", "bi-check-circle");
         } else {
@@ -153,7 +153,7 @@ uploadFw.addEventListener("click", function() {
         resetUploadUI();
     });
 
-    request.addEventListener("error", function(event) {
+    request.addEventListener("error", () => {
         showAlert("File upload failed!", "danger", "bi-exclamation-triangle-fill");
         resetUploadUI();
     });
@@ -201,6 +201,8 @@ function userInput() {
     let input = document.getElementById("inputSerialNum").value.toUpperCase().trim();
     // Split the input by spaces or commas to get individual items
     let items = input.split(/\s*,\s*|\s+/);
+    // Remove empty strings that may have been created after trimming and splitting
+    items = items.filter(item => item !== "");
     // Remove duplicates -- [...] turn the set back into an array
     let uniqueItems = [...new Set(items)];
     return uniqueItems;
@@ -224,11 +226,15 @@ async function getIpmiInfo(sn) {
 async function updateTable() {
     // Get the value from the input box
     let items = userInput();
+    if (items.length === 0) {
+        showAlert("Please enter serial numbers!", "warning", "bi-exclamation-triangle-fill");
+        return;
+    }
+    dismissAlert();
     let tableBody = document.getElementById("dynamicTable");
     let progressBarWrapper = document.getElementById("custom-progress-bar");
     let progressPB = document.querySelector(".custom-pb");
     let progress = 0;
-
     // Clear current table rows
     tableBody.innerHTML = "";
     progressBarWrapper.classList.remove('d-none');
