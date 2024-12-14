@@ -283,15 +283,14 @@ def upload_firmware():
         try:
             # filesize = request.cookies.get("filesize")
             fwtype = request.cookies.get("fw-type")
-            print("Firmware type: ", fwtype)
             fw = request.files["file"]  # Get the file from the request
             fw.save(fw.filename)  # Save the file to the server
 
-            firmware_info, err = get_firmware_info(fw.filename, cmd="GetBiosInfo") # Get the firmware info
+            firmware_info = get_firmware_info(fw.filename, cmd=f"Get{fwtype}Info") # Get the firmware info
             response = make_response(jsonify({"firmware_info":firmware_info, "alertMessage": "File uploaded."}), 200)
             return response
         except:
-            response = make_response(jsonify({"alertMessage": {err}}), 500)
+            response = make_response(jsonify({"alertMessage": "Upload failed."}), 500)
             return response
         
 

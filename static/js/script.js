@@ -121,6 +121,7 @@ uploadFw.addEventListener("click", function() {
     let request = new XMLHttpRequest();
     request.responseType = "json";
     chooseFw.disabled = true;
+    selectFw.disabled = true;
     
     uploadFw.classList.add("d-none");
     uploadingFw.classList.remove("d-none");
