@@ -80,6 +80,7 @@ def get_firmware_info(firmware_file, cmd):
                             text=True)
     output.poll()
     stdout, stderr = output.communicate()
+    firmware_build_date = "NA"
     match cmd:
         case "GetBmcInfo":
             firmware_version = stdout.split("\n")[-5].strip()[21:]
@@ -88,8 +89,11 @@ def get_firmware_info(firmware_file, cmd):
             firmware_version = stdout.split("\n")[-4].strip()[36:]
             firmware_build_date = stdout.split("\n")[-5].strip()[36:]
         case "GetCpldInfo":
-            firmware_version = stdout
+            firmware_version = stdout.split("\n")[-4].strip()[31:]
         case _:
             firmware_version = "NA"
-    print(f"Version: {firmware_version}, Build Date: {firmware_build_date}")
-    return firmware_version
+    firmware = {
+        "version": firmware_version,
+        "build_date": firmware_build_date
+    }
+    return firmware

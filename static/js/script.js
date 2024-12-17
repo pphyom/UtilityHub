@@ -102,15 +102,21 @@ let chooseFw = document.getElementById("choose-fw")
 let uploadFw = document.getElementById("upload-fw")
 let uploadingFw = document.getElementById("uploading-fw")
 let alertElement = document.getElementById("alert-element");
-let progressUploadWrapper = document.getElementById("progress-upload-wrapper");
-let progressUpload = document.querySelector(".progress-upload");
+// let progressUploadWrapper = document.getElementById("progress-upload-wrapper");
+// let progressUpload = document.querySelector(".progress-upload");
 let firmwareDetails = document.getElementById("firmware-details");
 let selectedFwType = selectFw.value;
 
+
+// Event listener for the firmware type dropdown
 selectFw.addEventListener("change", () => {
     selectedFwType = selectFw.value;
 });
 
+
+/** 
+ * Upload firmware file to the server, and return the firmware version and build date. 
+ */
 uploadFw.addEventListener("click", function() {
     if (!chooseFw.files.length) {
         showAlert("Please select a file to upload!", "warning", "bi-exclamation-triangle-fill");
@@ -120,12 +126,12 @@ uploadFw.addEventListener("click", function() {
     let data = new FormData();
     let request = new XMLHttpRequest();
     request.responseType = "json";
-    chooseFw.disabled = true;
     selectFw.disabled = true;
+    chooseFw.disabled = true;
     
     uploadFw.classList.add("d-none");
     uploadingFw.classList.remove("d-none");
-    progressUploadWrapper.classList.remove("d-none");
+    // progressUploadWrapper.classList.remove("d-none");
 
     let file = chooseFw.files[0];
     let filename = file.name;
@@ -138,25 +144,26 @@ uploadFw.addEventListener("click", function() {
     
     request.open("POST", "/upload_firmware");
 
-    request.upload.addEventListener("progress", function(event) {
-        // calculate the percentage of the uploaded file
-        let progress = Math.round((event.loaded / event.total) * 100);
-        progressUpload.style.width = `${progress}%`;
-        progressUpload.setAttribute("aria-valuenow", progress);
-        progressUpload.innerText = `${progress}%`;
-    });
+    // Progress Bar
+    // request.upload.addEventListener("progress", function(event) {
+    //     // calculate the percentage of the uploaded file
+    //     let progress = Math.round((event.loaded / event.total) * 100);
+    //     progressUpload.style.width = `${progress}%`;
+    //     progressUpload.setAttribute("aria-valuenow", progress);
+    //     progressUpload.innerText = `${progress}%`;
+    // });
 
     request.addEventListener("load", () => {
         if (request.status === 200) {
             showAlert(`${request.response.alertMessage}`, "success", "bi-check-circle");
         } else {
-            showAlert("File upload failed!", "danger", "bi-exclamation-triangle-fill");
+            showAlert(`File upload failed! Error ${request.status}`, "danger", "bi-exclamation-triangle-fill");
         }
         resetUploadUI();
     });
 
     request.addEventListener("error", () => {
-        showAlert("File upload failed!", "danger", "bi-exclamation-triangle-fill");
+        showAlert(`File upload failed! Error ${request.status}`, "danger", "bi-exclamation-triangle-fill");
         resetUploadUI();
     });
 
@@ -164,10 +171,16 @@ uploadFw.addEventListener("click", function() {
     request.onload = function() {
         if (request.status === 200) {
             let fwData = request.response;
-            firmware_info = fwData["firmware_info"];
-            firmwareDetails.innerHTML = `${firmware_info}`;
+            firmwareVersion = fwData["version"];
+            firmwareBuildDate = fwData["build_date"];
+            firmwareDetails.innerHTML = `
+                <p><strong>Firmware Version:</strong> ${firmwareVersion}</p>
+                <p><strong>Build Date:</strong> ${firmwareBuildDate}</p>
+            `;
+            showAlert("File Uploaded.", "success", "bi-check-circle");
         } else {
-            console.log("Error: " + request.status);
+            showAlert(`File upload failed! Error ${request.status}`, "danger", "bi-exclamation-triangle-fill");
+            resetUploadUI();
         }
     };
 
@@ -175,14 +188,17 @@ uploadFw.addEventListener("click", function() {
 });
 
 
+// Reset the UI either after the file upload is complete or failed
 function resetUploadUI() {
     chooseFw.disabled = false;
+    selectFw.disabled = false;
     uploadFw.classList.remove("d-none");
     uploadingFw.classList.add("d-none");
-    progressUploadWrapper.classList.add("d-none");
+    // progressUploadWrapper.classList.add("d-none");
 }
 
 
+// Show alert message
 function showAlert(alertMessage, alertType, icon) {
     alertElement.innerHTML = `
         <div class="alert alert-${alertType} alert-dismissible fade show" role="alert">
@@ -193,11 +209,13 @@ function showAlert(alertMessage, alertType, icon) {
 }
 
 
+// Dismiss alert message
 function dismissAlert() {
     alertElement.innerHTML = "";
 }
 
 
+// Get the system serial number from the input box
 function userInput() {
     // Get the value from the input box, remove leading and trailing spaces, and convert to uppercase
     let input = document.getElementById("inputSerialNum").value.toUpperCase().trim();
@@ -211,6 +229,11 @@ function userInput() {
 }
 
 
+/**
+ * Get IPMI information from the server.
+ * @param {string} sn - System serial number
+ * @returns {Promise} - IPMI information
+*/ 
 async function getIpmiInfo(sn) {
     // let items = userInput();
     const response = await fetch('/get_ipmi_info', {
@@ -225,6 +248,10 @@ async function getIpmiInfo(sn) {
 }
 
 
+/**
+ * Asynchronously update the table with the IPMI information.
+ * Return NA if the information is not available.
+ */
 async function updateTable() {
     // Get the value from the input box
     let items = userInput();
