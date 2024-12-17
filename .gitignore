@@ -161,3 +161,8 @@ cython_debug/
 # folders
 tools/*
 tools/
+
+# firmware
+*.bin
+*.jed
+sum.log

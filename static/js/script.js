@@ -132,17 +132,18 @@ uploadFw.addEventListener("click", function() {
     uploadFw.classList.add("d-none");
     uploadingFw.classList.remove("d-none");
     // progressUploadWrapper.classList.remove("d-none");
-
+    
     let file = chooseFw.files[0];
     let filename = file.name;
     // const filesize = file.size;
-
+    
     // document.cookie = `filesize=${filesize}`;
     document.cookie = `fw-type=${selectedFwType}`;
     data.append("file", file);
     data.append("filename", filename);
     
     request.open("POST", "/upload_firmware");
+    request.send(data);
 
     // Progress Bar
     // request.upload.addEventListener("progress", function(event) {
@@ -173,19 +174,20 @@ uploadFw.addEventListener("click", function() {
             let fwData = request.response;
             firmwareVersion = fwData["version"];
             firmwareBuildDate = fwData["build_date"];
-            firmwareDetails.innerHTML = "";
+            // firmwareDetails.innerHTML = "";
+            document.getElementById("info-sec").innerText = "UPLOADED FIRMWARE INFO"
             firmwareDetails.innerHTML = `
-                <table class="table table-sm table-light align-middle">
+                <table class="table table-sm table-light align-middle text-start">
                     <tr>
-                        <td><i class="bi bi-alphabet fs-3 pe-4"></i></td>
+                        <td><i class="bi bi-alphabet fs-3 pe-2"></i></td>
                         <td>${filename}</td>
                     </tr>
                     <tr>
-                        <td><i class="bi bi-app-indicator fs-4 pe-4"></i></td>
+                        <td><i class="bi bi-app-indicator fs-4 pe-2"></i></td>
                         <td>${firmwareVersion}</td>
                     </tr>
                     <tr>
-                        <td><i class="bi bi-calendar-check fs-4 pe-4"></i></td>
+                        <td><i class="bi bi-calendar-check fs-4 pe-2"></i></td>
                         <td>${firmwareBuildDate}</td>
                     </tr>
                 </table>
@@ -197,7 +199,6 @@ uploadFw.addEventListener("click", function() {
         }
     };
 
-    request.send(data);
 });
 
 
@@ -297,7 +298,7 @@ async function updateTable() {
             <td>${systemSn}</td>
             <td>
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning text-dark" 
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
                     role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </td>

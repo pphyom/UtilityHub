@@ -272,7 +272,7 @@ def get_ipmi_info():
     """
     input_data = request.get_json()
     serial_num = asyncio.run(ftu.validation([input_data["system_sn"]], scan_log)) # change input to list for function requirement
-    sys_list = screen_data_helper(serial_num)
+    sys_list = get_bmc_info_helper(serial_num)
     return jsonify(sys_list)
 
 
@@ -298,7 +298,7 @@ def tools():
     if request.method == "POST":
         input_list = user_input()
         good_list = asyncio.run(ftu.validation(input_list, scan_log))
-        sys_list = screen_data_helper(good_list)
+        sys_list = get_bmc_info_helper(good_list)
         return render_template("tools.html", 
                                sys_list=sys_list, 
                                sn_url=sn_url, 

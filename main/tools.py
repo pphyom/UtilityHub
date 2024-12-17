@@ -25,7 +25,7 @@ def check_connectivity(host, port=80, timeout=5) -> bool:
         return False
 
 
-def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> dict[str, str]:
+def get_spm_bmc_info(part_list: list[str], sub_sn: list[str]) -> dict[str, str]:
     """ Retrieve the IPMI MAC and Password from the system. """
     ipmi_info = {"mac": "", "pswd": ""}
     for part, ssn in zip(part_list, sub_sn):
@@ -39,7 +39,7 @@ def get_ipmi_info(part_list: list[str], sub_sn: list[str]) -> dict[str, str]:
 
 def get_ip_10(part_list: list, sub_sn: list, sn) -> dict:
     """ SUBNET 10. Discover IP address from connected devices. """
-    ipmi_info = get_ipmi_info(part_list, sub_sn)
+    ipmi_info = get_spm_bmc_info(part_list, sub_sn)
     mac = ipmi_info["mac"]
     pswd = ipmi_info["pswd"]
     payload = {"searchtxt": mac}
@@ -69,45 +69,53 @@ def get_ip_10(part_list: list, sub_sn: list, sn) -> dict:
         return device_info
 
 
-def get_ip_172(part_list: list, sub_sn: list, sn_list: list) -> list[dict[str, str]]:
+def get_ip_172(part_list: list, sub_sn: list, sn) -> dict:
     """ SUBNET 172. Discover IP address from connected devices. """
-    ipmi_info = get_ipmi_info(part_list, sub_sn)
-
-    mac_list = [i for i in ipmi_info["mac"]]
-    pswd_list = [i for i in ipmi_info["pswd"]]
-    device_info = []
-    for mac, pswd, sn in zip(mac_list, pswd_list, sn_list):
-        payload = {
-            "address": mac,
-            "action": "Search"
+    ipmi_info = get_spm_bmc_info(part_list, sub_sn)
+    mac = ipmi_info["mac"]
+    pswd = ipmi_info["pswd"]
+    payload = {
+        "address": mac,
+        "action": "Search"
+    }
+    try:
+        response = requests.post(ip_discover_172, data=payload, verify=False)
+        soup = BeautifulSoup(response.text, "html.parser")
+        tt_tag = soup.find("tt")
+        ip_addr = tt_tag.get_text().split("\n")[-3]
+        if ip_addr == "":
+            ip_addr = "NA"
+        device_info = {
+            "ip_address": ip_addr,
+            "username": "ADMIN",
+            "password": pswd,
+            "system_sn": sn
         }
-        try:
-            response = requests.post(ip_discover_172, data=payload, verify=False)
-            soup = BeautifulSoup(response.text, "html.parser")
-            tt_tag = soup.find("tt")
-            parsed_text = tt_tag.get_text().split("\n")[-3]
-            if parsed_text == "":
-                parsed_text = "NA"
-            device_combo = {
-                "ip_address": parsed_text,
-                "username": "ADMIN",
-                "password": pswd,
-                "system_sn": sn
-            }
-            device_info.append(device_combo)
-        except Exception as e:
-            print(f"Error finding the ip address for {mac}: {e}")
-    return device_info
+        return device_info
+    except Exception as e:
+        print(f"Error finding the ip address for {mac}: {e}")
+        device_info = {
+            "ip_address": "NA",
+            "username": "ADMIN",
+            "password": pswd,
+            "system_sn": sn
+        }
+        return device_info
 
 
-def screen_data_helper(sn_list: list) -> list:
+def get_bmc_info_helper(sn_list: list) -> list:
     """ Filter the data based on the user input. """
     try:
         sys_list = []
         for sn in sn_list:
             outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))
-            ip = get_ip_10(outfile["part_list"], outfile["sub_sn"], sn)
-            sys_list.append(ip)
+            client_connection = request.remote_addr
+            if client_connection.startswith("10"):
+                device_info = get_ip_10(outfile["part_list"], outfile["sub_sn"], sn)
+            else:
+                device_info = get_ip_172(outfile["part_list"], outfile["sub_sn"], sn)
+
+            sys_list.append(device_info)
         return sys_list
     except Exception as e:
         return jsonify({"error": str(e)})
