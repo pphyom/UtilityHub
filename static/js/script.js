@@ -173,9 +173,22 @@ uploadFw.addEventListener("click", function() {
             let fwData = request.response;
             firmwareVersion = fwData["version"];
             firmwareBuildDate = fwData["build_date"];
+            firmwareDetails.innerHTML = "";
             firmwareDetails.innerHTML = `
-                <p><strong>Firmware Version:</strong> ${firmwareVersion}</p>
-                <p><strong>Build Date:</strong> ${firmwareBuildDate}</p>
+                <table class="table table-sm table-light align-middle">
+                    <tr>
+                        <td><i class="bi bi-alphabet fs-3 pe-4"></i></td>
+                        <td>${filename}</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-app-indicator fs-4 pe-4"></i></td>
+                        <td>${firmwareVersion}</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-calendar-check fs-4 pe-4"></i></td>
+                        <td>${firmwareBuildDate}</td>
+                    </tr>
+                </table>
             `;
             showAlert("File Uploaded.", "success", "bi-check-circle");
         } else {
