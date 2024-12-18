@@ -278,22 +278,26 @@ async function updateTable() {
     let progressBarWrapper = document.getElementById("custom-progress-bar");
     let progressPB = document.querySelector(".custom-pb");
     let progress = 0;
-    // Clear current table rows
-    tableBody.innerHTML = "";
+
     progressBarWrapper.classList.remove('d-none');
 
-    for (let ind = 0; ind < items.length; ind++) {
-        let item = await getIpmiInfo(items[ind]);
+    for (let idx = 0; idx < items.length; idx++) {
+        let systemSn = items[idx];
+        // Check if the item is already in the table
+        let existingRow = Array.from(tableBody.rows).find(row => row.cells[2].textContent === systemSn);
+        if (existingRow) {
+            continue; // Skip the item if it is already in the table
+        }
+        let item = await getIpmiInfo(systemSn);
         let ipAddress = item[0].ip_address;
-        let systemSn = items[ind];
         progress += 100 / items.length;
         progressPB.style.width = `${progress}%`;
         progressPB.setAttribute("aria-valuenow", progress);
 
-
+        idx = tableBody.rows.length; // Get the index of the last row
         let newRow = tableBody.insertRow();
         newRow.innerHTML = `
-            <td>${ind + 1}</td>
+            <td>${idx + 1}</td>
             <td>${ipAddress}</td>
             <td>${systemSn}</td>
             <td>
@@ -303,11 +307,11 @@ async function updateTable() {
                 </div>
             </td>
             <td>NA</td>
-            <td>NA</td>
-            <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${ind}"></td>
+            <td>In Queue</td>
+            <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${idx}"></td>
         `;
 
-        let checkbox = document.getElementById(`checkbox-${ind}`);
+        let checkbox = document.getElementById(`checkbox-${idx}`);
         checkbox.addEventListener('change', function() {
             let row = this.closest('tr');
             if (this.checked) {
