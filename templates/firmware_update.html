@@ -126,11 +126,11 @@
                 <i class="bi bi-caret-left-fill fs-2 text-dark-emphasis"></i>
             </div>
             <div class="collapse collapse-horizontal" id="collapse-control">
-                <div id="testing" class="d-flex flex-row gap-2">
-                    <button type="button" class="btn">Update</button>
-                    <button type="button" class="btn">Delete</button>
-                    <button type="button" class="btn">Retry</button>
-                    <button type="button" class="btn">UID</button>
+                <div id="floating-action" class="d-flex flex-row gap-2">
+                    <button type="button" class="btn disabled" id="btn-update">Update</button>
+                    <button type="button" class="btn disabled" id="btn-delete-row">Delete</button>
+                    <button type="button" class="btn disabled" id="btn-retry">Retry</button>
+                    <button type="button" class="btn disabled" id="btn-uid">UID</button>
                 </div>
             </div>
             <div id="close-control" class="d-none" data-bs-toggle="collapse" data-bs-target="#collapse-control" 
@@ -157,7 +157,10 @@
                                 <th><i class="bi bi-activity"></i>PROGRESS</th>
                                 <th><i class="bi bi-file-lock2"></i>CURRENT FIRMWARE</th>
                                 <th><i class="bi bi-question-square"></i>STATUS</th>
-                                <th><i class="bi bi-check-all"></i>ACTION</th>
+                                <th>
+                                    <input class="form-check-input" type="checkbox" value="" id="check-all" disabled>
+                                    ACTION
+                                </th>
                             </tr>
                         </thead>
                         <tbody id="dynamicTable">

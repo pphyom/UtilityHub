@@ -102,6 +102,7 @@ function updateData () {
 *************************************************
 **/
 
+let serialNumberInput = document.getElementById("serial-number-input");
 let selectFw = document.getElementById("select-fw")
 let chooseFw = document.getElementById("choose-fw")
 let uploadFw = document.getElementById("upload-fw")
@@ -114,6 +115,11 @@ let selectedFwType = selectFw.value;
 
 let openControl = document.getElementById("open-control");
 let closeControl = document.getElementById("close-control");
+let btnDeleteRow = document.getElementById("btn-delete-row");
+let btnUpdate = document.getElementById("btn-update");
+let btnRetry = document.getElementById("btn-retry");
+let uidOnOff = document.getElementById("btn-uid");
+let checkAll = document.getElementById("check-all");
 
 
 // Event listener for the firmware type dropdown
@@ -243,7 +249,7 @@ function dismissAlert() {
 // Get the system serial number from the input box
 function userInput() {
     // Get the value from the input box, remove leading and trailing spaces, and convert to uppercase
-    let input = document.getElementById("serial-number-input").value.toUpperCase().trim();
+    let input = serialNumberInput.value.toUpperCase().trim();
     // Split the input by spaces or commas to get individual items
     let items = input.split(/\s*,\s*|\s+/);
     // Remove empty strings that may have been created after trimming and splitting
@@ -291,7 +297,10 @@ async function updateTable() {
     let progress = 0;
     let duplicateItems = [];
     
+    serialNumberInput.value = "";  // Clear the input box
     progressBarWrapper.classList.remove('d-none');
+    btnDeleteRow.classList.remove('disabled');
+    checkAll.removeAttribute("disabled");
 
     for (let idx = 0; idx < items.length; idx++) {
         let systemSn = items[idx];
@@ -312,6 +321,7 @@ async function updateTable() {
 
         idx = tableBody.rows.length; // Get the index of the last row
         let newRow = tableBody.insertRow();
+        newRow.classList.add("table-secondary");
         newRow.innerHTML = `
             <td>${idx + 1}</td>
             <td>${ipAddress}</td>
@@ -325,18 +335,17 @@ async function updateTable() {
             </td>
             <td>NA</td>
             <td>In Queue</td>
-            <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${idx}"></td>
+            <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${idx}" checked></td>
         `;
 
+        // Select individual checkboxes
         let checkbox = document.getElementById(`checkbox-${idx}`);
         checkbox.addEventListener('change', function() {
             let row = this.closest('tr');
             if (this.checked) {
                 row.classList.add('table-secondary');
-                runFirmwareUpdate(row);
             } else {
                 row.classList.remove('table-secondary');
-                resetProgressBar(row);
             }
         });
     }
@@ -345,6 +354,48 @@ async function updateTable() {
         showAlert(`${duplicateItems.join(", ")} already existed.`, "warning", "bi-exclamation-triangle-fill");
     }
 }
+
+
+// Select/de-select all checkboxes
+document.addEventListener("DOMContentLoaded", function() {
+    checkAll.addEventListener("click", function() {
+        let checkboxes = document.querySelectorAll('input[type="checkbox"]:not(#check-all)');
+        checkboxes.forEach(checkbox => {
+            checkAll.checked ? checkbox.checked = true : checkbox.checked = false;
+            let row = checkbox.closest('tr');
+            if (checkAll.checked) {
+                checkbox.checked = true;
+                row.classList.add('table-secondary');
+            } else {
+                checkbox.checked = false;
+                row.classList.remove('table-secondary');
+            }
+            checkbox.checked ? row.classList.add('table-secondary') : row.classList.remove('table-secondary');
+        });
+    });
+});
+
+// Delete selected rows from the table
+btnDeleteRow.addEventListener("click", function() {
+    let tableBody = document.getElementById("dynamicTable");
+    let rows = Array.from(tableBody.rows);
+    rows.forEach(row => {
+        if (row.querySelector('input').checked) {
+            row.remove();
+        }
+    });
+    // Rearrange the index after deletion
+    rows = Array.from(tableBody.rows);
+    rows.forEach((row, index) => {
+        row.cells[0].textContent = index + 1;
+    });
+
+    if (tableBody.rows.length === 0) {
+        btnDeleteRow.disabled = true;
+        checkAll.removeAttribute("checked");
+        checkAll.setAttribute("disabled", "true");
+    }
+});
 
 
 // Dummy function to simulate firmware update

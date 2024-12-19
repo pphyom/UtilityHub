@@ -468,13 +468,20 @@ tbody tr.hide {
     opacity: 100%;
 }
 
-#testing button {
+#floating-action button {
     color: var(--theme-color);
     border-color: var(--theme-color);
     border-radius: .3rem;
+    box-shadow: 0 .2rem .3rem #0002;
 }
 
-#testing button:hover {
+#floating-action button:not(#btn-delete-row):hover {
     color: var(--main-color);
     background-color: var(--theme-color);
+}
+
+#floating-action #btn-delete-row:hover {
+    color: var(--font-red);
+    background-color: var(--bg-red);
+    border-color: var(--bg-red);
 }
