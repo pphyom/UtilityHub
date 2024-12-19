@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col">
         <form method="post">
-            <div class="card special-card">
+            <div class="card special-card mb-2">
                 <div class="card-header bg-custom-grayblue pb-1">
                     <div class="d-flex justify-content-between">
                         <div class="h6">
@@ -120,25 +120,25 @@
                 </div>
             </div>
         </form>
-        <div class="d-grid d-md-flex justify-content-md-end my-2 mx-0 align-items-center">
+        <div class="d-grid d-flex justify-content-end my-0 mx-0 align-items-center">
             <div id="open-control" data-bs-toggle="collapse" data-bs-target="#collapse-control" 
-                aria-expanded="false" style="cursor: pointer;">
-                <i class="bi bi-caret-left fs-2 text-secondary"></i>
+                aria-expanded="false">
+                <i class="bi bi-caret-left-fill fs-2 text-dark-emphasis"></i>
             </div>
             <div class="collapse collapse-horizontal" id="collapse-control">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-secondary">Update</button>
-                    <button type="button" class="btn btn-outline-secondary">Delete</button>
-                    <button type="button" class="btn btn-outline-secondary">Retry</button>
-                    <button type="button" class="btn btn-outline-secondary">UID</button>
+                <div id="testing" class="d-flex flex-row gap-2">
+                    <button type="button" class="btn">Update</button>
+                    <button type="button" class="btn">Delete</button>
+                    <button type="button" class="btn">Retry</button>
+                    <button type="button" class="btn">UID</button>
                 </div>
             </div>
             <div id="close-control" class="d-none" data-bs-toggle="collapse" data-bs-target="#collapse-control" 
-                aria-expanded="false" style="cursor: pointer;">
-                <i class="bi bi-caret-right fs-2 text-secondary"></i>
+                aria-expanded="false">
+                <i class="bi bi-caret-right-fill fs-2 text-dark-emphasis"></i>
             </div>
         </div>
-        <div class="card special-card">
+        <div class="card special-card mt-2">
             <div id="custom-progress-bar" class="progress d-none">
                 <div class="progress-bar custom-pb" 
                 role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>

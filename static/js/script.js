@@ -126,6 +126,7 @@ selectFw.addEventListener("change", () => {
  * Upload firmware file to the server, and return the firmware version and build date. 
  */
 uploadFw.addEventListener("click", function() {
+
     if (!chooseFw.files.length) {
         showAlert("Please select a file to upload!", "warning", "bi-exclamation-triangle-fill");
         return;
@@ -275,7 +276,7 @@ async function getIpmiInfo(sn) {
 /**
  * Asynchronously update the table with the IPMI information.
  * Return NA if the information is not available.
- */
+*/
 async function updateTable() {
     // Get the value from the input box
     let items = userInput();

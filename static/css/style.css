@@ -457,3 +457,24 @@ tbody tr.hide {
 .special-card {
     box-shadow: 0 .1rem .4rem #0002;
 }
+
+#open-control i, #close-control i{
+    cursor: pointer;
+    opacity: 70%;
+    transition: all .3s ease;
+}
+
+#open-control:hover i, #close-control:hover i {
+    opacity: 100%;
+}
+
+#testing button {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+    border-radius: .3rem;
+}
+
+#testing button:hover {
+    color: var(--main-color);
+    background-color: var(--theme-color);
+}
