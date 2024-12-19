@@ -21,36 +21,39 @@
                             <div class="col-12 col-xl-7 col-lg-7 col-md-12 col-sm-12">
                                 <div class="col-12 d-flex flex-column flex-md-row mb-2">
                                     <div class="flex-grow-1 d-grid gap-2 mb-2">
-                                        <input type="text" id="inputSerialNum" class="form-control" placeholder="Insert system serial number/s...">
+                                        <input type="text" id="serial-number-input" class="form-control" placeholder="Insert system serial number/s...">
                                     </div>
                                     <div id="custom-btn" class="d-grid gap-2 mb-2 ms-md-2 ms-lg-2 ms-xl-2">
                                         <!-- Button trigger modal -->
                                         <button type="button" id="custom-btn" class="btn"
-                                            data-bs-toggle="modal" data-bs-target="#multi-input">
+                                            data-bs-toggle="modal" data-bs-target="#multi-input-modal">
                                             <i class="bi bi-three-dots"></i>
                                         </button>
 
                                         <!-- Modal: Bulk input -->
-                                        <div class="modal fade" id="multi-input"
+                                        <div class="modal fade" id="multi-input-modal"
                                             data-bs-backdrop="static" data-bs-keyboard="false"
                                             tabindex="-1" aria-labelledby="staticBackdropLabel"
                                             aria-hidden="true">
                                             <div class="modal-dialog modal-sm">
                                                 <div class="modal-content">
-                                                    <div class="modal-body">
+                                                    <div class="modal-header">
+                                                        <h6 class="modal-title text-dark" id="staticBackdropLabel">Bulk Input</h6>
                                                         <button type="button" class="btn-close"
                                                             data-bs-dismiss="modal"
-                                                            aria-label="Close">
-                                                        </button>
-                                                        <textarea id="secondary-textbox"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <textarea id="multi-serial-number-input"
                                                             class="form-control"
                                                             style="min-width: 100%; resize: none;"
                                                             rows="12"
-                                                            placeholder="Place data line by line.">
-                                                        </textarea>
+                                                            placeholder="Place data line by line."></textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
                                                         <button type="reset" id="custom-btn"
                                                             class="btn">Reset</button>
-                                                        <button type="button" class="btn bg-custom-grayblue"
+                                                        <button type="button" class="btn btn-primary"
                                                             data-bs-dismiss="modal"
                                                             onclick="passData()">Insert</button>
                                                     </div>
@@ -92,10 +95,10 @@
                                 </div>
                                 <div class="col-12 mb-2" id="alert-element"></div> <!-- Alert message will be displayed here -->
                                 <!-- Progress Bar -->
-                                <!-- <div id="progress-upload-wrapper" class="progress d-none">
+                                <div id="progress-upload-wrapper" class="progress d-none">
                                     <div class="progress-bar progress-upload" 
                                     role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div> -->
+                                </div>
                             </div>
                             <div class="col-12 col-xl-5 col-lg-5 col-md-12 col-sm-12">
                                 <div class="card bg-light">
@@ -117,7 +120,25 @@
                 </div>
             </div>
         </form>
-        <div class="card my-5 special-card">
+        <div class="d-grid d-md-flex justify-content-md-end my-2 mx-0 align-items-center">
+            <div id="open-control" data-bs-toggle="collapse" data-bs-target="#collapse-control" 
+                aria-expanded="false" style="cursor: pointer;">
+                <i class="bi bi-caret-left fs-2 text-secondary"></i>
+            </div>
+            <div class="collapse collapse-horizontal" id="collapse-control">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-secondary">Update</button>
+                    <button type="button" class="btn btn-outline-secondary">Delete</button>
+                    <button type="button" class="btn btn-outline-secondary">Retry</button>
+                    <button type="button" class="btn btn-outline-secondary">UID</button>
+                </div>
+            </div>
+            <div id="close-control" class="d-none" data-bs-toggle="collapse" data-bs-target="#collapse-control" 
+                aria-expanded="false" style="cursor: pointer;">
+                <i class="bi bi-caret-right fs-2 text-secondary"></i>
+            </div>
+        </div>
+        <div class="card special-card">
             <div id="custom-progress-bar" class="progress d-none">
                 <div class="progress-bar custom-pb" 
                 role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
@@ -131,8 +152,9 @@
                             <tr>
                                 <th>#</th>
                                 <th><i class="bi bi-exclamation-square"></i>IP</th>
-                                <th data-sortable="true"><i class="bi bi-upc"></i>SERIAL NUMBER</th>
-                                <th data-sortable="true"><i class="bi bi-activity"></i>PROGRESS</th>
+                                <th><i class="bi bi-upc"></i>SERIAL NUMBER</th>
+                                <th><i class="bi bi-layers-half"></i>MBD</th>
+                                <th><i class="bi bi-activity"></i>PROGRESS</th>
                                 <th><i class="bi bi-file-lock2"></i>CURRENT FIRMWARE</th>
                                 <th><i class="bi bi-question-square"></i>STATUS</th>
                                 <th><i class="bi bi-check-all"></i>ACTION</th>

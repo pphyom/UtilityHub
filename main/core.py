@@ -159,7 +159,7 @@ def user_input() -> list:
     input_data: list = []
     txt_ = request.form.get("serial_num").split(" ")
     # remove all empty items in the list
-    temp = [sn.upper() for sn in txt_ if sn != "\t" and sn != ""]
+    temp = [sn.upper().replace("\t", "") for sn in txt_ if sn != "\t" and sn != ""]
     # remove all duplicates and maintain the index order
     [input_data.append(sn) for sn in temp if sn not in input_data]
 

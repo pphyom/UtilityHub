@@ -9,10 +9,15 @@ sidebar.addEventListener("click", function () {
 
 // copy data from modal textarea to textbox -- used in input_form.html
 function passData() {
-    let primaryTextbox = document.querySelector("#primary-textbox")
-    let secondaryTextbox = document.querySelector("#secondary-textbox")
-    secondaryTextbox = secondaryTextbox.value.split("\n")
-    primaryTextbox.value = secondaryTextbox.join(" ");
+    let primaryTextArea = document.getElementById("primary-textbox");
+    let secondaryTextArea = document.getElementById("secondary-textbox");
+    let secondaryValue = secondaryTextArea.value.split("\n");
+    primaryTextArea.value = secondaryValue.join(" ");
+    
+    let serialNumberInput = document.getElementById("serial-number-input");
+    let multiSerialNumberInput = document.getElementById("multi-serial-number-input");
+    let multiSerialNumberInputValue = multiSerialNumberInput.value.split("\n");
+    serialNumberInput.value = multiSerialNumberInputValue.join(" ");
 }
 
 
@@ -102,10 +107,13 @@ let chooseFw = document.getElementById("choose-fw")
 let uploadFw = document.getElementById("upload-fw")
 let uploadingFw = document.getElementById("uploading-fw")
 let alertElement = document.getElementById("alert-element");
-// let progressUploadWrapper = document.getElementById("progress-upload-wrapper");
-// let progressUpload = document.querySelector(".progress-upload");
+let progressUploadWrapper = document.getElementById("progress-upload-wrapper");
+let progressUpload = document.querySelector(".progress-upload");
 let firmwareDetails = document.getElementById("firmware-details");
 let selectedFwType = selectFw.value;
+
+let openControl = document.getElementById("open-control");
+let closeControl = document.getElementById("close-control");
 
 
 // Event listener for the firmware type dropdown
@@ -131,7 +139,7 @@ uploadFw.addEventListener("click", function() {
     
     uploadFw.classList.add("d-none");
     uploadingFw.classList.remove("d-none");
-    // progressUploadWrapper.classList.remove("d-none");
+    progressUploadWrapper.classList.remove("d-none");
     
     let file = chooseFw.files[0];
     let filename = file.name;
@@ -143,17 +151,17 @@ uploadFw.addEventListener("click", function() {
     data.append("filename", filename);
     
     request.open("POST", "/upload_firmware");
-    request.send(data);
-
-    // Progress Bar
-    // request.upload.addEventListener("progress", function(event) {
-    //     // calculate the percentage of the uploaded file
-    //     let progress = Math.round((event.loaded / event.total) * 100);
-    //     progressUpload.style.width = `${progress}%`;
-    //     progressUpload.setAttribute("aria-valuenow", progress);
-    //     progressUpload.innerText = `${progress}%`;
-    // });
-
+    
+    // Progress Bar -- listen to the upload event
+    request.upload.addEventListener("progress", function(event) {
+        // calculate the percentage of the uploaded file
+        let progress = Math.round((event.loaded / event.total) * 100);
+        progressUpload.style.width = `${progress}%`;
+        progressUpload.setAttribute("aria-valuenow", progress);
+        // progressUpload.innerText = `${progress}%`;
+    });
+    
+    // Listen to the load event
     request.addEventListener("load", () => {
         if (request.status === 200) {
             showAlert(`${request.response.alertMessage}`, "success", "bi-check-circle");
@@ -162,7 +170,7 @@ uploadFw.addEventListener("click", function() {
         }
         resetUploadUI();
     });
-
+    
     request.addEventListener("error", () => {
         showAlert(`File upload failed! Error ${request.status}`, "danger", "bi-exclamation-triangle-fill");
         resetUploadUI();
@@ -199,6 +207,8 @@ uploadFw.addEventListener("click", function() {
         }
     };
 
+    request.send(data);
+
 });
 
 
@@ -208,7 +218,7 @@ function resetUploadUI() {
     selectFw.disabled = false;
     uploadFw.classList.remove("d-none");
     uploadingFw.classList.add("d-none");
-    // progressUploadWrapper.classList.add("d-none");
+    progressUploadWrapper.classList.add("d-none");
 }
 
 
@@ -232,7 +242,7 @@ function dismissAlert() {
 // Get the system serial number from the input box
 function userInput() {
     // Get the value from the input box, remove leading and trailing spaces, and convert to uppercase
-    let input = document.getElementById("inputSerialNum").value.toUpperCase().trim();
+    let input = document.getElementById("serial-number-input").value.toUpperCase().trim();
     // Split the input by spaces or commas to get individual items
     let items = input.split(/\s*,\s*|\s+/);
     // Remove empty strings that may have been created after trimming and splitting
@@ -278,7 +288,8 @@ async function updateTable() {
     let progressBarWrapper = document.getElementById("custom-progress-bar");
     let progressPB = document.querySelector(".custom-pb");
     let progress = 0;
-
+    let duplicateItems = [];
+    
     progressBarWrapper.classList.remove('d-none');
 
     for (let idx = 0; idx < items.length; idx++) {
@@ -286,10 +297,14 @@ async function updateTable() {
         // Check if the item is already in the table
         let existingRow = Array.from(tableBody.rows).find(row => row.cells[2].textContent === systemSn);
         if (existingRow) {
+            duplicateItems.push(systemSn);
+            items.splice(idx, 1); // Remove the existing item from the array
+            idx--; // Adjust the index after removal
             continue; // Skip the item if it is already in the table
         }
         let item = await getIpmiInfo(systemSn);
         let ipAddress = item[0].ip_address;
+        let motherboard = item[0].mbd;
         progress += 100 / items.length;
         progressPB.style.width = `${progress}%`;
         progressPB.setAttribute("aria-valuenow", progress);
@@ -300,6 +315,7 @@ async function updateTable() {
             <td>${idx + 1}</td>
             <td>${ipAddress}</td>
             <td>${systemSn}</td>
+            <td>${motherboard}</td>
             <td>
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped progress-bar-animated" 
@@ -322,6 +338,10 @@ async function updateTable() {
                 resetProgressBar(row);
             }
         });
+    }
+
+    if (duplicateItems.length > 0) {
+        showAlert(`${duplicateItems.join(", ")} already existed.`, "warning", "bi-exclamation-triangle-fill");
     }
 }
 
@@ -351,3 +371,14 @@ function resetProgressBar(row) {
     progressBar.setAttribute('aria-valuenow', 0);
     progressBar.innerText = `0%`;
 }
+
+openControl.addEventListener("click", function() {
+    openControl.classList.add("d-none");
+    closeControl.classList.remove("d-none");
+});
+
+
+closeControl.addEventListener("click", function() {
+    closeControl.classList.add("d-none");
+    openControl.classList.remove("d-none");
+});

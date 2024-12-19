@@ -109,13 +109,16 @@ def get_bmc_info_helper(sn_list: list) -> list:
         sys_list = []
         for sn in sn_list:
             outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))
+            mbd = [i for i in outfile.get("part_list") if "MBD" in i][0]
             client_connection = request.remote_addr
             if client_connection.startswith("10"):
                 device_info = get_ip_10(outfile["part_list"], outfile["sub_sn"], sn)
             else:
                 device_info = get_ip_172(outfile["part_list"], outfile["sub_sn"], sn)
 
+            device_info["mbd"] = mbd # Add the MBD part number to the device_info dictionary
             sys_list.append(device_info)
         return sys_list
+    
     except Exception as e:
         return jsonify({"error": str(e)})
