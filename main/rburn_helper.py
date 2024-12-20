@@ -94,34 +94,6 @@ def create_directory():
 
 def get_sn_models_from_rack(rack_list: list):
 
-    test_dict = {
-                    "CPU": {
-                        "speed": "100",
-                        "core": "",
-                        "linpack_hpl": ""
-                    },
-
-                    "DIMM": {
-                        "total_available_size": "",
-                        "stream_memory_bandwidth": ""
-                    },
-
-                    "DISK": {
-                        "disk_speed_test": "",
-                        "disk_fio_benchmark128": ""
-                    },
-
-                    "GPU": {
-                        "bandwidth_test": "",
-                        "linpack_hpl": "",
-                        "threasholds": "",
-                        "nv_topology": "",
-                        "GDT": "",
-                        "FDT": "",
-                        "FW_Retimer": ""
-                    }
-                }
-
     for rack in rack_list:
         path_to_mac = find_mac_summary_log(rack)
 

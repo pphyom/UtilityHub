@@ -4,13 +4,11 @@ from flask import Flask, render_template, session, g, make_response, request, js
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from main.core import *
 from main.cburn_helper import *
-from main.rburn_helper import *
 from main.ftu_helper import *
 from main.tools import *
 from main.firmware_info import *
 from config import Config
 from main.extensions import db, sess
-from icecream import ic
 
 rburn_live = os.getenv("RBURN_SVR40_LIVE")
 
@@ -64,6 +62,11 @@ def set_year():
     g.current_year = current_year
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    return render_template("login.html")
+
+
 # Index Page #
 @app.route("/get_data", methods=["GET"])
 def get_data():
@@ -98,110 +101,6 @@ def index():
         input_list = session.get("user_input", [])
         data_set = live.filtered_data(input_list)
         return render_template("index.html", data=data_set)
-
-
-# RBurn Page #
-@app.route("/rburn_log", methods=["GET", "POST"])
-def rburn_log():
-    if request.method == "POST":
-        # 1. get the user input: get_sn for sn, path to json, and rack name, 
-        #    get_rack for rack path to each unit.
-        get_sn, get_rack = get_sys_info(user_input(), live.live_data, live.rburn_server)
-
-        # 2. if the rack_data is not on database, create it.
-        create_directory()
-
-        def do_operation(item_sn):
-            print(f"{item_sn} created.")
-
-        # 3. Retrieve the rack name from each server and search if the comparison file exists.
-        for item in get_sn:
-            for key in item.values():
-                rack = key["rack"]
-
-                # FILE EXISTS =>
-                # 1. Get the JSON file from the new user input SN.
-                # 2. Compare the JSON file with the existing JSON files in the rack.
-                # 3. Display the result on the page.
-                if os.path.exists(f"rack_data\\{rack}.json"):
-                    print("file exist")
-                    do_operation(list(item.keys())[0])
-                    # do_something()
-
-                # FILE NOT EXIST =>
-                # 1. Create an empty JSON file using the rack name.
-                # 2. Get a minimal of 5 passed units from the rack with their JSON files. 
-                # 3. Pass the JSON file to each function for the result and create the temp JSON file.
-                # 4. Pass the temp JSON file to the comparison function. 
-                # 5. Store the most common data into the JSON file created in number 1.
-                # 6. Get the JSON file from the new user input SN.
-                # 7. Compare the JSON file with the existing JSON files in the rack.
-                # 8. Display the result on the page.
-                else:
-                    print("file not exist")
-                    with open(f"rack_data\\{rack}.json", "w") as db_file:
-                        # json.dump(data, db_file)
-                        db_file.write(json.dumps({}))
-                    do_operation(list(item.keys())[0])
-                    # do_something()
-
-        # retrieve at least 5 passed units from the rack including the user's input
-        # to create the test data if not exist
-        # rack_addr = get_sn_models_from_rack(get_rack)
-
-        return render_template("rburn_log.html", data=get_rack)
-
-    return render_template("rburn_log.html")
-
-
-# FTU Page #
-@app.route("/ftu_log", methods=["GET", "POST"])
-def ftu_log():
-    if request.method == "POST":
-        input_list = user_input()
-        good_list = asyncio.run(ftu.validation(input_list, scan_log))
-        test = {}  # return value
-        for sn in good_list:
-            outfile = asyncio.run(spm.retrieve_data_from_file(spm.assembly_rec, sn))
-            mac_list = get_mac_address(outfile["part_list"], outfile["sub_sn"])
-
-            for i in range(len(good_list)):
-                serial_num = good_list[i]
-                order_num = outfile["order_num"]
-                ord_ = outfile["ord_"]
-
-                test[serial_num] = [order_num, ord_]
-
-                #  get validated instruction file
-                ins_file_url = [
-                    ins_file for mac in mac_list
-                    if requests.get(ins_file := f"{ins_path}/ins-{mac}".lower())
-                ]
-
-                #  get the directory (path) from the instruction file for each system
-                directory = [
-                    line[5:-1]
-                    for elem in ins_file_url
-                    for line in get_each_line_from_page(elem)
-                    if "DIR=" in line
-                ]
-
-                #  create the ftu urls
-                # ftu_paths = [(ftu_addr + "/".join(d.split("/")[:2])) for d in directory]
-                # ftu_dir = list(dict.fromkeys(ftu_paths))  # remove duplicates
-
-            # final = []
-            # for sn, dir in zip(good_list, ftu_paths):
-            #     temp = {}
-            #     link = f"{dir}/{sn}/"
-            #     js, found = asyncio.run(ftu.json_lookup(link))
-            #     # temp["MO"] = js["MO"]
-            #     temp["ftu_data"] = js
-            #     final.append(temp)
-
-        return render_template("ftu_log.html", data=test)
-        # return render_template("ftu_log.html", data=input_list, good_list=good_list, bad_list=ftu.bad_items)
-    return render_template("ftu_log.html")
 
 
 # CBurn Page #
