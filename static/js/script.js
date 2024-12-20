@@ -119,7 +119,7 @@ let btnDeleteRow = document.getElementById("btn-delete-row");
 let btnUpdate = document.getElementById("btn-update");
 let btnRetry = document.getElementById("btn-retry");
 let uidOnOff = document.getElementById("btn-uid");
-let checkAll = document.getElementById("check-all");
+let selectAllCheckbox = document.getElementById("select-all-checkbox");
 
 
 // Event listener for the firmware type dropdown
@@ -300,7 +300,7 @@ async function updateTable() {
     serialNumberInput.value = "";  // Clear the input box
     progressBarWrapper.classList.remove('d-none');
     btnDeleteRow.classList.remove('disabled');
-    checkAll.removeAttribute("disabled");
+    selectAllCheckbox.removeAttribute("disabled");
 
     for (let idx = 0; idx < items.length; idx++) {
         let systemSn = items[idx];
@@ -319,9 +319,8 @@ async function updateTable() {
         progressPB.style.width = `${progress}%`;
         progressPB.setAttribute("aria-valuenow", progress);
 
-        idx = tableBody.rows.length; // Get the index of the last row
+        idx = tableBody.rows.length; // Set the index to the total number of rows
         let newRow = tableBody.insertRow();
-        newRow.classList.add("table-secondary");
         newRow.innerHTML = `
             <td>${idx + 1}</td>
             <td>${ipAddress}</td>
@@ -335,7 +334,7 @@ async function updateTable() {
             </td>
             <td>NA</td>
             <td>In Queue</td>
-            <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${idx}" checked></td>
+            <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${idx}"></td>
         `;
 
         // Select individual checkboxes
@@ -358,44 +357,38 @@ async function updateTable() {
 
 // Select/de-select all checkboxes
 document.addEventListener("DOMContentLoaded", function() {
-    checkAll.addEventListener("click", function() {
-        let checkboxes = document.querySelectorAll('input[type="checkbox"]:not(#check-all)');
+    selectAllCheckbox.addEventListener("click", function() {
+        let checkboxes = document.querySelectorAll('input[type="checkbox"]:not(#select-all-checkbox)');
         checkboxes.forEach(checkbox => {
-            checkAll.checked ? checkbox.checked = true : checkbox.checked = false;
+            checkbox.checked = selectAllCheckbox.checked;
             let row = checkbox.closest('tr');
-            if (checkAll.checked) {
-                checkbox.checked = true;
-                row.classList.add('table-secondary');
-            } else {
-                checkbox.checked = false;
-                row.classList.remove('table-secondary');
-            }
             checkbox.checked ? row.classList.add('table-secondary') : row.classList.remove('table-secondary');
         });
     });
 });
 
-// Delete selected rows from the table
-btnDeleteRow.addEventListener("click", function() {
-    let tableBody = document.getElementById("dynamicTable");
-    let rows = Array.from(tableBody.rows);
-    rows.forEach(row => {
-        if (row.querySelector('input').checked) {
-            row.remove();
-        }
-    });
-    // Rearrange the index after deletion
-    rows = Array.from(tableBody.rows);
-    rows.forEach((row, index) => {
-        row.cells[0].textContent = index + 1;
-    });
 
-    if (tableBody.rows.length === 0) {
-        btnDeleteRow.disabled = true;
-        checkAll.removeAttribute("checked");
-        checkAll.setAttribute("disabled", "true");
-    }
-});
+// Delete selected rows from the table
+// btnDeleteRow.addEventListener("click", function() {
+//     let tableBody = document.getElementById("dynamicTable");
+//     let rows = Array.from(tableBody.rows);
+//     rows.forEach(row => {
+//         if (row.querySelector('input').checked) {
+//             row.remove();
+//         }
+//     });
+//     // Rearrange the index after deletion
+//     rows = Array.from(tableBody.rows);
+//     rows.forEach((row, index) => {
+//         row.cells[0].textContent = index + 1;
+//     });
+
+//     if (tableBody.rows.length === 0) {
+//         btnDeleteRow.disabled = true;
+//         selectAllCheckbox.checked = false;
+//         selectAllCheckbox.setAttribute("disabled", "true");
+//     }
+// });
 
 
 // Dummy function to simulate firmware update
