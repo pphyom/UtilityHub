@@ -1,3 +1,4 @@
+export { showAlert };   // Export the showAlert function
 
 // navigation sidebar
 const sidebar = document.querySelector("#toggle-btn");

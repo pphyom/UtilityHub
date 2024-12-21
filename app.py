@@ -62,7 +62,7 @@ def set_year():
     g.current_year = current_year
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/logmein", methods=["GET", "POST"])
 def login():
     return render_template("login.html")
 
