@@ -1,7 +1,10 @@
 import uuid
 from datetime import datetime
-from flask import Flask, render_template, session, g, make_response, request, jsonify
+from werkzeug.security import check_password_hash
 from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask import Flask, render_template, session, g, make_response, request, jsonify, redirect, url_for
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from sqlalchemy.orm import sessionmaker, scoped_session 
 from main.core import *
 from main.cburn_helper import *
 from main.ftu_helper import *
@@ -21,16 +24,20 @@ db.init_app(app)
 # Initialize the session extension
 sess.init_app(app)
 
+# Initialize the login manager
+login_manager = LoginManager(app)
+
 # Initialize the socketio extension
 socketio = SocketIO(app)
 
 # Import the LiveSession model
-from models.models import LiveSession
+# from models.models import LiveSession
 from models.models import User
 
 # Create the tables in the database
 with app.app_context():
     db.create_all()
+    db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=db.engine))
 
 spm = SPM()
 mo_url = spm.mo_url
@@ -62,8 +69,34 @@ def set_year():
     g.current_year = current_year
 
 
+@app.before_request
+def bind_session():
+    # Bind the scoped session to the current app context
+    db_session()
+
+@app.teardown_appcontext
+def remove_session(exception=None):
+    # Remove the scoped session after the request
+    db_session.remove()
+
+
+# Loader for flask-login
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
 @app.route("/logmein", methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        username = request.form.get("input-login-user")
+        password = request.form.get("input-login-passwd")
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for("tools"))
+        else:
+            return render_template("login.html", error="Invalid username or password.")
     return render_template("login.html")
 
 
@@ -211,3 +244,7 @@ if __name__ == "__main__":
         socketio.run(app, host="0.0.0.0", debug=True)
     finally:
         live.stop()
+    # live.stop()
+    # with app.app_context():
+    #     db.create_all()
+    # socketio.run(app, host="0.0.0.0", debug=True)
