@@ -3,6 +3,7 @@
 {% block head %} Log In {% endblock %}
 
 {% block body %}
+
 <div class="main">
     <div class="container mt-5 pt-5">
         <div class="row">
@@ -11,23 +12,24 @@
                     <div class="card-body text-center pt-0">
                         <i class="bi bi-person-circle fs-1"></i>
                         <form action="" method="post">
-                            <div id="login-user">
-                                <select class="form-select my-3 py-2" id="login-user-field" name="login-user-field">
+                            <div id="div-login-user">
+                                <select class="form-select my-3 py-2" id="input-login-user" name="input-login-user">
                                     <option value="" selected>Select</option>
                                     <option value="pyaem@smcro">pyaem@supermicro.com</option>
                                     <option value="jond@smcro">jond@email.com</option>
                                     <option value="admin@smcro">admin@email.com</option>
                                 </select>
-                                <div class="col-12 m-2" id="alert-element"></div> <!-- Alert message will be displayed here -->
+                                <div id="alert-element"></div> <!-- Alert message will be displayed here -->
                                 <div class="text-center">
-                                    <button type="button" class="btn btn-primary mt-3" id="login-user-continue">Continue</button>
+                                    <button type="button" class="btn btn-primary mt-3" id="btn-login-continue">Continue</button>
                                 </div>
                             </div>
-                            <div id="login-passwd" class="d-none">
-                                <input type="password" class="form-control my-3 py-2" id="login-passwd-field" name="login-passwd-field" placeholder="Password">
+                            <div id="div-login-passwd" class="d-none">
+                                <label for="input-login-user" class="form-label fs-5" id="welcome-user"></label>
+                                <input type="password" class="form-control my-3 py-2" id="input-login-passwd" name="current-password" placeholder="Password" autocomplete="current-password">
                                 <div class="col-12 m-2" id="alert-element"></div> <!-- Alert message will be displayed here -->
                                 <div class="text-center">
-                                    <button type="submit" class="btn btn-primary mt-3" id="login-proceed">Log In</button>
+                                    <button type="submit" class="btn btn-primary mt-3" id="btn-login-proceed">Log In</button>
                                 </div>
                             </div>
                         </form>
@@ -39,14 +41,46 @@
 </div>
 
 <script>
-    import { showAlert } from './static/js/script.js';
-    document.getElementById('login-user-continue').addEventListener('click', function() {
-        showAlert("Error!", "warning", "bi-exclamation-triangle-fill");
-        var user = document.getElementById('login-user-field').value;
-        if (user) {
-            document.getElementById('login-user').classList.add('d-none');
-            document.getElementById('login-passwd').classList.remove('d-none');
-        }
-    });
+
+    let alertElement = document.getElementById("alert-element");
+    let divLoginUser = document.getElementById("div-login-user");
+    let inputLoginUser = document.getElementById("input-login-user");
+    let btnLoginContinue = document.getElementById("btn-login-continue");
+    let divLoginPasswd = document.getElementById("div-login-passwd");
+    let inputLoginPasswd = document.getElementById("input-login-passwd");
+    let btnLoginProceed = document.getElementById("btn-login-proceed");
+    let welcomeUser = document.getElementById("welcome-user");
+
+    if (btnLoginContinue) {
+        btnLoginContinue.addEventListener("click", function() {
+            if (inputLoginUser.value) {
+                welcomeUser.innerHTML = `Logging in as ${inputLoginUser.value}`;
+                divLoginUser.classList.add("d-none");
+                divLoginPasswd.classList.remove("d-none");
+                inputLoginPasswd.focus();
+            } else {
+                showAlert("Select a user to continue.", "warning", "bi-info-circle");
+            }
+        });
+    }
+
+
+    // Show alert message
+    function showAlert(alertMessage, alertType, icon) {
+        alertElement.innerHTML = `
+            <div class="alert alert-${alertType} alert-dismissible fade show" role="alert">
+                <i class="bi ${icon}"></i>
+                <span>${alertMessage}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+    }
+
+
+    // Dismiss alert message
+    function dismissAlert() {
+        alertElement.innerHTML = "";
+    }
+
 </script>
+
 {% endblock %}

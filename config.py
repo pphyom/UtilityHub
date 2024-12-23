@@ -16,6 +16,5 @@ class Config:
     SESSION_SQLALCHEMY_TABLE = "live_sessions"
     SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True
-    # PERMANENT_SESSION_LIFETIME = timedelta(minutes=60)
     SESSION_SQLALCHEMY = db
     

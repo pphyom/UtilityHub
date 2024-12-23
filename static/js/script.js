@@ -1,9 +1,6 @@
-export { showAlert };   // Export the showAlert function
 
 // navigation sidebar
-const sidebar = document.querySelector("#toggle-btn");
-
-sidebar.addEventListener("click", function () {
+document.querySelector("#toggle-btn").addEventListener("click", function () {
     document.querySelector("#sidebar").classList.toggle("expand");
 });
 
@@ -21,22 +18,6 @@ function passData() {
     serialNumberInput.value = multiSerialNumberInputValue.join(" ");
 }
 
-
-// table search method
-const search = document.querySelector(".input-group input");
-search.addEventListener("input", searchTable);
-
-function searchTable() {
-    const tableRows = document.querySelectorAll("tbody tr");
-
-    tableRows.forEach((row, i) => {
-        let tableData = row.textContent.toLowerCase();
-        let searchData = search.value.toLowerCase();
-        // search by toggling the input data. input > 0 = matching and vice versa.
-        row.classList.toggle("hide", tableData.indexOf(searchData) < 0);
-        row.style.setProperty("--delay", i/25 + "s");
-    });
-}
 
 // Alert
 let initialServerIP = document.getElementById('rackServer').value;
@@ -103,8 +84,7 @@ function updateData () {
 *************************************************
 **/
 
-let serialNumberInput = document.getElementById("serial-number-input");
-let selectFw = document.getElementById("select-fw")
+serialNumberInput = document.getElementById("serial-number-input");
 let chooseFw = document.getElementById("choose-fw")
 let uploadFw = document.getElementById("upload-fw")
 let uploadingFw = document.getElementById("uploading-fw")
@@ -112,7 +92,6 @@ let alertElement = document.getElementById("alert-element");
 let progressUploadWrapper = document.getElementById("progress-upload-wrapper");
 let progressUpload = document.querySelector(".progress-upload");
 let firmwareDetails = document.getElementById("firmware-details");
-let selectedFwType = selectFw.value;
 
 let openControl = document.getElementById("open-control");
 let closeControl = document.getElementById("close-control");
@@ -122,11 +101,11 @@ let btnRetry = document.getElementById("btn-retry");
 let uidOnOff = document.getElementById("btn-uid");
 let selectAllCheckbox = document.getElementById("select-all-checkbox");
 
+let selectFw = document.getElementById("select-fw");
+let selectedFwType = selectFw.value;
 
 // Event listener for the firmware type dropdown
-selectFw.addEventListener("change", () => {
-    selectedFwType = selectFw.value;
-});
+selectFw.addEventListener("change", () => selectedFwType = selectFw.value);
 
 
 /** 
