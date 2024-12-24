@@ -3,7 +3,7 @@ from datetime import datetime
 from werkzeug.security import check_password_hash
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask import Flask, render_template, session, g, make_response, request, jsonify, redirect, url_for
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy.orm import sessionmaker, scoped_session 
 from main.core import *
 from main.cburn_helper import *
@@ -11,7 +11,7 @@ from main.ftu_helper import *
 from main.tools import *
 from main.firmware_info import *
 from config import Config
-from main.extensions import db, sess
+from main.extensions import db, sess, login_manager
 
 rburn_live = os.getenv("RBURN_SVR40_LIVE")
 
@@ -25,7 +25,9 @@ db.init_app(app)
 sess.init_app(app)
 
 # Initialize the login manager
-login_manager = LoginManager(app)
+login_manager.init_app(app)
+# login_manager.login_view("login")
+
 
 # Initialize the socketio extension
 socketio = SocketIO(app)
@@ -68,6 +70,7 @@ def set_year():
     current_year = datetime.now().year
     g.current_year = current_year
 
+# Login Authentication Begins
 
 @app.before_request
 def bind_session():
@@ -86,7 +89,17 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-@app.route("/logmein", methods=["GET", "POST"])
+@login_manager.unauthorized_handler
+def unauthorized():
+    return redirect(url_for("login_error"))
+
+
+@app.route("/unauthorized")
+def login_error():
+    return render_template("unauthorized.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form.get("input-login-user")
@@ -98,6 +111,16 @@ def login():
         else:
             return render_template("login.html", error="Invalid username or password.")
     return render_template("login.html")
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("login"))
+
+
+# Login Authentication Ends
 
 
 # Index Page #
@@ -226,17 +249,21 @@ def upload_firmware():
         
 
 @app.route("/tools", methods=["GET", "POST"])
+@login_required
 def tools():
-    if request.method == "POST":
-        input_list = user_input()
-        good_list = asyncio.run(ftu.validation(input_list, scan_log))
-        sys_list = get_bmc_info_helper(good_list)
-        return render_template("tools.html", 
-                               sys_list=sys_list, 
-                               sn_url=sn_url, 
-                               mo_url=mo_url)
+    if User.is_active:
+        if request.method == "POST":
+            input_list = user_input()
+            good_list = asyncio.run(ftu.validation(input_list, scan_log))
+            sys_list = get_bmc_info_helper(good_list)
+            return render_template("tools.html", 
+                                sys_list=sys_list, 
+                                sn_url=sn_url, 
+                                mo_url=mo_url)
+        else:
+            return render_template("tools.html")
     else:
-        return render_template("tools.html")
+        return redirect(url_for("login"))
     
 
 if __name__ == "__main__":

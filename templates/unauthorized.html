@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block head %} Log In {% endblock %}
+
+{% block body %}
+
+<div class="main">
+    <div class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-5 m-auto text-center">
+                <i class="bi bi-person-circle fs-1 text-danger"></i>
+                <h1 class="fs-3">Unauthorized</h1>
+                <p class="fs-5">You are not authorized to access this page.</p>
+                <a href="{{ url_for('login') }}" class="btn btn-primary my-3">Log In</a>                      
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
