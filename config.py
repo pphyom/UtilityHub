@@ -1,7 +1,6 @@
 # Description: This file contains the configuration settings for the application.
 
 import os, secrets
-# from datetime import timedelta
 from dotenv import load_dotenv
 from main.extensions import db
 

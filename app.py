@@ -1,7 +1,6 @@
-import uuid
 from datetime import datetime
 from werkzeug.security import check_password_hash
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_socketio import SocketIO, emit
 from flask import Flask, render_template, session, g, make_response, request, jsonify, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy.orm import sessionmaker, scoped_session 
@@ -26,14 +25,13 @@ sess.init_app(app)
 
 # Initialize the login manager
 login_manager.init_app(app)
-# login_manager.login_view("login")
+login_manager.login_view = "login_error"
 
 
 # Initialize the socketio extension
 socketio = SocketIO(app)
 
 # Import the LiveSession model
-# from models.models import LiveSession
 from models.models import User
 
 # Create the tables in the database
@@ -67,6 +65,7 @@ def connected_network():
 
 @app.before_request
 def set_year():
+    """ Set the current year in the context. """
     current_year = datetime.now().year
     g.current_year = current_year
 
@@ -76,6 +75,7 @@ def set_year():
 def bind_session():
     # Bind the scoped session to the current app context
     db_session()
+
 
 @app.teardown_appcontext
 def remove_session(exception=None):
@@ -89,9 +89,9 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-@login_manager.unauthorized_handler
-def unauthorized():
-    return redirect(url_for("login_error"))
+# @login_manager.unauthorized_handler
+# def unauthorized():
+#     return redirect(url_for("login_error"))
 
 
 @app.route("/unauthorized")
@@ -107,7 +107,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for("tools"))
+            return redirect(url_for("tools", user_id=user.id))
         else:
             return render_template("login.html", error="Invalid username or password.")
     return render_template("login.html")
@@ -124,6 +124,7 @@ def logout():
 
 
 # Index Page #
+
 @app.route("/get_data", methods=["GET"])
 def get_data():
     data_helper = {
@@ -180,19 +181,11 @@ def cburn_log():
 # Web socket for the tools page
 
 @socketio.on("connect")
-def connect():
-    session["user_id"] = str(uuid.uuid4())
-    join_room(session["user_id"])
-    emit("connected", {"user_id": session["user_id"]})
-
-
-@socketio.on("disconnect")
-def disconnect():
-    user_id = session.get("user_id")
-    if user_id:
-        # print(f"User {user_id} disconnected.")
-        leave_room(user_id)
-        session.pop("user_id", None)  # Remove user_id from session if it exists.
+def on_connect():
+    if current_user.is_authenticated:
+        emit("connected", {"message": "Connected to the server."}, to=f"user_{current_user.id}")
+    else:
+        emit("error", {"message": "User not authenticated."})
 
 
 # Routes for firmware updates
@@ -246,6 +239,13 @@ def upload_firmware():
         except:
             response = make_response(jsonify({"alertMessage": "Upload failed."}), 500)
             return response
+
+
+@app.route("/start_update", methods=["POST", "GET"])
+@login_required
+def start_update():
+    """ Update the firmware of the system. """
+    return jsonify({"message": "Firmware update started."})
         
 
 @app.route("/tools", methods=["GET", "POST"])
@@ -271,7 +271,3 @@ if __name__ == "__main__":
         socketio.run(app, host="0.0.0.0", debug=True)
     finally:
         live.stop()
-    # live.stop()
-    # with app.app_context():
-    #     db.create_all()
-    # socketio.run(app, host="0.0.0.0", debug=True)

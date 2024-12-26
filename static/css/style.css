@@ -115,7 +115,8 @@ a.sidebar-link {
 }
 
 .sidebar-link span {
-    margin-bottom: 5px;
+    height: auto;
+    vertical-align: middle;
 }
 
 a.sidebar-link:hover {

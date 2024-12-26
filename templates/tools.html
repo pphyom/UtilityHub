@@ -7,7 +7,10 @@
 <div class="main">
     <main>
         <div class="container-fluid p-4">
-            <h3 class="mb-xl-1 mb-lg-1 mb-4">Tools</h3>
+            <div class="d-flex justify-content-between mb-4">
+                <h3 class="mb-xl-1 mb-lg-1 mb-4">Tools</h3>
+                <span>{{ current_user.username }}</span>
+            </div>
             <div class="row mb-3 d-flex flex-row ">
                 <div class="row mb-3">
                     <ul class="nav nav-tabs justify-content-end">
@@ -118,18 +121,19 @@
 </div>
 
 <script>
+
     // IP Lookup page
     document.addEventListener("DOMContentLoaded", function() {
         // Socket
         const socket = io();
         socket.on('connected', function(data) {
-            console.log('Connected user ID:', data.user_id);
+            console.log('Connected user ID:', data);
         });
 
-        socket.on('disconnect', function() {
+        socket.on('disconnected', function() {
             console.log('Disconnected from the server');
         });
-
+        
         // Copy selected text to clipboard
         const table = document.querySelector(".ip-lookup-table");
         const cells = table.querySelectorAll("td.user-select-all");
