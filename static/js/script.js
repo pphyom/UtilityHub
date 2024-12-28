@@ -85,6 +85,7 @@ function updateData () {
 **/
 
 serialNumberInput = document.getElementById("serial-number-input");
+let tableBody = document.getElementById("dynamicTable");
 let chooseFw = document.getElementById("choose-fw")
 let uploadFw = document.getElementById("upload-fw")
 let uploadingFw = document.getElementById("uploading-fw")
@@ -240,11 +241,7 @@ function userInput() {
 }
 
 
-/**
- * Get IPMI information from the server.
- * @param {string} sn - System serial number
- * @returns {Promise} - IPMI information
-*/ 
+// Get IPMI information from the server.
 async function getIpmiInfo(sn) {
     // let items = userInput();
     const response = await fetch('/get_ipmi_info', {
@@ -271,7 +268,6 @@ async function updateTable() {
         return;
     }
     dismissAlert();
-    let tableBody = document.getElementById("dynamicTable");
     let progressBarWrapper = document.getElementById("custom-progress-bar");
     let progressPB = document.querySelector(".custom-pb");
     let progress = 0;
@@ -297,6 +293,7 @@ async function updateTable() {
         let ipAddress = item[0].ip_address;
         let motherboard = item[0].mbd;
         let mo = item[0].mo;
+        let passwd = item[0].password;
         progress += 100 / items.length;
         progressPB.style.width = `${progress}%`;
         progressPB.setAttribute("aria-valuenow", progress);
@@ -318,6 +315,7 @@ async function updateTable() {
             <td>NA</td>
             <td>In Queue</td>
             <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${idx}"></td>
+            <td class="d-none">${passwd}</td>
         `;
 
         // Select individual checkboxes
@@ -353,7 +351,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Delete selected rows from the table
 // btnDeleteRow.addEventListener("click", function() {
-//     let tableBody = document.getElementById("dynamicTable");
 //     let rows = Array.from(tableBody.rows);
 //     rows.forEach(row => {
 //         if (row.querySelector('input').checked) {
@@ -375,7 +372,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 btnUpdate.addEventListener("click", function() {
-    let tableBody = document.getElementById("dynamicTable");
     let rows = Array.from(tableBody.rows);
     rows.forEach(async row => {
         if (row.querySelector('input').checked) {
