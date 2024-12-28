@@ -1,3 +1,4 @@
+import redis
 from datetime import datetime
 from werkzeug.security import check_password_hash
 from flask_socketio import SocketIO, emit
@@ -10,7 +11,10 @@ from main.ftu_helper import *
 from main.tools import *
 from main.firmware_info import *
 from config import Config
+from make_celery import make_celery
 from main.extensions import db, sess, login_manager
+from models.models import User # Import the User model
+
 
 rburn_live = os.getenv("RBURN_SVR40_LIVE")
 
@@ -31,8 +35,9 @@ login_manager.login_view = "login_error"
 # Initialize the socketio extension
 socketio = SocketIO(app)
 
-# Import the LiveSession model
-from models.models import User
+# Initialize the celery extension
+celery = make_celery(app)
+
 
 # Create the tables in the database
 with app.app_context():
@@ -57,6 +62,19 @@ conditions = DATA_["conditions"]
 live = RackBurn(url=rburn_live, refresh_interval=60)
 ftu = FTU()
 
+# Redis connection test begins
+
+def get_redis_connection():
+    return redis.Redis(host="10.43.240.69", port=6379, decode_responses=True)
+
+@app.route("/redis_test")
+def redis_test():
+    r = get_redis_connection()
+    r.set("foo", "Redis connection established.")
+    value = r.get("foo")
+    return f"Redis Value: {value}"
+
+# Redis connection test ends
 
 @app.context_processor
 def connected_network():
@@ -226,7 +244,7 @@ def get_ipmi_info():
 
 @app.route("/upload_firmware", methods=["POST"])
 def upload_firmware():
-    """ Upload the firmware to the system. """
+    """ Upload the firmware to the update server. """
     if request.method == "POST":
         try:
             # filesize = request.cookies.get("filesize")

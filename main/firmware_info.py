@@ -100,3 +100,7 @@ def get_firmware_info(firmware_file, cmd):
         "build_date": firmware_build_date
     }
     return firmware
+
+
+def update_firmware(device, cmd):
+    pass

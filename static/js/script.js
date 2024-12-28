@@ -280,6 +280,7 @@ async function updateTable() {
     serialNumberInput.value = "";  // Clear the input box
     progressBarWrapper.classList.remove('d-none');
     btnDeleteRow.classList.remove('disabled');
+    btnUpdate.classList.remove('disabled');
     selectAllCheckbox.removeAttribute("disabled");
 
     for (let idx = 0; idx < items.length; idx++) {
@@ -295,6 +296,7 @@ async function updateTable() {
         let item = await getIpmiInfo(systemSn);
         let ipAddress = item[0].ip_address;
         let motherboard = item[0].mbd;
+        let mo = item[0].mo;
         progress += 100 / items.length;
         progressPB.style.width = `${progress}%`;
         progressPB.setAttribute("aria-valuenow", progress);
@@ -305,6 +307,7 @@ async function updateTable() {
             <td>${idx + 1}</td>
             <td>${ipAddress}</td>
             <td>${systemSn}</td>
+            <td>${mo}</td>
             <td>${motherboard}</td>
             <td>
                 <div class="progress">
@@ -369,6 +372,25 @@ document.addEventListener("DOMContentLoaded", function() {
 //         selectAllCheckbox.setAttribute("disabled", "true");
 //     }
 // });
+
+
+btnUpdate.addEventListener("click", function() {
+    let tableBody = document.getElementById("dynamicTable");
+    let rows = Array.from(tableBody.rows);
+    rows.forEach(async row => {
+        if (row.querySelector('input').checked) {
+            let sn = row.cells[2].textContent;
+            let item = await getIpmiInfo(sn);
+            console.log(item);
+            let status = row.cells[7].textContent;
+            if (status === "In Queue") {
+                row.cells[7].textContent = "Updating";
+                runFirmwareUpdate(row);
+            }
+
+        }
+    });
+});
 
 
 // Dummy function to simulate firmware update
