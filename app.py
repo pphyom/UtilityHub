@@ -259,10 +259,13 @@ def upload_firmware():
             return response
 
 
-@app.route("/start_update", methods=["POST", "GET"])
+@app.route("/start_update", methods=["POST"])
 @login_required
 def start_update():
     """ Update the firmware of the system. """
+    system = request.get_json()
+    result = update_firmware(system, cmd="GetBiosInfo")
+    print(result)
     return jsonify({"message": "Firmware update started."})
         
 

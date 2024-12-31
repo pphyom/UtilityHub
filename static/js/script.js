@@ -376,8 +376,16 @@ btnUpdate.addEventListener("click", function() {
     rows.forEach(async row => {
         if (row.querySelector('input').checked) {
             let sn = row.cells[2].textContent;
-            let item = await getIpmiInfo(sn);
-            console.log(item);
+            let system = await getIpmiInfo(sn);
+            fetch('/start_update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(system[0])
+            });
+
+
             let status = row.cells[7].textContent;
             if (status === "In Queue") {
                 row.cells[7].textContent = "Updating";

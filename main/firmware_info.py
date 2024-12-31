@@ -103,4 +103,20 @@ def get_firmware_info(firmware_file, cmd):
 
 
 def update_firmware(device, cmd):
-    pass
+    if device["ip_address"] != "NA" or check_connectivity(device["ip_address"]):
+        try:
+            output = subprocess.Popen([sum_tool] +
+                                      ["-i", device["ip_address"], "-U", "ADMIN", "-P", device["password"]] +
+                                      ["-c", cmd],
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE,
+                                      text=True)
+            output.poll()
+            stdout, stderr = output.communicate()
+            return stdout
+
+        except subprocess.CalledProcessError as e:
+            print(f"Error occurred: {e}")
+            return None
+    else:
+        print("Not connected!")
