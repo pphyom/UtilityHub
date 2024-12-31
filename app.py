@@ -250,11 +250,14 @@ def upload_firmware():
             # filesize = request.cookies.get("filesize")
             fwtype = request.cookies.get("fw-type")
             fw = request.files["file"]  # Get the file from the request
-            fw.save(fw.filename)  # Save the file to the server
-            firmware_info = get_firmware_info(fw.filename, cmd=f"Get{fwtype}Info") # Get the firmware info
+            os.makedirs("fw_db", exist_ok=True)
+            path_ = "fw_db"
+            fw.save(f"{path_}/{fw.filename}")  # Save the file to the server
+            file_ = f"{path_}/{fw.filename}"
+            firmware_info = get_firmware_info(file_, cmd=f"Get{fwtype}Info") # Get the firmware info
             response = make_response(jsonify(firmware_info), 200)
-            return response
-        except:
+        except Exception as e:
+            app.logger.error(f"Upload failed: {e}")
             response = make_response(jsonify({"alertMessage": "Upload failed."}), 500)
             return response
 
