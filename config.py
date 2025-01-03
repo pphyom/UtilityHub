@@ -16,3 +16,6 @@ class Config:
     SESSION_USE_SIGNER = True
     SESSION_SQLALCHEMY = db
     FIRMWARE_FOLDER = os.getenv("FIRMWARE_FOLDER")
+
+    # Create the firmware folder if not exists. Use it to store firmware files.
+    os.makedirs(FIRMWARE_FOLDER, exist_ok=True)
