@@ -6,9 +6,9 @@ from app import app
 
 # Predefined users
 predefined_users = [
-    {"username": "pyaem@supermicro.com", "password": "admin123"},
-    {"username": "user1@supermicro.com", "password": "password1"},
-    {"username": "user2@supermicro.com", "password": "password2"}
+    {"username": "pyaem@supermicro.com", "password": "1"},
+    {"username": "user1@supermicro.com", "password": "2"},
+    {"username": "user2@supermicro.com", "password": "3"}
 ]
 
 

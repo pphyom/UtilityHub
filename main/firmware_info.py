@@ -88,9 +88,10 @@ def get_firmware_info(firmware_file, cmd):
             firmware_version = [i[21:] for i in temp if "version" in i][0]
             firmware_build_date = [i[21:] for i in temp if "build date" in i][0]
         case "GetBiosInfo":
-            # firmware_version = [i.strip()[36:] for i in stdout.split("\n") if "version" in i][0]
+            # verify_signed = [i[36:] for i in temp if "FW image" in i][0]
             firmware_version = [i[36:] for i in temp if "version" in i][0]
             firmware_build_date = [i[36:] for i in temp if "build date" in i][0]
+            # print(verify_signed)
         case "GetCpldInfo":
             firmware_version = [i[31:] for i in temp if "version" in i][0]
         case _:

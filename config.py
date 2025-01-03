@@ -15,3 +15,4 @@ class Config:
     SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True
     SESSION_SQLALCHEMY = db
+    FIRMWARE_FOLDER = os.getenv("FIRMWARE_FOLDER")

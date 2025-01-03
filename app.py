@@ -1,6 +1,8 @@
+import os
 import redis
 from datetime import datetime
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 from flask_socketio import SocketIO, emit
 from flask import Flask, render_template, session, g, make_response, request, jsonify, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
@@ -13,7 +15,7 @@ from main.firmware_info import *
 from config import Config
 from make_celery import make_celery
 from main.extensions import db, sess, login_manager
-from models.models import User # Import the User model
+from models.models import User, Firmware # Import the User model
 
 
 rburn_live = os.getenv("RBURN_SVR40_LIVE")
@@ -37,7 +39,6 @@ socketio = SocketIO(app)
 
 # Initialize the celery extension
 celery = make_celery(app)
-
 
 # Create the tables in the database
 with app.app_context():
@@ -137,7 +138,6 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-
 # Login Authentication Ends
 
 
@@ -154,7 +154,6 @@ def get_data():
 
 @app.route('/update', methods=['GET'])
 def update():
-    # input_list = live.user_input_
     input_list = session.get("user_input", [])
     data_set = live.filtered_data(input_list)
     return jsonify(data_set)
@@ -245,27 +244,46 @@ def get_ipmi_info():
 @app.route("/upload_firmware", methods=["POST"])
 def upload_firmware():
     """ Upload the firmware to the update server. """
-    if request.method == "POST":
-        try:
-            # filesize = request.cookies.get("filesize")
-            fwtype = request.cookies.get("fw-type")
-            fw = request.files["file"]  # Get the file from the request
-            os.makedirs("fw_db", exist_ok=True)
-            path_ = "fw_db"
-            fw.save(f"{path_}/{fw.filename}")  # Save the file to the server
-            file_ = f"{path_}/{fw.filename}"
-            firmware_info = get_firmware_info(file_, cmd=f"Get{fwtype}Info") # Get the firmware info
-            response = make_response(jsonify(firmware_info), 200)
-        except Exception as e:
-            app.logger.error(f"Upload failed: {e}")
-            response = make_response(jsonify({"alertMessage": "Upload failed."}), 500)
-            return response
+
+    # Create the firmware folder if not exists
+    os.makedirs(Config.FIRMWARE_FOLDER, exist_ok=True)
+
+    try:
+        # filesize = request.cookies.get("filesize")
+        fwtype = request.cookies.get("fw-type")
+        fw = request.files["file"]  # Get the file from the request
+        filename = secure_filename(fw.filename)  # Secure the filename
+        path_ = os.path.join(Config.FIRMWARE_FOLDER, filename)
+        message = ""
+        existing_file_in_db = Firmware.query.filter_by(filename=filename).first()
+
+        # Check if the file already exists
+        if os.path.exists(path_) and existing_file_in_db:
+            message = {"alertMessage": "File already exists.", "alertType": "warning"}     
+        else:
+            fw.save(path_)  # Save the file to the server
+            message = {"alertMessage": "File Uploaded.", "alertType": "success"}
+
+            # Store the firmware metadata in the database
+            new_file = Firmware(filename=filename, filepath=path_)
+            db.session.add(new_file)
+            db.session.commit()
+            
+        firmware_info = get_firmware_info(path_, cmd=f"Get{fwtype}Info") # Get the firmware info
+        response = make_response(jsonify(firmware_info, message), 200)
+        return response
+    
+    except Exception as e:
+        app.logger.error(f"Upload failed: {e}")
+        response = make_response(jsonify({"alertMessage": "Upload failed."}), e)
+        return response
 
 
 @app.route("/start_update", methods=["POST"])
 @login_required
 def start_update():
     """ Update the firmware of the system. """
+
     system = request.get_json()
     result = update_firmware(system, cmd="GetBiosInfo")
     print(result)

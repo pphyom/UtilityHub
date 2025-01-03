@@ -161,6 +161,8 @@ cython_debug/
 # folders
 tools/*
 tools/
+fw_db/*
+fw_db/
 
 # firmware
 *.bin

@@ -11,3 +11,14 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"<User {self.username}>"
+
+
+class Firmware(db.Model):
+    __tablename__ = "firmware"
+
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(80), nullable=False)
+    filepath = db.Column(db.String(80), nullable=False)
+
+    def __repr__(self):
+        return f"<Firmware {self.filename}>"

@@ -168,8 +168,8 @@ uploadFw.addEventListener("click", function() {
     request.onload = function() {
         if (request.status === 200) {
             let fwData = request.response;
-            firmwareVersion = fwData["version"];
-            firmwareBuildDate = fwData["build_date"];
+            firmwareVersion = fwData[0]["version"];
+            firmwareBuildDate = fwData[0]["build_date"];
             // firmwareDetails.innerHTML = "";
             document.getElementById("info-sec").innerText = "UPLOADED FIRMWARE INFO"
             firmwareDetails.innerHTML = `
@@ -188,7 +188,7 @@ uploadFw.addEventListener("click", function() {
                     </tr>
                 </table>
             `;
-            showAlert("File Uploaded.", "success", "bi-check-circle");
+            showAlert(fwData[1].alertMessage, fwData[1].alertType, "bi-check-circle");
         } else {
             showAlert(`File upload failed! Error ${request.status}`, "danger", "bi-exclamation-triangle-fill");
             resetUploadUI();
