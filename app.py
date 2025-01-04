@@ -252,35 +252,45 @@ def upload_firmware():
         filename = secure_filename(fw.filename)  # Secure the filename
         filepath = os.path.join(Config.FIRMWARE_FOLDER, filename)
         response_message = ""
+        
+        # Check if the file already exists in the database and filesystem
         existing_file_in_db = Firmware.query.filter_by(filename=filename).first()
 
-        # Check if the file and metadata already exist in both the server and the database
-        if os.path.exists(filepath) and existing_file_in_db:
-            response_message = {"alertMessage": "File already exists.", "alertType": "warning"}
-        elif os.path.exists(filepath) and not existing_file_in_db:
-            # Store the firmware metadata in the database
-            new_file = Firmware(filename=filename, filepath=filepath)
-            db.session.add(new_file)
-            db.session.commit()
-            response_message = {"alertMessage": "File already exists.", "alertType": "warning"}
-        elif not os.path.exists(filepath) and existing_file_in_db:
-            fw.save(filepath)  # Save the file to the server
-            response_message = {"alertMessage": "File Uploaded.", "alertType": "success"}
+        if os.path.exists(filepath):
+            if existing_file_in_db:
+                response_message = {"alertMessage": "File already exists.", "alertType": "warning"}
+            else:
+                # File exists on the server, but not in the database; add it to the database
+                new_file = Firmware(filename=filename, filepath=filepath)
+                db.session.add(new_file)
+                db.session.commit()
+                response_message = {"alertMessage": "File already exists.", "alertType": "warning"}
         else:
-            fw.save(filepath)  # Save the file to the server
-            new_file = Firmware(filename=filename, filepath=filepath) # Store the firmware metadata in the database
-            db.session.add(new_file)
-            db.session.commit()
+            # Save the file to the server
+            fw.save(filepath)
+            if not existing_file_in_db:
+                # Add file metadata to the database if not already present
+                new_file = Firmware(filename=filename, filepath=filepath)
+                db.session.add(new_file)
+                db.session.commit()
             response_message = {"alertMessage": "File Uploaded.", "alertType": "success"}
-            
-        firmware_info = get_firmware_info(filepath, cmd=f"Get{fwtype}Info") # Get the firmware info
-        response = make_response(jsonify(firmware_info, response_message), 200)
+
+        firmware_info = get_firmware_info(filepath, cmd=f"Get{fwtype}Info")
+        response = jsonify({"firmware_info": firmware_info, "response_message": response_message})
         return response
     
     except Exception as e:
-        app.logger.error(f"Upload failed: {e}")
-        response = make_response(jsonify({"alertMessage": "Upload failed."}), 500)
+        response = make_response(jsonify({"alertMessage": "Upload failed", "error": str(e)}), 500)
         return response
+
+
+@app.route("/list_firmware", methods=["GET"])
+def list_firmware():
+    """ List the firmware files on the server. """
+    firmware_files = Firmware.query.all()
+    print(firmware_files)
+    firmware_list = [{"filename": file.filename, "filepath": file.filepath} for file in firmware_files]
+    return jsonify(firmware_list)
 
 
 @app.route("/start_update", methods=["POST"])
