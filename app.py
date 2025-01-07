@@ -206,6 +206,17 @@ def on_connect():
 
 
 # Routes for firmware updates
+@app.route("/validate_serial_number", methods=["POST"])
+def validate():
+    """ Validate the serial number of the system. """
+    try:
+        sn_list = request.get_json()
+        valid_serialNums = asyncio.run(ftu.validation(sn_list["system_sn_list"], scan_log))
+        invalid_serialNums = ftu.bad_items
+        return jsonify({"valid_serialNums": valid_serialNums, "invalid_serialNums": invalid_serialNums})
+    except Exception as e:
+        return jsonify({"Error": str(e)})
+
 
 @app.route("/get_bios_ver", methods=["POST"])
 def get_bios_ver():
@@ -288,7 +299,6 @@ def upload_firmware():
 def list_firmware():
     """ List the firmware files on the server. """
     firmware_files = Firmware.query.all()
-    print(firmware_files)
     firmware_list = [{"filename": file.filename, "filepath": file.filepath} for file in firmware_files]
     return jsonify(firmware_list)
 

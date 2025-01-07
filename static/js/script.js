@@ -87,7 +87,7 @@ function updateData () {
 serialNumberInput = document.getElementById("serial-number-input");
 let tableBody = document.getElementById("dynamicTable");
 let chooseFw = document.getElementById("choose-fw")
-let uploadFw = document.getElementById("upload-fw")
+let btnUploadFw = document.getElementById("btn-upload-fw")
 let uploadingFw = document.getElementById("uploading-fw")
 let alertElement = document.getElementById("alert-element");
 let progressUploadWrapper = document.getElementById("progress-upload-wrapper");
@@ -102,6 +102,9 @@ let btnRetry = document.getElementById("btn-retry");
 let uidOnOff = document.getElementById("btn-uid");
 let selectAllCheckbox = document.getElementById("select-all-checkbox");
 
+let switchFirmwareUpload = document.getElementById("switch-firmware-upload");
+let selectedFirmware = document.getElementById("selected-firmware");
+let btnLockFw = document.getElementById("btn-lock-fw");
 let selectFw = document.getElementById("select-fw");
 let selectedFwType = selectFw.value;
 
@@ -109,11 +112,24 @@ let selectedFwType = selectFw.value;
 selectFw.addEventListener("change", () => selectedFwType = selectFw.value);
 
 
-/** 
- * Upload firmware file to the server, and return the firmware version and build date. 
- */
-uploadFw.addEventListener("click", function() {
+// Function to toggle between firmware upload and firmware selection
+function toggleFirmwareUpload() {
+    if (switchFirmwareUpload.checked) {
+        chooseFw.parentElement.classList.remove("d-none");
+        btnUploadFw.parentElement.classList.remove("d-none");
+        selectedFirmware.parentElement.classList.add("d-none");
+        btnLockFw.parentElement.classList.add("d-none");
+    } else {
+        chooseFw.parentElement.classList.add("d-none");
+        btnUploadFw.parentElement.classList.add("d-none");
+        selectedFirmware.parentElement.classList.remove("d-none");
+        btnLockFw.parentElement.classList.remove("d-none");
+    }
+}
 
+
+// Upload firmware file to the server, and return the firmware version and build date. 
+btnUploadFw.addEventListener("click", function() {
     if (!chooseFw.files.length) {
         showAlert("Please select a file to upload!", "warning", "bi-exclamation-triangle-fill");
         return;
@@ -124,8 +140,9 @@ uploadFw.addEventListener("click", function() {
     request.responseType = "json";
     selectFw.disabled = true;
     chooseFw.disabled = true;
+    switchFirmwareUpload.disabled = true;
     
-    uploadFw.classList.add("d-none");
+    btnUploadFw.classList.add("d-none");
     uploadingFw.classList.remove("d-none");
     progressUploadWrapper.classList.remove("d-none");
     
@@ -204,7 +221,8 @@ uploadFw.addEventListener("click", function() {
 function resetUploadUI() {
     chooseFw.disabled = false;
     selectFw.disabled = false;
-    uploadFw.classList.remove("d-none");
+    switchFirmwareUpload.disabled = false;
+    btnUploadFw.classList.remove("d-none");
     uploadingFw.classList.add("d-none");
     progressUploadWrapper.classList.add("d-none");
 }
@@ -241,9 +259,8 @@ function userInput() {
 }
 
 
-// Get IPMI information from the server.
+// Get IPMI information from the server
 async function getIpmiInfo(sn) {
-    // let items = userInput();
     const response = await fetch('/get_ipmi_info', {
         method: 'POST',
         headers: {
@@ -255,6 +272,44 @@ async function getIpmiInfo(sn) {
     return data;
 }
 
+// Validate the serial number/s via SPM
+async function validateSerialNumber(sn_list) {
+    const response = await fetch('/validate_serial_number', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({system_sn_list: sn_list})
+    });
+
+    if (response.status === 200) {
+        const data = await response.json();
+        if (data.invalid_serialNums.length > 0) {
+            showAlert(`Invalid serial number/s: ${data.invalid_serialNums.join(", ")}`, "warning", "bi-exclamation-triangle-fill");
+        }
+        return data.valid_serialNums;
+    } else {
+        showAlert("Error validating serial number/s!", "danger", "bi-exclamation-triangle-fill");
+    }
+}
+
+
+// Load the firmware list from the server
+function loadFirmwareList() {
+    fetch("/list_firmware")
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(firmware => {
+                const option = document.createElement("option");
+                option.value = firmware.filepath; // Use the filename as the value
+                option.textContent = firmware.filename;
+                selectedFirmware.appendChild(option); // Append the option to the select element
+            });
+        })
+        .catch(error => console.error("Error fetching firmware data:", error));
+}
+
+window.onload = loadFirmwareList();
 
 /**
  * Asynchronously update the table with the IPMI information.
@@ -267,7 +322,9 @@ async function updateTable() {
         showAlert("No input detected! Please enter system serial number/s.", "warning", "bi-exclamation-triangle-fill");
         return;
     }
+
     dismissAlert();
+    let validated_items = validateSerialNumber(items);
     let progressBarWrapper = document.getElementById("custom-progress-bar");
     let progressPB = document.querySelector(".custom-pb");
     let progress = 0;
@@ -279,13 +336,13 @@ async function updateTable() {
     btnUpdate.classList.remove('disabled');
     selectAllCheckbox.removeAttribute("disabled");
 
-    for (let idx = 0; idx < items.length; idx++) {
-        let systemSn = items[idx];
+    for (let idx = 0; idx < validated_items.length; idx++) {
+        let systemSn = validated_items[idx];
         // Check if the item is already in the table
         let existingRow = Array.from(tableBody.rows).find(row => row.cells[2].textContent === systemSn);
         if (existingRow) {
             duplicateItems.push(systemSn);
-            items.splice(idx, 1); // Remove the existing item from the array
+            validated_items.splice(idx, 1); // Remove the existing item from the array
             idx--; // Adjust the index after removal
             continue; // Skip the item if it is already in the table
         }
@@ -294,7 +351,7 @@ async function updateTable() {
         let motherboard = item[0].mbd;
         let mo = item[0].mo;
         let passwd = item[0].password;
-        progress += 100 / items.length;
+        progress += 100 / validated_items.length;
         progressPB.style.width = `${progress}%`;
         progressPB.setAttribute("aria-valuenow", progress);
 

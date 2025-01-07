@@ -17,7 +17,7 @@
                 </div>
                 <div class="card-body my-3"> <!-- body -->
                     <div class="row">
-                        <div class="row text-center m-0 p-0">
+                        <div class="row m-0 p-0">
                             <div class="col-12 col-xl-7 col-lg-7 col-md-12 col-sm-12">
                                 <div class="col-12 d-flex flex-column flex-md-row mb-2">
                                     <div class="flex-grow-1 d-grid gap-2 mb-2">
@@ -68,6 +68,8 @@
                                         </button>
                                     </div>
                                 </div>
+
+                                <!-- Firmware Upload Control -->
                                 <div class="col-12 d-flex flex-column flex-md-row mb-2">
                                     <div class="d-grid gap-2 mb-2">
                                         <select id="select-fw" class="form-select form-control w-auto" name="selected-fw-type" aria-label="Firmware type">
@@ -76,11 +78,23 @@
                                             <option value="Cpld">CPLD</option>
                                         </select>
                                     </div>
+                                    
                                     <div class="flex-grow-1 d-grid gap-2 mb-2 mx-md-2 mx-lg-2 mx-xl-2">
+                                        <select class="form-select" id="selected-firmware" name="selected-firmware">
+                                            <option value="" selected>Select firmware to perform update.</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex-grow-1 d-grid gap-2 mb-2 mx-md-2 mx-lg-2 mx-xl-2 d-none">
                                         <input type="file" class="form-control" id="choose-fw" name="filename">
                                     </div>
+                                    
                                     <div id="custom-btn" class="d-grid gap-2 mb-2">
-                                        <button type="button" class="btn text-white" style="min-width: 150px;" id="upload-fw">
+                                        <button type="button" class="btn text-white" style="min-width: 150px;" id="btn-lock-fw">
+                                            <span>Lock</span>
+                                        </button>
+                                    </div>
+                                    <div id="custom-btn" class="d-grid gap-2 mb-2 d-none">
+                                        <button type="button" class="btn text-white" style="min-width: 150px;" id="btn-upload-fw">
                                             <i class="bi bi-arrow-down-circle"></i>
                                             <span>Upload</span>
                                         </button>
@@ -93,7 +107,14 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="col-12 mb-2" id="alert-element"></div> <!-- Alert message will be displayed here -->
+                                
+                                <!-- Switch to firmware upload -->
+                                <div class="form-check form-switch mb-3">
+                                    <label class="form-check-label" for="switch-firmware-upload">Firmware Upload</label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="switch-firmware-upload" onchange="toggleFirmwareUpload()">
+                                </div>
+
+                                <div class="col-12 mb-2 text-center" id="alert-element"></div> <!-- Alert message will be displayed here -->
                                 <!-- Progress Bar -->
                                 <div id="progress-upload-wrapper" class="progress d-none">
                                     <div class="progress-bar progress-upload" 
@@ -106,12 +127,37 @@
                                         <div class="float-start">
                                             <div>
                                                 <i class="bi bi-exclamation-triangle fs-small text-danger"></i>
-                                                <span id="info-sec">INFO SECTION</span>
+                                                <span id="info-sec">READ ME</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="card-body text-start pb-0 align-middle" id="firmware-details">
-                                        <p class="lh-lg">Select firmware type, choose the firmware matches to the type selected to upload.</p>
+                                    <div class="card-body text-start align-middle" id="firmware-details">
+                                        <div class="row row-cols-1 row-cols-md-3 g-2">
+                                            <div class="col">
+                                                <div class="card h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title">STEP 1</h6>
+                                                        <p class="card-text text-wrap">Select firmware for update.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="card h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title">STEP 2</h6>
+                                                        <p class="card-text text-wrap">No firmware found? Toggle the switch to upload one.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="card h-100">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title">STEP 3</h6>
+                                                        <p class="card-text text-wrap">Select, match, and upload desired firmware.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

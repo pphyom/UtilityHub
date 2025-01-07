@@ -126,4 +126,4 @@ def get_bmc_info_helper(sn_list: list) -> list:
         return sys_list
     
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({"error": str(e)}), 408  # 408 Request Timeout
