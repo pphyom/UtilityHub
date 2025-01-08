@@ -128,6 +128,16 @@ function toggleFirmwareUpload() {
 }
 
 
+// Event listener for the firmware upload switch
+selectedFirmware.addEventListener("change", () => {
+    if (selectedFirmware.value) {
+        btnLockFw.removeAttribute("disabled");
+    } else {    
+        btnLockFw.setAttribute("disabled", "true");
+    }
+});
+
+
 // Upload firmware file to the server, and return the firmware version and build date. 
 btnUploadFw.addEventListener("click", function() {
     if (!chooseFw.files.length) {
@@ -174,6 +184,7 @@ btnUploadFw.addEventListener("click", function() {
             showAlert(`File upload failed! Error ${request.status}`, "danger", "bi-exclamation-triangle-fill");
         }
         resetUploadUI();
+        loadFirmwareList();
     });
     
     request.addEventListener("error", () => {
@@ -300,16 +311,25 @@ function loadFirmwareList() {
         .then(response => response.json())
         .then(data => {
             data.forEach(firmware => {
-                const option = document.createElement("option");
-                option.value = firmware.filepath; // Use the filename as the value
-                option.textContent = firmware.filename;
-                selectedFirmware.appendChild(option); // Append the option to the select element
+                // Check if the option already exists
+                if (![...selectedFirmware.options].some(option => option.value === firmware.filepath)) {
+                    const option = document.createElement("option");
+                    option.value = firmware.filepath; // Use the filename as the value
+                    option.textContent = firmware.filename;
+                    selectedFirmware.appendChild(option); // Append the option to the select element
+                }
             });
         })
         .catch(error => console.error("Error fetching firmware data:", error));
 }
 
 window.onload = loadFirmwareList();
+
+
+function getLockedFirmware() {
+    console.log(selectedFirmware.value);
+}
+
 
 /**
  * Asynchronously update the table with the IPMI information.
@@ -324,7 +344,7 @@ async function updateTable() {
     }
 
     dismissAlert();
-    let validated_items = validateSerialNumber(items);
+    let validated_items = await validateSerialNumber(items);
     let progressBarWrapper = document.getElementById("custom-progress-bar");
     let progressPB = document.querySelector(".custom-pb");
     let progress = 0;
@@ -396,7 +416,7 @@ async function updateTable() {
 // Select/de-select all checkboxes
 document.addEventListener("DOMContentLoaded", function() {
     selectAllCheckbox.addEventListener("click", function() {
-        let checkboxes = document.querySelectorAll('input[type="checkbox"]:not(#select-all-checkbox)');
+        let checkboxes = document.querySelectorAll('input[type="checkbox"]:not(#select-all-checkbox, #switch-firmware-upload)');
         checkboxes.forEach(checkbox => {
             checkbox.checked = selectAllCheckbox.checked;
             let row = checkbox.closest('tr');
@@ -426,6 +446,11 @@ document.addEventListener("DOMContentLoaded", function() {
 //         selectAllCheckbox.setAttribute("disabled", "true");
 //     }
 // });
+
+
+btnLockFw.addEventListener("click", function() {
+
+});
 
 
 btnUpdate.addEventListener("click", function() {

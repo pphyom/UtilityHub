@@ -307,7 +307,6 @@ def list_firmware():
 @login_required
 def start_update():
     """ Update the firmware of the system. """
-
     system = request.get_json()
     result = update_firmware(system, cmd="GetBiosInfo")
     print(result)
