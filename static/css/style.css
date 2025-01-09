@@ -15,7 +15,7 @@
     --font-red: #b30021;
     --bg-red: #d893a3;
     --bg-blue: #6fcaea;
-    --bg-teal: #b2d8d8
+    --bg-teal: #b2d8d8;
 }
 
 a {
@@ -485,4 +485,16 @@ tbody tr.hide {
     color: var(--font-red);
     background-color: var(--bg-red);
     border-color: var(--bg-red);
+}
+
+
+#btn-lock-fw {
+    transition: background-color .3s ease;
+}
+
+
+#btn-lock-fw.press-animation {
+    background: linear-gradient(90deg, #ff6232, #00258a, #0e2238);
+    background-size: 200% 200%;
+    animation: gradientAnimation 3s ease-out infinite reverse;
 }

@@ -24,18 +24,17 @@ def sum_bios_ipmi_ver(device, cmd):
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.PIPE,
                                       text=True)
-            output.poll()
-            stdout, stderr = output.communicate()
+            stdout, stderr = output.communicate(timeout=20)
             match cmd:
                 case "GetBmcInfo":
-                    firmware_version = stdout.split("\n")[-4].strip()[21:]
+                    firmware_version = stdout.splitlines()[-4].strip()[21:]
                 case "GetBiosInfo":
-                    firmware_version = stdout.split("\n")[-2].strip()[36:]
+                    firmware_version = stdout.splitlines()[-2].strip()[36:]
                 case _:
                     firmware_version = "NA"
             print(firmware_version)
 
-        except subprocess.CalledProcessError as e:
+        except subprocess.SubprocessError as e:
             print(f"Error occurred: {e}")
             return None
     else:
@@ -52,14 +51,13 @@ def get_bios_ipmi_ver(device, cmd):
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.PIPE,
                                       text=True)
-            output.poll()
             stdout, stderr = output.communicate()
             match cmd:
                 case " bios ver":
                     f = stdout.split()[-1].replace("\x00", "").strip()
                     firmware_ver = f if f != "" else "NA"
                 case " ipmi ver":
-                    firmware_ver = stdout.split("\n")[0].split()[-1]
+                    firmware_ver = stdout.splitlines()[0].split()[-1]
                 case _:
                     firmware_ver = "NA"
             return firmware_ver
@@ -73,38 +71,55 @@ def get_bios_ipmi_ver(device, cmd):
 
 
 def get_firmware_info(firmware_file, cmd):
-    """ Get the firmware version of the FILE using SUM tool. """
-    output = subprocess.Popen([sum_tool] +
-                            ["-c", cmd, "--file", firmware_file, "--file_only"],
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE,
-                            text=True)
-    output.poll()
-    stdout, stderr = output.communicate()
-    firmware_build_date = "NA"
-    temp = [i.strip() for i in stdout.split("\n")]
-    match cmd:
-        case "GetBmcInfo":
-            firmware_version = [i[21:] for i in temp if "version" in i][0]
-            firmware_build_date = [i[21:] for i in temp if "build date" in i][0]
-        case "GetBiosInfo":
-            firmware_version = [i[36:] for i in temp if "version" in i][0]
-            firmware_build_date = [i[36:] for i in temp if "build date" in i][0]
-        case "GetCpldInfo":
-            firmware_version = [i[31:] for i in temp if "version" in i][0]
-        case _:
-            firmware_version = "NA"
-    firmware = {
-        "version": firmware_version,
-        "build_date": firmware_build_date
-    }
-    return firmware
+    """ 
+    Get the firmware version of the FILE using SUM tool.
+    
+    Parameters:
+    firmware_file (str): The path to the firmware file.
+    cmd (str): The command to get the firmware information (e.g., "GetBmcInfo", "GetBiosInfo", "GetCpldInfo").
+    """
+    try:
+        output = subprocess.Popen([sum_tool] +
+                                ["-c", cmd, "--file", firmware_file, "--file_only"],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                text=True)
+        stdout, stderr = output.communicate(timeout=20)
+        temp = [i.strip() for i in stdout.splitlines()]
+        match cmd:
+            case "GetBmcInfo":
+                firmware_version = next((i[21:] for i in temp if "version" in i), "NA")
+                firmware_build_date = next((i[21:] for i in temp if "build date" in i), "NA")
+                firmware_image = next((i[21:] for i in temp if "FW image" in i), "NA")
+                firmware_signed_key = next((i[17:] for i in temp if "Key" in i), "NA")
+            case "GetBiosInfo":
+                firmware_version = next((i[36:] for i in temp if "version" in i), "NA")
+                firmware_build_date = next((i[36:] for i in temp if "build date" in i), "NA")
+                firmware_image = next((i[36:] for i in temp if "FW image" in i), "NA")
+                firmware_signed_key = next((i[32:] for i in temp if "Key" in i), "NA")
+            case "GetCpldInfo":
+                firmware_version = next((i[31:] for i in temp if "version" in i), "NA")
+                firmware_image = next((i[31:] for i in temp if "FW image" in i), "NA")
+                firmware_signed_key = next((i[27:] for i in temp if "Key" in i), "NA")
+            case _:
+                firmware_version = "NA"
+        firmware = {
+            "version": firmware_version,
+            "build_date": firmware_build_date,
+            "image": firmware_image,
+            "signed_key": firmware_signed_key
+        }
+        return firmware
+
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+        print(f"Error occurred: {e}")
+        return None
 
 
 def update_firmware(device, cmd):
     if device["ip_address"] != "NA" or check_connectivity(device["ip_address"]):
         try:
-            output = subprocess.run([sum_tool] + ["-i", device["ip_address"], "-u", "ADMIN", "-p", device["password"]] + ["-c", cmd], capture_output=True, text=True)
+            output = subprocess.run([sum_tool] + ["-i", device["ip_address"], "-u", "ADMIN", "-p", device["password"]] + ["-c", cmd], capture_output=True, text=True, timeout=60)
             return output.stdout
 
         except subprocess.CalledProcessError as e:

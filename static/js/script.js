@@ -198,6 +198,8 @@ btnUploadFw.addEventListener("click", function() {
             let fwData = request.response;
             firmwareVersion = fwData["firmware_info"].version;
             firmwareBuildDate = fwData["firmware_info"].build_date;
+            firmwareImage = fwData["firmware_info"].image;
+            firmwareSignedKey = fwData["firmware_info"].signed_key;
             // firmwareDetails.innerHTML = "";
             document.getElementById("info-sec").innerText = "UPLOADED FIRMWARE INFO"
             firmwareDetails.innerHTML = `
@@ -213,6 +215,10 @@ btnUploadFw.addEventListener("click", function() {
                     <tr>
                         <td><i class="bi bi-calendar-check fs-4 pe-2"></i></td>
                         <td>${firmwareBuildDate}</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-file-image fs-4 pe-2"></i></td>
+                        <td>${firmwareImage} (${firmwareSignedKey})</td>
                     </tr>
                 </table>
             `;
@@ -324,12 +330,6 @@ function loadFirmwareList() {
 }
 
 window.onload = loadFirmwareList();
-
-
-function getLockedFirmware() {
-    console.log(selectedFirmware.value);
-}
-
 
 /**
  * Asynchronously update the table with the IPMI information.
@@ -448,9 +448,64 @@ document.addEventListener("DOMContentLoaded", function() {
 // });
 
 
-btnLockFw.addEventListener("click", function() {
+// btnLockFw.addEventListener("click", function() {
 
-});
+// });
+
+
+function getLockedFirmware() {
+
+    let firmwareNameToUpdate = "";
+
+    if (btnLockFw.textContent !== "Unlock") {
+        btnLockFw.textContent = "Unlock";
+        firmwareNameToUpdate = selectedFirmware.options[selectedFirmware.selectedIndex].textContent;
+    } else {
+        
+        let pressTimer;  
+    
+        // Event listener for mouse press (mousedown)
+        btnLockFw.addEventListener("mousedown", function() {
+            // Add animation class when the button is pressed
+            btnLockFw.classList.add("press-animation");
+    
+            // Start the 2-second press timer
+            pressTimer = setTimeout(function() {
+                // Change the text content after 2 seconds
+                btnLockFw.textContent = "Lock";
+                // Remove the animation class after the press action is completed
+                btnLockFw.classList.remove("press-animation");
+            }, 2000); // Press duration: 2000 ms (2 seconds)
+        });
+
+        // Event listener for mouse release (mouseup)
+        btnLockFw.addEventListener("mouseup", function() {
+            // Clear the press timer if the button is released before 2 seconds
+            clearTimeout(pressTimer);
+            // Remove the animation class when the button is released
+            btnLockFw.classList.remove("press-animation");
+        });
+    
+        // Event listener for mouse leave
+        btnLockFw.addEventListener("mouseleave", function() {
+            // Clear the press timer if the mouse leaves the button before 2 seconds
+            clearTimeout(pressTimer);
+            // Remove the animation class when the mouse leaves the button
+            btnLockFw.classList.remove("press-animation");
+        });
+
+        firmwareNameToUpdate = "";
+    }
+
+    if (btnLockFw.textContent !== "Lock") {
+        btnLockFw.textContent = "Unlock";
+    } else {
+        btnLockFw.textContent = "Lock";
+    }
+
+    return firmwareNameToUpdate;
+}
+
 
 
 btnUpdate.addEventListener("click", function() {
@@ -466,7 +521,6 @@ btnUpdate.addEventListener("click", function() {
                 },
                 body: JSON.stringify(system[0])
             });
-
 
             let status = row.cells[7].textContent;
             if (status === "In Queue") {
