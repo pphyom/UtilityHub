@@ -448,68 +448,48 @@ document.addEventListener("DOMContentLoaded", function() {
 // });
 
 
-// btnLockFw.addEventListener("click", function() {
 
-// });
+// Lock/Unlock the selected firmware for the update
+let timeoutId = null;
 
-let isLocked = false;
-let firmwareNameToUpdate = "";
+btnLockFw.addEventListener('mousedown', function () {
+    if (btnLockFw.textContent === "Unlock") {
+        btnLockFw.classList.add("press-animation");
+        timeoutId = setTimeout(function () {
+            getLockedFirmware();
+            btnLockFw.classList.remove("press-animation");
+        }, 2000);
+    } else {
+        getLockedFirmware();
+    }
+});
+
+btnLockFw.addEventListener('mouseup', function () {
+    clearTimeout(timeoutId); // reset the timeout when mouse leaves the button before 2 seconds
+    btnLockFw.classList.remove("press-animation");
+});
+
+btnLockFw.addEventListener('mouseleave', function () {
+    clearTimeout(timeoutId); // reset the timeout when mouse leaves the button before 2 seconds
+    btnLockFw.classList.remove("press-animation");
+});
 
 function getLockedFirmware() {
-
-    if (isLocked) {
+    let firmwareNameToUpdate = "";
+    if (btnLockFw.textContent === "Unlock") {
+        btnLockFw.textContent = "Lock";
+        firmwareNameToUpdate = "";
+    } else {
+        btnLockFw.textContent = "Unlock";
         firmwareNameToUpdate = selectedFirmware.options[selectedFirmware.selectedIndex].textContent;
-        return firmwareNameToUpdate;
+        showAlert(`${firmwareNameToUpdate} is set for update!`, "success", "bi-check-circle");
     }
-
-    let pressTimer;  
-
-    // Event listener for mouse press (mousedown)
-    btnLockFw.addEventListener("mousedown", function() {
-        // Add animation class when the button is pressed
-        btnLockFw.classList.add("press-animation");
-
-        // Start the 2-second press timer
-        pressTimer = setTimeout(function() {
-            // Change the text content after 2 seconds
-            btnLockFw.textContent = "Lock";
-            isLocked = true;
-            // Remove the animation class after the press action is completed
-            btnLockFw.classList.remove("press-animation");
-        }, 2000); // Press duration: 2000 ms (2 seconds)
-    });
-
-    // Event listener for mouse release (mouseup)
-    btnLockFw.addEventListener("mouseup", function() {
-        // Clear the press timer if the button is released before 2 seconds
-        clearTimeout(pressTimer);
-
-        if (!isLocked) {
-            btnLockFw.textContent = "Unlock";
-        }
-
-        // Remove the animation class when the button is released
-        btnLockFw.classList.remove("press-animation");
-    });
-
-    // Event listener for mouse leave
-    btnLockFw.addEventListener("mouseleave", function() {
-        // Clear the press timer if the mouse leaves the button before 2 seconds
-        clearTimeout(pressTimer);
-
-        if (!isLocked) {
-            btnLockFw.textContent = "Unlock";
-        }
-
-        // Remove the animation class when the mouse leaves the button
-        btnLockFw.classList.remove("press-animation");
-    });
-
+    console.log(firmwareNameToUpdate);
     return firmwareNameToUpdate;
 }
 
 
-
+// Update the firmware of the selected systems
 btnUpdate.addEventListener("click", function() {
     let rows = Array.from(tableBody.rows);
     rows.forEach(async row => {

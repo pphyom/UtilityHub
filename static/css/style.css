@@ -487,14 +487,22 @@ tbody tr.hide {
     border-color: var(--bg-red);
 }
 
-
+/* Lock/Unlock firmware button animation */
 #btn-lock-fw {
     transition: background-color .3s ease;
 }
 
-
 #btn-lock-fw.press-animation {
-    background: linear-gradient(90deg, #ff6232, #00258a, #0e2238);
-    background-size: 200% 200%;
-    animation: gradientAnimation 3s ease-out infinite reverse;
+    background: linear-gradient(90deg, #ff6232, #0e2238);
+    background-size: 300% 300%;
+    animation: unlockAnimation 2s linear reverse;
+}
+
+@keyframes unlockAnimation {
+    0% {
+        background-position: -100% 0;
+    }
+    100% {
+        background-position: 100% 0;
+    }
 }
