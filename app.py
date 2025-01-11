@@ -307,10 +307,21 @@ def list_firmware():
 @login_required
 def start_update():
     """ Update the firmware of the system. """
-    system = request.get_json()
-    result = update_firmware(system, cmd="GetBiosInfo")
-    print(result)
-    return jsonify({"message": "Firmware update started."})
+    data = request.get_json() # data = {"system": system:dict, "firmware": firmware:str}
+    if not data:
+        return jsonify({"alertMessage": "Invalid input", "alertType": "danger"}), 400
+    
+    system = data.get("system")
+    firmware = data.get("firmware")
+    firmware_path = f"{Config.FIRMWARE_FOLDER}/{firmware}"
+    # temp = get_firmware_info(firmware_path, cmd="GetBiosInfo")
+    print(firmware_path)
+    result = update_firmware(system, firmware_path, cmd="UpdateBios")
+    if not result:
+        return jsonify({"alertMessage": "Firmware update failed.", "alertType": "danger"}), 500
+    else:
+        print(result)
+        return jsonify({"alertMessage": "Firmware update started.", "alertType": "success"}), 200
         
 
 @app.route("/tools", methods=["GET", "POST"])

@@ -16,7 +16,7 @@ ipmitool_cmd = {
 def sum_bios_ipmi_ver(device, cmd):
     """ Get the firmware version of the DEVICE using SUM tool. """
 
-    if device["ip_address"] != "NA" or check_connectivity(device["ip_address"]):
+    if device["ip_address"] != "NA" and check_connectivity(device["ip_address"]):
         try:
             output = subprocess.Popen([sum_tool] +
                                       ["-i", device["ip_address"], "-U", "ADMIN", "-P", device["password"]] +
@@ -44,7 +44,7 @@ def sum_bios_ipmi_ver(device, cmd):
 def get_bios_ipmi_ver(device, cmd):
     """ Get the firmware version of the device using IPMI tool. """
 
-    if device["ip_address"] != "NA" or check_connectivity(device["ip_address"]):
+    if device["ip_address"] != "NA" and check_connectivity(device["ip_address"]):
         try:
             output = subprocess.Popen([ipmi_tool] +
                                       [device["ip_address"], " ADMIN ", device["password"], cmd],
@@ -62,7 +62,7 @@ def get_bios_ipmi_ver(device, cmd):
                     firmware_ver = "NA"
             return firmware_ver
 
-        except subprocess.CalledProcessError as e:
+        except subprocess.SubprocessError as e:
             print(f"Error occurred: {e}")
             return "NA"
     else:
@@ -116,14 +116,17 @@ def get_firmware_info(firmware_file, cmd):
         return None
 
 
-def update_firmware(device, cmd):
-    if device["ip_address"] != "NA" or check_connectivity(device["ip_address"]):
+def update_firmware(device, fw_file, cmd):
+    if device["ip_address"] != "NA" and check_connectivity(device["ip_address"]):
         try:
-            output = subprocess.run([sum_tool] + ["-i", device["ip_address"], "-u", "ADMIN", "-p", device["password"]] + ["-c", cmd], capture_output=True, text=True, timeout=60)
+            output = subprocess.run(
+                [sum_tool] + ["-i", device["ip_address"], "-u", "ADMIN", "-p", device["password"]] + ["-c", cmd],
+                ["--file", fw_file],
+                capture_output=True, text=True, check=True
+            )
             return output.stdout
 
         except subprocess.CalledProcessError as e:
-            print(f"Error occurred: {e}")
-            return None
+            return f"Error updating firmware! Error: {str(e)}"
     else:
-        print("Not connected!")
+        return "Host Disconnected!"

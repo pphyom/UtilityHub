@@ -148,6 +148,7 @@ btnUploadFw.addEventListener("click", function() {
     let data = new FormData();
     let request = new XMLHttpRequest();
     request.responseType = "json";
+
     selectFw.disabled = true;
     chooseFw.disabled = true;
     switchFirmwareUpload.disabled = true;
@@ -200,7 +201,7 @@ btnUploadFw.addEventListener("click", function() {
             firmwareBuildDate = fwData["firmware_info"].build_date;
             firmwareImage = fwData["firmware_info"].image;
             firmwareSignedKey = fwData["firmware_info"].signed_key;
-            // firmwareDetails.innerHTML = "";
+            firmwareDetails.innerHTML = "";
             document.getElementById("info-sec").innerText = "UPLOADED FIRMWARE INFO"
             firmwareDetails.innerHTML = `
                 <table class="table table-sm table-light align-middle text-start">
@@ -242,6 +243,22 @@ function resetUploadUI() {
     btnUploadFw.classList.remove("d-none");
     uploadingFw.classList.add("d-none");
     progressUploadWrapper.classList.add("d-none");
+}
+
+
+// Disable inputs when the firmware is locked
+function disableEnableInputs(isLocked) {
+    if (!isLocked) {
+        chooseFw.disabled = true;
+        selectFw.disabled = true;
+        switchFirmwareUpload.disabled = true;
+        selectedFirmware.disabled = true;
+    } else {
+        chooseFw.disabled = false;
+        selectFw.disabled = false;
+        switchFirmwareUpload.disabled = false;
+        selectedFirmware.disabled = false;
+    }
 }
 
 
@@ -350,6 +367,7 @@ async function updateTable() {
     let progress = 0;
     let duplicateItems = [];
     
+    progressPB.style.width = "0%";
     serialNumberInput.value = "";  // Clear the input box
     progressBarWrapper.classList.remove('d-none');
     btnDeleteRow.classList.remove('disabled');
@@ -451,16 +469,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Lock/Unlock the selected firmware for the update
 let timeoutId = null;
+let firmwareFilename = "";
 
 btnLockFw.addEventListener('mousedown', function () {
     if (btnLockFw.textContent === "Unlock") {
         btnLockFw.classList.add("press-animation");
         timeoutId = setTimeout(function () {
-            getLockedFirmware();
+            firmwareFilename = getLockedFirmware();
             btnLockFw.classList.remove("press-animation");
         }, 2000);
     } else {
-        getLockedFirmware();
+        firmwareFilename = getLockedFirmware();
     }
 });
 
@@ -475,22 +494,30 @@ btnLockFw.addEventListener('mouseleave', function () {
 });
 
 function getLockedFirmware() {
+    let isLocked = false;
     let firmwareNameToUpdate = "";
     if (btnLockFw.textContent === "Unlock") {
+        disableEnableInputs(!isLocked); // true
         btnLockFw.textContent = "Lock";
         firmwareNameToUpdate = "";
+        showAlert("Locked firmware is clear! Choose or upload a new firmware for the update.", "info", "bi-exclamation-triangle-fill");
     } else {
+        disableEnableInputs(isLocked); // false
         btnLockFw.textContent = "Unlock";
         firmwareNameToUpdate = selectedFirmware.options[selectedFirmware.selectedIndex].textContent;
-        showAlert(`${firmwareNameToUpdate} is set for update!`, "success", "bi-check-circle");
+        showAlert(`<b>${firmwareNameToUpdate}</b> is locked! Ready for the update.`, "success", "bi-check-circle");
     }
-    console.log(firmwareNameToUpdate);
     return firmwareNameToUpdate;
 }
 
 
 // Update the firmware of the selected systems
+// Pass the system serial number, IP address, and password to the server
 btnUpdate.addEventListener("click", function() {
+    if (firmwareFilename === "") { // Check if the firmware is empty
+        showAlert("Please select and lock a firmware to update!", "warning", "bi-exclamation-triangle-fill");
+        return;
+    }
     let rows = Array.from(tableBody.rows);
     rows.forEach(async row => {
         if (row.querySelector('input').checked) {
@@ -501,14 +528,20 @@ btnUpdate.addEventListener("click", function() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(system[0])
-            });
+                body: JSON.stringify({"system": system[0], "firmware": firmwareFilename})
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                showAlert(data.alertMessage, data.alertType, "bi-check-circle");
+            })
 
-            let status = row.cells[7].textContent;
-            if (status === "In Queue") {
-                row.cells[7].textContent = "Updating";
-                runFirmwareUpdate(row);
-            }
+
+            // let status = row.cells[7].textContent;
+            // if (status === "In Queue") {
+            //     row.cells[7].textContent = "Updating";
+            //     runFirmwareUpdate(row);
+            // }
 
         }
     });
