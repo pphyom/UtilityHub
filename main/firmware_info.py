@@ -118,15 +118,20 @@ def get_firmware_info(firmware_file, cmd):
 
 def update_firmware(device, fw_file, cmd):
     if device["ip_address"] != "NA" and check_connectivity(device["ip_address"]):
-        try:
-            output = subprocess.run(
-                [sum_tool] + ["-i", device["ip_address"], "-u", "ADMIN", "-p", device["password"]] + ["-c", cmd],
-                ["--file", fw_file],
-                capture_output=True, text=True, check=True
-            )
-            return output.stdout
+        # try:
+        process = [sum_tool] + ["-i", device["ip_address"], "-u", "ADMIN", "-p", device["password"]] + ["-c", cmd] + ["--file", fw_file]
+        result = subprocess.Popen(process, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        except subprocess.CalledProcessError as e:
-            return f"Error updating firmware! Error: {str(e)}"
+        for line in iter(result.stdout.readline, b''):
+            print(line)
+            yield line
+
+        result.stdout.close()
+        result.wait()
+        
+
+
+        # except subprocess.CalledProcessError as e:
+        #     return f"Error updating firmware! Error: {str(e.stderr)}"
     else:
         return "Host Disconnected!"

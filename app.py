@@ -267,6 +267,7 @@ def upload_firmware():
         # Check if the file already exists in the database and filesystem
         existing_file_in_db = Firmware.query.filter_by(filename=filename).first()
 
+        # Check if the file already exists on the server
         if os.path.exists(filepath):
             if existing_file_in_db:
                 response_message = {"alertMessage": "File already exists.", "alertType": "warning"}
@@ -313,15 +314,17 @@ def start_update():
     
     system = data.get("system")
     firmware = data.get("firmware")
-    firmware_path = f"{Config.FIRMWARE_FOLDER}/{firmware}"
+    firmware_path = os.path.join(Config.FIRMWARE_FOLDER, firmware)
     # temp = get_firmware_info(firmware_path, cmd="GetBiosInfo")
-    print(firmware_path)
-    result = update_firmware(system, firmware_path, cmd="UpdateBios")
-    if not result:
-        return jsonify({"alertMessage": "Firmware update failed.", "alertType": "danger"}), 500
-    else:
-        print(result)
-        return jsonify({"alertMessage": "Firmware update started.", "alertType": "success"}), 200
+    # print(firmware_path)
+    update_firmware(system, firmware_path, cmd="UpdateBios")
+    # print("RESULT: ", result)
+    # if not result:
+    #     return jsonify({"alertMessage": "Firmware update failed.", "alertType": "danger"}), 500
+    # else:
+    #     print(result)
+    #     return jsonify({"alertMessage": "Firmware update started.", "alertType": "success"}), 200
+    return jsonify({"alertMessage": "Firmware update failed.", "alertType": "danger"}), 500
         
 
 @app.route("/tools", methods=["GET", "POST"])
