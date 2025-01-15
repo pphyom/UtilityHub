@@ -1,5 +1,6 @@
 import os
 import redis
+import config
 from datetime import datetime
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
@@ -12,7 +13,6 @@ from main.cburn_helper import *
 from main.ftu_helper import *
 from main.tools import *
 from main.firmware_info import *
-from config import Config
 from make_celery import make_celery
 from main.extensions import db, sess, login_manager
 from models.models import User, Firmware # Import the User model
@@ -21,7 +21,7 @@ from models.models import User, Firmware # Import the User model
 rburn_live = os.getenv("RBURN_SVR40_LIVE")
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/")
-app.config.from_object(Config)  # Load the configuration from config.py
+app.config.from_object(config.Config)  # Load the configuration from config.py
 
 # Initialize the database
 db.init_app(app)
@@ -35,6 +35,7 @@ login_manager.login_view = "login_error"
 
 
 # Initialize the socketio extension
+# socketio = SocketIO(app, message_queue=app.config["CELERY_BROKER_URL"], cors_allowed_origins="*")
 socketio = SocketIO(app)
 
 # Initialize the celery extension
@@ -99,7 +100,10 @@ def bind_session():
 @app.teardown_appcontext
 def remove_session(exception=None):
     # Remove the scoped session after the request
-    db_session.remove()
+    try:
+        db_session.remove()
+    except Exception as e:
+        app.logger.error(f"Error removing session: {e}")
 
 
 # Loader for flask-login
@@ -199,10 +203,14 @@ def cburn_log():
 
 @socketio.on("connect")
 def on_connect():
-    if current_user.is_authenticated:
-        emit("connected", {"message": "Connected to the server."}, to=f"user_{current_user.id}")
-    else:
+    if not current_user or not current_user.is_authenticated:
         emit("error", {"message": "User not authenticated."})
+        return
+
+    if current_user.id is not None:
+        emit("connected", {"message": "Connected to the server"}, to=f"user_{current_user.id}")
+    else:
+        emit("error", {"message": "User ID is not valid."})
 
 
 # Routes for firmware updates
@@ -261,7 +269,7 @@ def upload_firmware():
         fwtype = request.cookies.get("fw-type")
         fw = request.files["file"]  # Get the file from the request
         filename = secure_filename(fw.filename)  # Secure the filename
-        filepath = os.path.join(Config.FIRMWARE_FOLDER, filename)
+        filepath = os.path.join(config.Config.FIRMWARE_FOLDER, filename)
         response_message = ""
         
         # Check if the file already exists in the database and filesystem
@@ -314,7 +322,7 @@ def start_update():
     
     system = data.get("system")
     firmware = data.get("firmware")
-    firmware_path = os.path.join(Config.FIRMWARE_FOLDER, firmware)
+    firmware_path = os.path.join(config.Config.FIRMWARE_FOLDER, firmware)
     # temp = get_firmware_info(firmware_path, cmd="GetBiosInfo")
     # print(firmware_path)
     update_firmware(system, firmware_path, cmd="UpdateBios")

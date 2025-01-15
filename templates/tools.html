@@ -121,17 +121,22 @@
 </div>
 
 <script>
-
+    
     // IP Lookup page
     document.addEventListener("DOMContentLoaded", function() {
         // Socket
         const socket = io();
-        socket.on('connected', function(data) {
-            console.log('Connected user ID:', data);
+
+        socket.on('connect', () => {
+            console.log('Connected to the server!');
         });
 
-        socket.on('disconnected', function() {
-            console.log('Disconnected from the server');
+        socket.on('connected', (data) => {
+            console.log('Connected user ID:', data);  // Expecting the message data
+        });
+
+        socket.on('error', (e) => {
+            console.log(e.message);
         });
         
         // Copy selected text to clipboard
@@ -154,6 +159,7 @@
 
         
         document.querySelector(".ip-lookup-table").addEventListener('click', async function(event) {
+
             var sysList = {{ sys_list | safe }};  // Convert Python list to JS array
             const target = event.target;
             if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {

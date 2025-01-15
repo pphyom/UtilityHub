@@ -1,11 +1,27 @@
-import os
+import config
 from celery import Celery
 
+
 def make_celery(app):
+    """
+    Create a new Celery object and tie the Celery config to the Flask app's config.
+
+    Args:
+        app (Flask): The Flask application instance.
+
+    Returns:
+        Celery: A configured Celery object.
+    """
     celery = Celery(
         app.import_name,
-        backend=os.getenv("CELERY_RESULT_BACKEND"),
-        broker=os.getenv("CELERY_BROKER_URL")
+        backend=config.Config.CELERY_RESULT_BACKEND,
+        broker=config.Config.CELERY_BROKER_URL,
     )
-    celery.conf.update(app.config)
+    
+    # Celery config
+    celery.conf.update(
+        result_backend = config.Config.CELERY_RESULT_BACKEND,
+        broker_url = config.Config.CELERY_BROKER_URL,
+    )
+    
     return celery
