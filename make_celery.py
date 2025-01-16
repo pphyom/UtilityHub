@@ -12,16 +12,16 @@ def make_celery(app):
     Returns:
         Celery: A configured Celery object.
     """
-    celery = Celery(
+    cel = Celery(
         app.import_name,
         backend=config.Config.CELERY_RESULT_BACKEND,
         broker=config.Config.CELERY_BROKER_URL,
     )
-    
     # Celery config
-    celery.conf.update(
-        result_backend = config.Config.CELERY_RESULT_BACKEND,
-        broker_url = config.Config.CELERY_BROKER_URL,
+    cel.conf.update(
+        result_backend=config.Config.CELERY_RESULT_BACKEND,
+        broker_url=config.Config.CELERY_BROKER_URL,
+        broker_connection_retry_on_startup=True,
     )
-    
-    return celery
+
+    return cel

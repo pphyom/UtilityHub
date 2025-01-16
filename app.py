@@ -35,8 +35,8 @@ login_manager.login_view = "login_error"
 
 
 # Initialize the socketio extension
-# socketio = SocketIO(app, message_queue=app.config["CELERY_BROKER_URL"], cors_allowed_origins="*")
-socketio = SocketIO(app)
+socketio = SocketIO(app, message_queue=app.config["CELERY_BROKER_URL"], cors_allowed_origins="*")
+# socketio = SocketIO(app)
 
 # Initialize the celery extension
 celery = make_celery(app)
