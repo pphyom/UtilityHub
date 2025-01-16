@@ -4,7 +4,6 @@ import config
 from datetime import datetime
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
-from flask_socketio import SocketIO, emit
 from flask import Flask, render_template, session, g, make_response, request, jsonify, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy.orm import sessionmaker, scoped_session 
@@ -14,7 +13,7 @@ from main.ftu_helper import *
 from main.tools import *
 from main.firmware_info import *
 from make_celery import make_celery
-from main.extensions import db, sess, login_manager
+from main.extensions import db, sess, login_manager, socketio
 from models.models import User, Firmware # Import the User model
 
 
@@ -33,10 +32,8 @@ sess.init_app(app)
 login_manager.init_app(app)
 login_manager.login_view = "login_error"
 
-
 # Initialize the socketio extension
-socketio = SocketIO(app, message_queue=app.config["CELERY_BROKER_URL"], cors_allowed_origins="*")
-# socketio = SocketIO(app)
+socketio.init_app(app, message_queue=app.config["CELERY_BROKER_URL"], cors_allowed_origins="*")
 
 # Initialize the celery extension
 celery = make_celery(app)
@@ -204,13 +201,13 @@ def cburn_log():
 @socketio.on("connect")
 def on_connect():
     if not current_user or not current_user.is_authenticated:
-        emit("error", {"message": "User not authenticated."})
+        socketio.emit("error", {"message": "User not authenticated."})
         return
 
     if current_user.id is not None:
-        emit("connected", {"message": "Connected to the server"}, to=f"user_{current_user.id}")
+        socketio.emit("connected", {"message": "Connected to the server"}, to=f"user_{current_user.id}")
     else:
-        emit("error", {"message": "User ID is not valid."})
+        socketio.emit("error", {"message": "User ID is not valid."})
 
 
 # Routes for firmware updates
