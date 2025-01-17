@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% set index_page = True %}  <!-- setting button to display only on the index.html -->
-{% block head %} Rack Burn Live {% endblock %}
+{% block header %} Rack Burn Live {% endblock %}
 
-{% block body %}
+{% block contents %}
 
 <div class="main">
     <main>
@@ -70,6 +70,9 @@
     </main>
 </div>
 
+{% endblock %} <!-- End of contents -->
+
+{% block scripts %}
 <script>
 
     /**
@@ -215,4 +218,4 @@
 
 </script>
 
-{% endblock %}
+{% endblock %} <!-- End of scripts -->

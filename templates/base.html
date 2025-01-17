@@ -7,13 +7,21 @@
     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     
-    <title>{% block head %}{% endblock %}</title>
-    <link rel='icon' href='images/smc.png' type='image/x-icon'>
+    <title>{% block header %}{% endblock %}</title>
+    <link rel='shortcut icon' href='images/smc.png' type='image/x-icon'>
     <link rel="stylesheet" href="css/style.css" type="text/css">
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/bootstrap-icons.css" type="text/css">
     <link rel="stylesheet" href="css/bootstrap-table.min.css" type="text/css">
-    <script defer src="js/socket.io.min.js"></script>
+    
+    <script async src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script async src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/bootstrap-table.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/tableExport.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/bootstrap-table-export.min.js') }}"></script>
 
   </head>
   
@@ -57,19 +65,15 @@
         </ul>
       </aside>
       
-      {% block body %}
+      {% block contents %}
+
       {% endblock %}
     </div><!-- Wrapper End -->
     
-    <script defer src="js/jquery.min.js"></script>
-    <!-- <script src="{{ url_for('static', filename='js/script.js') }}"></script> -->
-    <script defer src="js/script.js"></script>
-    <script defer src="js/popper.min.js"></script>
-    <script defer src="js/bootstrap.bundle.min.js"></script>
-    <script defer src="js/bootstrap-table.min.js"></script>
-    <script defer src="js/tableExport.min.js"></script>
-    <script defer src="js/bootstrap-table-export.min.js"></script>
+    {% block scripts %}
     
+    
+    {% endblock %}
   </body>
   <footer>
     <div class="d-flex justify-content-between fixed-bottom px-3 pt-2 bg-custom text-white">
