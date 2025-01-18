@@ -200,14 +200,15 @@ def cburn_log():
 
 @socketio.on("connect")
 def on_connect():
-    if not current_user or not current_user.is_authenticated:
-        socketio.emit("error", {"message": "User not authenticated."})
-        return
+    print("Connected to the server.")
+    # if not current_user or not current_user.is_authenticated:
+    #     socketio.emit("error", {"message": "User not authenticated."})
+    #     return
 
-    if current_user.id is not None:
-        socketio.emit("connected", {"message": "Connected to the server"}, to=f"user_{current_user.id}")
-    else:
-        socketio.emit("error", {"message": "User ID is not valid."})
+    # if current_user.id is not None:
+    #     socketio.emit("connected", {"message": "Connected to the server"}, to=f"user_{current_user.id}")
+    # else:
+    #     socketio.emit("error", {"message": "User ID is not valid."})
 
 
 # Routes for firmware updates

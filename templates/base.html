@@ -13,16 +13,6 @@
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/bootstrap-icons.css" type="text/css">
     <link rel="stylesheet" href="css/bootstrap-table.min.css" type="text/css">
-    
-    <script async src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <script async src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/bootstrap-table.min.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/tableExport.min.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/bootstrap-table-export.min.js') }}"></script>
-
   </head>
   
   <body>
@@ -69,11 +59,16 @@
 
       {% endblock %}
     </div><!-- Wrapper End -->
-    
-    {% block scripts %}
-    
-    
-    {% endblock %}
+        
+    <script async src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    <script async src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/bootstrap-table.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/tableExport.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/bootstrap-table-export.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
   </body>
   <footer>
     <div class="d-flex justify-content-between fixed-bottom px-3 pt-2 bg-custom text-white">
