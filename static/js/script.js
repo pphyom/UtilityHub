@@ -445,25 +445,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 // Delete selected rows from the table
-// btnDeleteRow.addEventListener("click", function() {
-//     let rows = Array.from(tableBody.rows);
-//     rows.forEach(row => {
-//         if (row.querySelector('input').checked) {
-//             row.remove();
-//         }
-//     });
-//     // Rearrange the index after deletion
-//     rows = Array.from(tableBody.rows);
-//     rows.forEach((row, index) => {
-//         row.cells[0].textContent = index + 1;
-//     });
+btnDeleteRow.addEventListener("click", function() {
+    let rows = Array.from(tableBody.rows);
+    rows.forEach(row => {
+        if (row.querySelector('input').checked) {
+            row.remove();
+        }
+    });
+    // Rearrange the index after deletion
+    rows = Array.from(tableBody.rows);
+    rows.forEach((row, index) => {
+        row.cells[0].textContent = index + 1;
+    });
 
-//     if (tableBody.rows.length === 0) {
-//         btnDeleteRow.disabled = true;
-//         selectAllCheckbox.checked = false;
-//         selectAllCheckbox.setAttribute("disabled", "true");
-//     }
-// });
+    if (tableBody.rows.length === 0) {
+        btnDeleteRow.disabled = true;
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.setAttribute("disabled", "true");
+    }
+});
 
 
 

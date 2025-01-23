@@ -43,7 +43,6 @@ def sum_bios_ipmi_ver(device, cmd):
 
 def get_bios_ipmi_ver(device, cmd):
     """ Get the firmware version of the device using IPMI tool. """
-
     if device["ip_address"] != "NA" and check_connectivity(device["ip_address"]):
         try:
             output = subprocess.Popen([ipmi_tool] +
