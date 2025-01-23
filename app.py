@@ -33,7 +33,8 @@ login_manager.init_app(app)
 login_manager.login_view = "login_error"
 
 # Initialize the socketio extension
-socketio.init_app(app, message_queue=app.config["CELERY_BROKER_URL"], cors_allowed_origins="*")
+# socketio.init_app(app, message_queue=app.config["CELERY_BROKER_URL"], cors_allowed_origins="*")
+socketio.init_app(app)
 
 # Initialize the celery extension
 celery = make_celery(app)
@@ -201,6 +202,7 @@ def cburn_log():
 @socketio.on("connect")
 def on_connect():
     print("Connected to the server.")
+    socketio.emit("connected", {"message": "Connected to the server"})
     # if not current_user or not current_user.is_authenticated:
     #     socketio.emit("error", {"message": "User not authenticated."})
     #     return

@@ -1,7 +1,4 @@
 
-const socket = io({ autoConnect: false });
-window.socket = socket;
-
 // navigation sidebar
 document.querySelector("#toggle-btn").addEventListener("click", function () {
     document.querySelector("#sidebar").classList.toggle("expand");

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/bootstrap-icons.css" type="text/css">
     <link rel="stylesheet" href="css/bootstrap-table.min.css" type="text/css">
+    <script defer src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
   </head>
   
   <body>
@@ -60,8 +61,8 @@
       {% endblock %}
     </div><!-- Wrapper End -->
         
-    <script async src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
-    <script async src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/socket.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script defer src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script defer src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script defer src="{{ url_for('static', filename='js/bootstrap-table.min.js') }}"></script>
