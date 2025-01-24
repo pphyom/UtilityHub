@@ -1,4 +1,6 @@
 
+socket.connect();
+
 // navigation sidebar
 document.querySelector("#toggle-btn").addEventListener("click", function () {
     document.querySelector("#sidebar").classList.toggle("expand");
@@ -535,6 +537,14 @@ btnUpdate.addEventListener("click", function() {
                 console.log(data);
                 showAlert(data.alertMessage, data.alertType, "bi-check-circle");
             })
+
+            socket.on("update_log", (data) => {
+                console.log(data.log);
+            });
+    
+            socket.on("update_status", (data) => {
+                console.log(data.status);
+            });
 
 
             // let status = row.cells[7].textContent;

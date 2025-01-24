@@ -1,24 +1,8 @@
 
-// Copy selected text to clipboard
+// Get BIOS and IPMI firmware version
 const table = document.querySelector(".ip-lookup-table");
-const cells = table.querySelectorAll("td.user-select-all");
-cells.forEach(cell => {
-    cell.addEventListener("click", () => {
-        let selectedText = cell.textContent;
-        if (selectedText) {
-            navigator.clipboard.writeText(selectedText)
-            .then(() => {
-                console.log('Text copied to clipboard');
-            })
-                .catch(err => {
-                    console.error('Error copying text: ', err);
-            });
-        }
-    });
-}); // End of copy selected text to clipboard
 
-
-document.querySelector(".ip-lookup-table").addEventListener('click', async function(event) {
+table.addEventListener('click', async function(event) {
     const target = event.target;
     if (target.classList.contains("getBiosVer") || target.classList.contains("getIpmiVer")) {
         const row = target.closest("tr");
@@ -26,7 +10,7 @@ document.querySelector(".ip-lookup-table").addEventListener('click', async funct
         const spinner = col.querySelector(".spinner");
         const firmwareType = target.classList.contains("getBiosVer") ? row.querySelector(".show-bios-ver") : row.querySelector(".show-ipmi-ver");
         const url = target.classList.contains("getBiosVer") ? "/get_bios_ver" : "/get_ipmi_ver";
-        const rowIndex = Array.from(row.parentElement.children).indexOf(row);
+        // const rowIndex = Array.from(row.parentElement.children).indexOf(row);
 
         // Get data or innerText from a specific column of the row
         const specificColumnIndex = {"ip_address": 1, "username": 2, "password": 3}; // Column index of the table

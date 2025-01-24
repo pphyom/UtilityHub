@@ -3,6 +3,7 @@
 import subprocess
 from main.cburn_helper import *
 from main.tools import check_connectivity
+from main.extensions import socketio
 
 ipmi_tool = "tools/SMCIPMITool_2.28.0/SMCIPMITool.exe"
 sum_tool = "tools/SUM_2.14.0/sum.exe"
@@ -115,22 +116,46 @@ def get_firmware_info(firmware_file, cmd):
         return None
 
 
-def update_firmware(device, fw_file, cmd):
-    if device["ip_address"] != "NA" and check_connectivity(device["ip_address"]):
-        # try:
-        process = [sum_tool] + ["-i", device["ip_address"], "-u", "ADMIN", "-p", device["password"]] + ["-c", cmd] + ["--file", fw_file]
-        result = subprocess.Popen(process, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+# def update_firmware(device, fw_file, cmd):
+#     if device["ip_address"] != "NA" and check_connectivity(device["ip_address"]):
+#         # try:
+#         process = [sum_tool] + ["-i", device["ip_address"], "-u", "ADMIN", "-p", device["password"]] + ["-c", cmd] + ["--file", fw_file]
+#         result = subprocess.Popen(process, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        for line in iter(result.stdout.readline, b''):
-            print(line)
-            yield line
+#         for line in iter(result.stdout.readline, b''):
+#             print(line)
+#             yield line
 
-        result.stdout.close()
-        result.wait()
+#         result.stdout.close()
+#         result.wait()
         
 
 
-        # except subprocess.CalledProcessError as e:
-        #     return f"Error updating firmware! Error: {str(e.stderr)}"
-    else:
-        return "Host Disconnected!"
+#         # except subprocess.CalledProcessError as e:
+#         #     return f"Error updating firmware! Error: {str(e.stderr)}"
+#     else:
+#         return "Host Disconnected!"
+
+# @celery.task(bind=True)
+def update_firmware(self, device, fw_file, cmd):
+
+    self.update_state(state="PROGRESS", meta={"progress": 0})
+
+    if device["ip_address"] != "NA" and check_connectivity(device["ip_address"]):
+
+        command = [sum_tool] + ["-i", device["ip_address"], "-u", "ADMIN", "-p", device["password"]] + ["-c", cmd] + ["--file", fw_file]
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        for line in iter(process.stdout.readline, b''):
+            line = line.decode("utf-8").strip()
+            socketio.emit("update_log", {"log": line}, broadcast=True)
+            print(line)
+        process.wait()
+
+        if process.returncode == 0:
+            status = "Completed"
+        else:
+            status = "Failed"
+
+        socketio.emit("update_status", {"status": status}, broadcast=True)
+        return status
