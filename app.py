@@ -311,6 +311,15 @@ def list_firmware():
     return jsonify(firmware_list)
 
 
+@app.route("/test_tasks")
+def test_update():
+    a = 3
+    b = 5
+    task = celery.send_task("tasks.add", args=[a, b])
+    print(task)
+    return task.id
+
+
 @app.route("/start_update", methods=["POST"])
 @login_required
 def start_update():
@@ -332,9 +341,10 @@ def start_update():
     #     print(result)
     #     return jsonify({"alertMessage": "Firmware update started.", "alertType": "success"}), 200
     # task = update_firmware.apply_async(args=[system, firmware_path, "UpdateBios"])
+    task = celery.send_task("tasks.update_firmware", args=[system, firmware_path, "UpdateBios"])
 
-    return jsonify({"alertMessage": "Firmware update failed.", "alertType": "danger"}), 500
-    # return jsonify({"task_id": task.id, "status": "Started"}), 202
+    # return jsonify({"alertMessage": "Firmware update failed.", "alertType": "danger"}), 500
+    return jsonify({"task_id": task.id, "status": "Started"}), 202
         
 
 @app.route("/tools", methods=["GET", "POST"])

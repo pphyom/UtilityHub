@@ -19,5 +19,6 @@ class Config:
     CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
     CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
 
+
     # Create the firmware folder if not exists. Use it to store firmware files.
     os.makedirs(FIRMWARE_FOLDER, exist_ok=True)
