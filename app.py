@@ -33,8 +33,7 @@ login_manager.init_app(app)
 login_manager.login_view = "login_error"
 
 # Initialize the socketio extension
-# socketio.init_app(app, message_queue=app.config["CELERY_BROKER_URL"], cors_allowed_origins="*")
-socketio.init_app(app)
+socketio.init_app(app, message_queue=app.config["CELERY_BROKER_URL"], cors_allowed_origins="*")
 
 # Initialize the celery extension
 celery = make_celery(app)
@@ -309,15 +308,6 @@ def list_firmware():
     firmware_files = Firmware.query.all()
     firmware_list = [{"filename": file.filename, "filepath": file.filepath} for file in firmware_files]
     return jsonify(firmware_list)
-
-
-@app.route("/test_tasks")
-def test_update():
-    a = 3
-    b = 5
-    task = celery.send_task("tasks.add", args=[a, b])
-    print(task)
-    return task.id
 
 
 @app.route("/start_update", methods=["POST"])

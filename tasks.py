@@ -1,7 +1,6 @@
 import subprocess
 from app import celery, socketio
 from main.tools import check_connectivity
-from flask import jsonify
 
 
 ipmi_tool = "tools/SMCIPMITool_2.28.0/SMCIPMITool.exe"
@@ -40,11 +39,3 @@ def update_firmware(self, device, fw_file, cmd):
 
         socketio.emit("update_status", {"status": status}, broadcast=True)
         return status
-    
-
-@celery.task
-def add(a, b):
-    result = a + b
-    result.wait()
-    print(result)
-    return result
