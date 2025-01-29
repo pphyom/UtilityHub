@@ -14,7 +14,7 @@ function passData() {
     let secondaryValue = secondaryTextArea.value.split("\n");
     primaryTextArea.value = secondaryValue.join(" ");
     
-    let serialNumberInput = document.getElementById("serial-number-input");
+    // let serialNumberInput = document.getElementById("serial-number-input");
     let multiSerialNumberInput = document.getElementById("multi-serial-number-input");
     let multiSerialNumberInputValue = multiSerialNumberInput.value.split("\n");
     serialNumberInput.value = multiSerialNumberInputValue.join(" ");
@@ -86,7 +86,7 @@ function updateData () {
 *************************************************
 **/
 
-serialNumberInput = document.getElementById("serial-number-input");
+let serialNumberInput = document.getElementById("serial-number-input");
 let tableBody = document.getElementById("dynamicTable");
 let chooseFw = document.getElementById("choose-fw")
 let btnUploadFw = document.getElementById("btn-upload-fw")
@@ -282,9 +282,9 @@ function dismissAlert() {
 
 
 // Get the system serial number from the input box
-function userInput() {
+function userInput(x) {
     // Get the value from the input box, remove leading and trailing spaces, and convert to uppercase
-    let input = serialNumberInput.value.toUpperCase().trim();
+    let input = x.value.toUpperCase().trim();
     // Split the input by spaces or commas to get individual items
     let items = input.split(/\s*,\s*|\s+/);
     // Remove empty strings that may have been created after trimming and splitting
@@ -356,7 +356,7 @@ window.onload = loadFirmwareList();
 */
 async function updateTable() {
     // Get the value from the input box
-    let items = userInput();
+    let items = userInput(serialNumberInput);
     if (items.length === 0) {
         showAlert("No input detected! Please enter system serial number/s.", "warning", "bi-exclamation-triangle-fill");
         return;
