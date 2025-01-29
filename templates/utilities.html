@@ -1,0 +1,147 @@
+<div class="row">
+    <div class="col">
+        <form>
+            <div class="card special-card mb-2">
+                <div class="card-header bg-custom-grayblue pb-1">
+                    <div class="d-flex justify-content-between">
+                        <div class="h6">
+                            <div>
+                                <i class="bi bi-wrench-adjustable-circle fs-small"></i>
+                                <span>UTILITIES</span>
+                            </div>
+                        </div>
+                        <!-- <div class="d-flex mb-2">
+                            <i class="bi bi-exclamation-triangle fs-small" data-bs-toggle="tooltip" data-bs-placement="left" title="WARNING MESSAGE!"></i>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="card-body my-3"> <!-- body -->
+                    <div class="row">
+                        <div class="row m-0 p-0">
+                            <div class="col-12 col-xl-7 col-lg-7 col-md-12 col-sm-12">
+                                <div class="col-12 d-flex flex-column flex-md-row mb-2">
+                                    <div class="flex-grow-1 d-grid gap-2 mb-2">
+                                        <input type="text" id="serial-number-input" class="form-control" placeholder="Insert system serial number/s...">
+                                    </div>
+                                    <div id="custom-btn" class="d-grid gap-2 mb-2 ms-md-2 ms-lg-2 ms-xl-2">
+                                        <!-- Button trigger modal -->
+                                        <button type="button" id="custom-btn" class="btn"
+                                            data-bs-toggle="modal" data-bs-target="#multi-input-modal">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+
+                                        <!-- Modal: Bulk input -->
+                                        <div class="modal fade" id="multi-input-modal"
+                                            data-bs-backdrop="static" data-bs-keyboard="false"
+                                            tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog modal-sm">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h6 class="modal-title text-dark" id="staticBackdropLabel">Bulk Input</h6>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <textarea id="multi-serial-number-input"
+                                                            class="form-control"
+                                                            style="min-width: 100%; resize: none;"
+                                                            rows="12"
+                                                            placeholder="Place data line by line."></textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="reset" id="custom-btn"
+                                                            class="btn">Reset</button>
+                                                        <button type="button" class="btn btn-primary"
+                                                            data-bs-dismiss="modal"
+                                                            onclick="passData()">Insert</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="custom-btn" class="d-grid gap-2 mb-2 ms-md-2 ms-lg-2 ms-xl-2">
+                                        <button type="button" class="btn text-white" style="min-width: 100px;" onclick="updateTable()">
+                                            <i class="bi bi-plus-circle"></i>
+                                            <span>Add</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 d-flex flex-column flex-md-row mb-2">
+                                    <div class="flex-grow-1 d-grid gap-2 mb-2 me-md-2 me-lg-2 me-xl-2">
+                                        <select class="form-select" id="selected-command" name="selected-command">
+                                            <option value="" selected>Choose task</option>
+                                            <option value="reboot">Reboot</option>
+                                            <option value="poweroff">Power Off</option>
+                                            <option value="uid">UID on</option>
+                                        </select>
+                                    </div>
+                                    <div id="custom-btn" class="d-grid gap-2 mb-2">
+                                        <button type="button" class="btn text-white" style="min-width: 150px;" id="btn-lock-fw" disabled>
+                                            <span>Run</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- READ ME Section -->
+                            <div class="col-12 col-xl-5 col-lg-5 col-md-12 col-sm-12">
+                                <div class="card bg-light">
+                                    <div class="card-header">
+                                        <div class="float-start">
+                                            <div>
+                                                <i class="bi bi-exclamation-triangle fs-small text-danger"></i>
+                                                <span id="info-sec">READ ME</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body text-start align-middle" id="firmware-details">
+                                        <div class="row row-cols-1 row-cols-md-3 g-2">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+       
+        <!-- progress bar -->
+        <div class="card special-card mt-2">
+            <div id="custom-progress-bar" class="progress d-none">
+                <div class="progress-bar custom-pb" 
+                role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <!-- header -->
+            <div class="card-header bg-custom-grayblue"></div>
+
+            <div class="card-body">
+                <div class="row">
+                    <table class="table table-striped text-center">
+                        <thead class="tool-header">
+                            <tr>
+                                <th>#</th>
+                                <th><i class="bi bi-upc"></i>SERIAL NUMBER</th>
+                                <th><i class="bi bi-exclamation-square"></i>IP</th>
+                                <th><i class="bi bi-person"></i>USER</th>
+                                <th><i class="bi bi-incognito"></i>IPMI PSWD</th>
+                                <th><i class="bi bi-list-task"></i>TASK</th>
+                                <th><i class="bi bi-question-square"></i>STATUS</th>
+                                <th>
+                                    <input class="form-check-input" type="checkbox" value="" id="select-all-checkbox" disabled>
+                                    ACTION
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="dynamicTable">
+                            <!-- Rows will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
