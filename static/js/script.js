@@ -8,16 +8,11 @@ document.querySelector("#toggle-btn").addEventListener("click", function () {
 
 
 // copy data from modal textarea to textbox -- used in input_form.html
-function passData() {
-    let primaryTextArea = document.getElementById("primary-textbox");
-    let secondaryTextArea = document.getElementById("secondary-textbox");
-    let secondaryValue = secondaryTextArea.value.split("\n");
-    primaryTextArea.value = secondaryValue.join(" ");
-    
-    // let serialNumberInput = document.getElementById("serial-number-input");
-    let multiSerialNumberInput = document.getElementById("multi-serial-number-input");
-    let multiSerialNumberInputValue = multiSerialNumberInput.value.split("\n");
-    serialNumberInput.value = multiSerialNumberInputValue.join(" ");
+function passData(textBox, textArea) {
+    let primaryTextArea = document.getElementById(textBox);
+    let secondaryTextArea = document.getElementById(textArea);
+    let finalValue = secondaryTextArea.value.split("\n");
+    primaryTextArea.value = finalValue.join(" ");
 }
 
 
@@ -86,7 +81,6 @@ function updateData () {
 *************************************************
 **/
 
-let serialNumberInput = document.getElementById("serial-number-input");
 let tableBody = document.getElementById("dynamicTable");
 let chooseFw = document.getElementById("choose-fw")
 let btnUploadFw = document.getElementById("btn-upload-fw")
@@ -354,8 +348,9 @@ window.onload = loadFirmwareList();
  * Asynchronously update the table with the IPMI information.
  * Return NA if the information is not available.
 */
-async function updateTable() {
+async function updateTable(serialNumberID) {
     // Get the value from the input box
+    let serialNumberInput = document.getElementById(serialNumberID);
     let items = userInput(serialNumberInput);
     if (items.length === 0) {
         showAlert("No input detected! Please enter system serial number/s.", "warning", "bi-exclamation-triangle-fill");
