@@ -502,7 +502,7 @@ function getLockedFirmware() {
         disableEnableInputs(isLocked); // false
         btnLockFw.textContent = "Unlock";
         firmwareNameToUpdate = selectedFirmware.options[selectedFirmware.selectedIndex].textContent;
-        showAlert(`<b>${firmwareNameToUpdate}</b> is locked! Ready for the update.`, "success", "bi-check-circle");
+        showAlert(`<b>${firmwareNameToUpdate}</b> is locked! Ready for the update.`, "info", "bi-check-circle");
     }
     return firmwareNameToUpdate;
 }

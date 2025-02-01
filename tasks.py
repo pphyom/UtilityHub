@@ -7,6 +7,11 @@ ipmi_tool = "tools/SMCIPMITool_2.28.0/SMCIPMITool.exe"
 sum_tool = "tools/SUM_2.14.0/sum.exe"
 
 
+@celery.task(name="tasks.multiplication")
+def multiplication(a, b):
+    return a * b
+
+
 @celery.task(bind=True, name="tasks.update_firmware")
 def update_firmware(self, device, fw_file, cmd):
 
@@ -24,13 +29,11 @@ def update_firmware(self, device, fw_file, cmd):
         ]
 
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        print("PROCESS: ", process)
         for line in iter(process.stdout.readline, ''):
             line = line.strip()
             socketio.emit("update_log", {"log": line}, broadcast=True)
             print(line)
         process.wait()
-        print("RETURN CODE: ", process.returncode)
 
         if process.returncode == 0:
             status = "Completed"

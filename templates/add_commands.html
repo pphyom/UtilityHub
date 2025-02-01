@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block header %} Add Commands {% endblock %}
+
+{% block contents %}
+
+<div class="main">
+    <div class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-12 col-sm-8 col-md-8 col-lg-8 m-auto">
+                <div class="card border-0 shadow p-3">
+                    <div class="card-body text-center pt-0">
+                        <h3 class="mb-4">Add Command</h3>
+                        <input type="text" class="form-control" id="cmd-name" placeholder="Name your command...">
+                        <div id="add-argument" class="d-flex flex-column flex-md-row my-3 gap-2">
+                            <input type="text" class="form-control mb-2 mb-md-0" placeholder="-c">
+                            <input type="text" class="form-control mb-2 mb-md-0" placeholder="GetBiosInfo">
+                            <button id="btn-add-cmd" class="custom-btn" style="background: none; border: none; cursor: pointer; outline: none;">
+                                <i class="bi bi-plus-circle-fill fs-4"></i>
+                            </button>
+                        </div>
+                        <div id="example-cmd"></div>
+                        <div class="d-grid gap-2 mt-4 m-auto">
+                            <div class="d-flex justify-content-between gap-2">
+                                <button class="btn btn-primary flex-grow-1" onclick="addCommand()">Add Command</button>
+                                <button class="btn btn-secondary flex-grow-1" onclick="deleteCommand()">Delete Command</button>
+                            </div>
+                            <button class="btn btn-secondary">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    const btnAddCmd = document.getElementById('btn-add-cmd');
+    const addArgument = document.getElementById('add-argument');
+    const exampleCmd = document.getElementById('example-cmd');
+    const preDefinedText = 'Example: tool -U ADMIN -P PASSWORD ';
+
+    // Add each input value to the command 
+    function updateExampleCmd() {
+        let inputs = addArgument.querySelectorAll('input');
+        let cmdText = '';
+        inputs.forEach(input => {
+            if (input.value.trim() !== '') {
+                cmdText += input.value.trim() + ' ';
+            }
+        });
+        // showing the command example per user input
+        exampleCmd.textContent = preDefinedText + cmdText.trim();
+    }
+
+    // Add event listener to add command button
+    btnAddCmd.addEventListener('click', function() {
+        let inputCount = addArgument.childElementCount - 2;
+        if (inputCount > 6) {
+            alert(`Maximum of ${inputCount + 1} arguments only!`);
+            return;
+        }
+        const newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.className = 'form-control';
+        newInput.placeholder = `Arg ${inputCount}`;
+        newInput.addEventListener('input', updateExampleCmd);
+        addArgument.insertBefore(newInput, btnAddCmd);
+    });
+
+    addArgument.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', updateExampleCmd);
+    });
+    
+
+    function addCommand() {
+        let cmdName = document.getElementById('cmd-name').value;
+        let cmdArgs = [];
+        addArgument.querySelectorAll('input').forEach(input => {
+            if (input.value.trim() !== '') {
+                cmdArgs.push(input.value.trim());
+            }
+        });
+        console.log(cmdName, cmdArgs);
+        return {'cmdName': cmdName, 'cmdArgs': cmdArgs};
+    }
+
+
+    function deleteCommand() {
+        
+    }
+
+</script>
+
+{% endblock %}

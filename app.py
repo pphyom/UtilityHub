@@ -322,20 +322,27 @@ def start_update():
     firmware = data.get("firmware")
     firmware_path = os.path.join(config.Config.FIRMWARE_FOLDER, firmware)
     # temp = get_firmware_info(firmware_path, cmd="GetBiosInfo")
-    # print(firmware_path)
+    # print(system, firmware_path)
     # update_firmware(system, firmware_path, cmd="UpdateBios")
-    # print("RESULT: ", result)
     # if not result:
     #     return jsonify({"alertMessage": "Firmware update failed.", "alertType": "danger"}), 500
     # else:
     #     print(result)
     #     return jsonify({"alertMessage": "Firmware update started.", "alertType": "success"}), 200
     # task = update_firmware.apply_async(args=[system, firmware_path, "UpdateBios"])
-    task = celery.send_task("tasks.update_firmware", args=[system, firmware_path, "UpdateBios"])
+    # task = celery.send_task("tasks.update_firmware", args=[system, firmware_path, "UpdateBios"])
+    task = celery.send_task("tasks.multiplication", args=[10, 100])
+
+    return jsonify({"task_id": task.id}), 200
 
     # return jsonify({"alertMessage": "Firmware update failed.", "alertType": "danger"}), 500
-    return jsonify({"task_id": task.id, "status": "Started"}), 202
         
+
+@app.route("/add_commands", methods=["GET", "POST"])
+def add_commands():
+    """ Add the commands to the command list. """
+    return render_template("add_commands.html")
+
 
 @app.route("/tools", methods=["GET", "POST"])
 @login_required
