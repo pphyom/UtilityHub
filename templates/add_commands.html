@@ -50,7 +50,7 @@
         let cmdText = '';
         inputs.forEach(input => {
             if (input.value.trim() !== '') {
-                cmdText += input.value.trim() + ' ';
+                cmdText += input.value.replace(/\s+/g, '') + ' '; // Remove spaces -- making sure one textbox per argument
             }
         });
         // showing the command example per user input
