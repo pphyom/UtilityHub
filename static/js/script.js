@@ -569,7 +569,8 @@ btnUpdate.addEventListener("click", function() {
     
             socket.on("update_status", (data) => {
                 row.cells[7].textContent = data.status;
-                console.log(data.status);
+                row.cells[6].textContent = data.result;
+                console.log(data.status, data.result);
             });
 
 
