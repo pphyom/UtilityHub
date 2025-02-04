@@ -1,6 +1,6 @@
 import os
 import aiohttp
-import requests
+import asyncio
 import pandas as pd
 from flask import request
 from bs4 import BeautifulSoup
@@ -83,61 +83,76 @@ class RackBurn:
         self.live_data = []
         self.user_input_ = []
         self.event = Event()
-        self.thread = Thread(target=self.run)
+        self.thread = None
+
+    def start_thread(self):
+        self.thread = Thread(target=self.run_async)
         self.thread.start()
 
-    def fetch_live_data(self) -> None:
+    async def fetch_live_data(self) -> None:
         try:
-            self.live_data: list = []
-            temp: list = []
-            response = requests.get(self.url)
+            self.live_data = []
+            temp = []
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self.url) as response:
+                    response_text = await response.text()
 
-            soup = BeautifulSoup(response.text, "html.parser")
-            # Scraping html table from the url
+            soup = BeautifulSoup(response_text, "html.parser")
             table = soup.find("table", attrs={"id": "heckintable"})
-            rows = table.find_all("tr")
-            for row in rows:
-                raw_data: list = []
-                cols = row.find_all("td")
-                # Test logs
-                logs = [link.get("href") for link in cols[-1].find_all("a")]
-                for cell in cols[:-1]:
-                    raw_data.append(cell.text)
-                for log in logs:
-                    raw_data.append(log)
+            if table:
+                rows = table.find_all("tr")
+                for row in rows:
+                    raw_data: list = []
+                    cols = row.find_all("td")
+                    # Test logs
+                    logs = [link.get("href") for link in cols[-1].find_all("a")] if cols else []
+                    for cell in cols[:-1]:
+                        raw_data.append(cell.text)
+                    for log in logs:
+                        raw_data.append(log)
+                    temp.append(raw_data)
+            else:
+                print("Error: Table with id 'heckintable' not found.")
                 temp.append(raw_data)
 
             # Sliced unnecessary columns from the original table
             for elem in range(1, len(temp)):
                 self.live_data.append(list(itemgetter(1, 3, 0, 6, 7)(temp[elem])))
-
         except Exception as e:
-            # required to replace with an error page
             print(f"Error fetching live data: {e}")
 
-    def run(self):
-        while not self.event.is_set():
-            self.fetch_live_data()
-            self.event.wait(self.refresh_interval)
+    def run_async(self):
+        loop = asyncio.get_event_loop()
+        if loop.is_closed():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        loop.run_until_complete(self.run())
+
+    async def run(self):
+        if self.url.startswith("http://10.") or self.url.startswith("https://10."):
+            while not self.event.is_set():
+                try:
+                    await self.fetch_live_data()
+                except Exception as e:
+                    print(f"Error in run method: {e}")
+                await asyncio.sleep(self.refresh_interval)
 
     def stop(self):
         self.event.set()
-        self.thread.join()
+        if self.thread is not None:
+            self.thread.join()
+
+    def start(self):
+        self.event.clear()
+        self.start_thread()
 
     def filtered_data(self, input_list) -> list:
         data_set = []
-        for idx, serial_n in enumerate(input_list):
-            for sn_list in self.live_data:
-                # if user input sn is in the database
-                if serial_n in sn_list[0]:
-                    # append into a new list along with its index
-                    data_set.append([idx + 1] + sn_list)
+        live_data_dict = {sn_list[0]: sn_list for sn_list in self.live_data}
 
-        # Sort items per conditions
-        # data_set.sort(key=lambda item: (
-        #     item[2] == "WARNING",
-        #     item[2] == "FAIL",
-        #     item[2] == "RUNNING"), reverse=True)
+        for idx, serial_n in enumerate(input_list):
+            if serial_n in live_data_dict:
+                data_set.append([idx + 1] + live_data_dict[serial_n])
 
         return data_set
 

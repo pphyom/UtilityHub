@@ -64,8 +64,10 @@ ftu = FTU()
 # Redis connection test begins
 
 def get_redis_connection():
-    return redis.Redis(host="10.43.240.69", port=6379, decode_responses=True)
-    # return redis.Redis(host="192.168.68.57", port=6379, decode_responses=True)
+    host = os.getenv("REDIS_HOST")
+    port = os.getenv("REDIS_PORT")
+    return redis.Redis(host=host, port=port, decode_responses=True)
+
 
 @app.route("/redis_test")
 def redis_test():
@@ -156,27 +158,33 @@ def get_data():
 
 @app.route('/update', methods=['GET'])
 def update():
-    input_list = session.get("user_input", [])
-    data_set = live.filtered_data(input_list)
-    return jsonify(data_set)
+    try:
+        input_list = session.get("user_input", [])
+        data_set = live.filtered_data(input_list)
+        return jsonify(data_set)
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    if request.method == "POST":
-        # If there is input, pass it into input_list using user_input() method
-        input_list = user_input()
-        # store the user input for the periodic updates
-        session["user_input"] = input_list
-        data_set = live.filtered_data(input_list)
+    try:
+        if request.method == "POST":
+            # If there is input, pass it into input_list using user_input() method
+            input_list = user_input()
+            # store the user input for the periodic updates
+            session["user_input"] = input_list
+            data_set = live.filtered_data(input_list)
 
-        return render_template("index.html",
-                               data=data_set,
-                               headings=headings)
-    else:
-        input_list = session.get("user_input", [])
-        data_set = live.filtered_data(input_list)
-        return render_template("index.html", data=data_set)
+            return render_template("index.html",
+                                data=data_set,
+                                headings=headings)
+        else:
+            input_list = session.get("user_input", [])
+            data_set = live.filtered_data(input_list)
+            return render_template("index.html", data=data_set)
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 
 # CBurn Page #
