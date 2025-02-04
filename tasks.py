@@ -9,7 +9,16 @@ sum_tool = "tools/SUM_2.14.0/sum.exe"
 
 @celery.task(name="tasks.multiplication")
 def multiplication(a, b):
-    return a * b
+    process = a * b
+    socketio.emit("update_log", {"log": "Multiplying {} and {}".format(a, b)})
+
+    if process:
+        status = "Completed"
+    else:
+        status = "Failed"
+
+    socketio.emit("update_status", {"status": status})
+    return status
 
 
 @celery.task(bind=True, name="tasks.update_firmware")
@@ -31,8 +40,7 @@ def update_firmware(self, device, fw_file, cmd):
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         for line in iter(process.stdout.readline, ''):
             line = line.strip()
-            socketio.emit("update_log", {"log": line}, broadcast=True)
-            print(line)
+            socketio.emit("update_log", {"log": line})
         process.wait()
 
         if process.returncode == 0:
@@ -40,5 +48,5 @@ def update_firmware(self, device, fw_file, cmd):
         else:
             status = "Failed"
 
-        socketio.emit("update_status", {"status": status}, broadcast=True)
+        socketio.emit("update_status", {"status": status})
         return status

@@ -528,16 +528,47 @@ btnUpdate.addEventListener("click", function() {
                 body: JSON.stringify({"system": system[0], "firmware": firmwareFilename})
             })
             .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                showAlert(data.alertMessage, data.alertType, "bi-check-circle");
-            })
+            // .then(data => {
+            //     showAlert(data.alertMessage, data.alertType, "bi-check-circle");
+            // })
 
             socket.on("update_log", (data) => {
-                console.log(data.log);
+                // Get all rows of the table body
+                const rows = Array.from(tableBody.rows);
+            
+                rows.forEach(row => {
+                    // Set up the data-bs-toggle and data-bs-target correctly for each row
+                    const collapseId = `collapse-${row.rowIndex}`;
+                    
+                    row.classList.add("collapse-toggle");
+                    row.dataset.bsToggle = "collapse";
+                    row.dataset.bsTarget = `#${collapseId}`;
+                    row.style.cursor = "pointer";
+            
+                    // Create a new row for the log content
+                    let logRow = document.createElement('tr');
+                    let logCell = document.createElement('td');
+                    
+                    // Set the log cell to span all columns
+                    logCell.colSpan = row.cells.length;
+                    
+                    // Add the collapsible log content to the cell
+                    logCell.innerHTML = `
+                        <div class="collapse" id="${collapseId}">
+                            <div class="accordion-body">
+                                ${data.log}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Append the new row right after the current row
+                    logRow.appendChild(logCell);
+                    tableBody.insertBefore(logRow, row.nextSibling);
+                });
             });
     
             socket.on("update_status", (data) => {
+                row.cells[7].textContent = data.status;
                 console.log(data.status);
             });
 

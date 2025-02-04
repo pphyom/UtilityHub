@@ -64,8 +64,8 @@ ftu = FTU()
 # Redis connection test begins
 
 def get_redis_connection():
-    # return redis.Redis(host="10.43.240.69", port=6379, decode_responses=True)
-    return redis.Redis(host="192.168.68.57", port=6379, decode_responses=True)
+    return redis.Redis(host="10.43.240.69", port=6379, decode_responses=True)
+    # return redis.Redis(host="192.168.68.57", port=6379, decode_responses=True)
 
 @app.route("/redis_test")
 def redis_test():
@@ -322,27 +322,17 @@ def start_update():
     system = data.get("system")
     firmware = data.get("firmware")
     firmware_path = os.path.join(config.Config.FIRMWARE_FOLDER, firmware)
-    # temp = get_firmware_info(firmware_path, cmd="GetBiosInfo")
-    # print(system, firmware_path)
-    # update_firmware(system, firmware_path, cmd="UpdateBios")
-    # if not result:
-    #     return jsonify({"alertMessage": "Firmware update failed.", "alertType": "danger"}), 500
-    # else:
-    #     print(result)
-    #     return jsonify({"alertMessage": "Firmware update started.", "alertType": "success"}), 200
-    # task = update_firmware.apply_async(args=[system, firmware_path, "UpdateBios"])
-    # task = celery.send_task("tasks.update_firmware", args=[system, firmware_path, "UpdateBios"])
-    task = celery.send_task("tasks.multiplication", args=[10, 82])
+    # Call the celery task to update the firmware
+    task = celery.send_task("tasks.update_firmware", args=[system, firmware_path, "UpdateBios"])
+    # task = celery.send_task("tasks.multiplication", args=[10, 100])
 
     return jsonify({"task_id": task.id}), 200
-
-    # return jsonify({"alertMessage": "Firmware update failed.", "alertType": "danger"}), 500
         
 
-@app.route("/multiply")
-def multiply():
-    task = celery.send_task("tasks.multiplication", args=[10, 100])
-    return jsonify({"task_id": task.id}), 200
+# @app.route("/multiply")
+# def multiply():
+#     task = celery.send_task("tasks.multiplication", args=[10, 100])
+#     return jsonify({"task_id": task.id}), 200
 
 
 
