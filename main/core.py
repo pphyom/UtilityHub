@@ -128,12 +128,11 @@ class RackBurn:
 
     def filtered_data(self, input_list) -> list:
         data_set = []
+        live_data_dict = {sn_list[0]: sn_list for sn_list in self.live_data}
+
         for idx, serial_n in enumerate(input_list):
-            for sn_list in self.live_data:
-                # if user input sn is in the database
-                if serial_n in sn_list[0]:
-                    # append into a new list along with its index
-                    data_set.append([idx + 1] + sn_list)
+            if serial_n in live_data_dict:
+                data_set.append([idx + 1] + live_data_dict[serial_n])
 
         # Sort items per conditions
         # data_set.sort(key=lambda item: (
