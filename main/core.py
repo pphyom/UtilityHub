@@ -1,6 +1,6 @@
 import os
 import aiohttp
-import requests
+import requests, asyncio
 import pandas as pd
 from flask import request
 from bs4 import BeautifulSoup
@@ -83,12 +83,10 @@ class RackBurn:
         self.live_data = []
         self.user_input_ = []
         self.event = Event()
-        self.thread = Thread(target=self.run)
-        self.thread.start()
 
     def fetch_live_data(self) -> None:
         try:
-            self.live_data: list = []
+            self.live_data.clear()
             temp: list = []
             response = requests.get(self.url)
 
@@ -114,6 +112,10 @@ class RackBurn:
         except Exception as e:
             # required to replace with an error page
             print(f"Error fetching live data: {e}")
+
+    def start(self):
+        self.thread = Thread(target=self.run)
+        self.thread.start()
 
     def run(self):
         while not self.event.is_set():

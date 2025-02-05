@@ -59,12 +59,15 @@ cburn_headings = DATA_["cburn_headings"]
 conditions = DATA_["conditions"]
 
 live = RackBurn(url=rburn_live, refresh_interval=60)
+live.start()
 ftu = FTU()
 
 # Redis connection test begins
 
 def get_redis_connection():
-    return redis.Redis(host="10.43.240.69", port=6379, decode_responses=True)
+    host = os.getenv("REDIS_HOST")
+    port = os.getenv("REDIS_PORT")
+    return redis.Redis(host=host, port=port, decode_responses=True)
     # return redis.Redis(host="192.168.68.57", port=6379, decode_responses=True)
 
 @app.route("/redis_test")
