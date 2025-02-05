@@ -533,39 +533,45 @@ btnUpdate.addEventListener("click", function() {
             // })
 
             socket.on("update_log", (data) => {
-                // Get all rows of the table body
                 const rows = Array.from(tableBody.rows);
-            
+                
                 rows.forEach(row => {
-                    // Set up the data-bs-toggle and data-bs-target correctly for each row
-                    const collapseId = `collapse-${row.rowIndex}`;
-                    
-                    row.classList.add("collapse-toggle");
-                    row.dataset.bsToggle = "collapse";
-                    row.dataset.bsTarget = `#${collapseId}`;
-                    row.style.cursor = "pointer";
+                    if (row.dataset.machineId === data.machine_id) {  // Match the log to the correct row
+                        const collapseId = `collapse-${row.rowIndex}`;
+                        
+                        // Set up the row as the accordion toggle
+                        row.classList.add("accordion-header");
+                        row.dataset.bsToggle = "collapse";
+                        row.dataset.bsTarget = `#${collapseId}`;
+                        row.style.cursor = "pointer";
             
-                    // Create a new row for the log content
-                    let logRow = document.createElement('tr');
-                    let logCell = document.createElement('td');
-                    
-                    // Set the log cell to span all columns
-                    logCell.colSpan = row.cells.length;
-                    
-                    // Add the collapsible log content to the cell
-                    logCell.innerHTML = `
-                        <div class="collapse" id="${collapseId}">
-                            <div class="accordion-body">
-                                ${data.log}
-                            </div>
-                        </div>
-                    `;
-                    
-                    // Append the new row right after the current row
-                    logRow.appendChild(logCell);
-                    tableBody.insertBefore(logRow, row.nextSibling);
+                        // Check if logRow already exists, otherwise create it
+                        let logRow = document.getElementById(collapseId);
+                        if (!logRow) {
+                            logRow = document.createElement('tr');
+                            logRow.id = collapseId;
+            
+                            let logCell = document.createElement('td');
+                            logCell.colSpan = row.cells.length;
+            
+                            logCell.innerHTML = `
+                                <div class="accordion-collapse collapse" id="${collapseId}">
+                                    <div class="accordion-body">
+                                        <pre id="log-content-${row.rowIndex}">${data.log}</pre>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            logRow.appendChild(logCell);
+                            row.parentNode.insertBefore(logRow, row.nextSibling);
+                        } else {
+                            // Append new log instead of overwriting
+                            document.getElementById(`log-content-${row.rowIndex}`).innerText += `\n${data.log}`;
+                        }
+                    }
                 });
-            });
+            });           
+            
     
             socket.on("update_status", (data) => {
                 row.cells[7].textContent = data.status;

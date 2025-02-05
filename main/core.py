@@ -87,7 +87,7 @@ class RackBurn:
     def fetch_live_data(self) -> None:
         try:
             self.live_data.clear()
-            temp: list = []
+            temp = []
             response = requests.get(self.url)
 
             soup = BeautifulSoup(response.text, "html.parser")
@@ -95,7 +95,7 @@ class RackBurn:
             table = soup.find("table", attrs={"id": "heckintable"})
             rows = table.find_all("tr")
             for row in rows:
-                raw_data: list = []
+                raw_data = []
                 cols = row.find_all("td")
                 # Test logs
                 logs = [link.get("href") for link in cols[-1].find_all("a")]
@@ -104,7 +104,6 @@ class RackBurn:
                 for log in logs:
                     raw_data.append(log)
                 temp.append(raw_data)
-
             # Sliced unnecessary columns from the original table
             for elem in range(1, len(temp)):
                 self.live_data.append(list(itemgetter(1, 3, 0, 6, 7)(temp[elem])))
