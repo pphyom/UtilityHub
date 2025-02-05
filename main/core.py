@@ -1,6 +1,6 @@
 import os
 import aiohttp
-import requests, asyncio
+import asyncio, asyncio
 import pandas as pd
 from flask import request
 from bs4 import BeautifulSoup
@@ -128,6 +128,8 @@ class RackBurn:
 
     def filtered_data(self, input_list) -> list:
         data_set = []
+        live_data_dict = {sn_list[0]: sn_list for sn_list in self.live_data}
+
         live_data_dict = {sn_list[0]: sn_list for sn_list in self.live_data}
 
         for idx, serial_n in enumerate(input_list):
