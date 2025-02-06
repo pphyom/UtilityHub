@@ -49,10 +49,7 @@ def update_firmware(self, device, cmd):
             socketio.emit("update_log", {"log": line, "sn": device["system_sn"]})
         process.wait()
 
-        if process.returncode == 0:
-            status = "Completed"
-        else:
-            status = "Failed"
+        status = "Completed" if process.returncode == 0 else "Failed"
 
         socketio.emit("update_status", {"status": status})
         return status

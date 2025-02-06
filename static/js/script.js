@@ -532,11 +532,11 @@ btnUpdate.addEventListener("click", function () {
                 let logRow = document.createElement("tr");
                 logRow.id = logRowId;
                 logRow.style.display = "none"; // Initially hidden
-                logRow.classList.add("log-row");
+                logRow.classList.add("log-row"); /// Not required
 
                 let logCell = document.createElement("td");
                 logCell.colSpan = row.cells.length; // Span all columns
-                logCell.innerHTML = `<pre id="${logContentId}" class="log-content p-2"></pre>`;
+                logCell.innerHTML = `<pre id="${logContentId}" class="log-content p-2"></pre>`; /// log-content not required
 
                 logRow.appendChild(logCell);
 
@@ -567,7 +567,7 @@ btnUpdate.addEventListener("click", function () {
 
 // Listen for real-time logs and update the correct row
 socket.on("update_log", (data) => {
-    let logElement = document.getElementById(`log-content-${data.sn}`);
+    let logElement = document.getElementById(`log-content-${data.sn}`); // set the var to logContentId created above (logCell.innerHTML)
     if (logElement) {
         logElement.innerHTML += `${data.log}\n`;
         logElement.style.textAlign = "left"; 

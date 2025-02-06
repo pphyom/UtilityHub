@@ -331,18 +331,10 @@ def start_update():
     firmware = data.get("firmware")
     firmware_path = os.path.join(config.Config.FIRMWARE_FOLDER, firmware)
     # Call the celery task to update the firmware
-    print("task has been called.")
     task = celery.send_task("tasks.update_firmware", args=[system, "GetBiosInfo"])
     # task = celery.send_task("tasks.multiplication", args=[10, 100])
 
     return jsonify({"task_id": task.id}), 200
-        
-
-# @app.route("/multiply")
-# def multiply():
-#     task = celery.send_task("tasks.multiplication", args=[10, 100])
-#     return jsonify({"task_id": task.id}), 200
-
 
 
 @app.route("/add_commands", methods=["GET", "POST"])
