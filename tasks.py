@@ -10,13 +10,13 @@ sum_tool = "tools/SUM_2.14.0/sum.exe"
 @celery.task(name="tasks.multiplication")
 def multiplication(a, b):
     process = a * b
-    log = (
+    test_log = (
         "The Meta Llama 3.3 multilingual large language model (LLM) is a pretrained and "
         "instruction tuned generative model in 70B (text in/text out). The Llama 3.3 instruction "
         "tuned text only model is optimized for multilingual dialogue use cases and outperform "
         "many of the available open source and closed chat models on common industry benchmarks."
     )
-    socketio.emit("update_log", {"log": log})
+    socketio.emit("update_log", {"log": test_log})
 
     if process:
         status = "Completed"
@@ -28,7 +28,7 @@ def multiplication(a, b):
 
 
 @celery.task(bind=True, name="tasks.update_firmware")
-def update_firmware(self, device, fw_file, cmd):
+def update_firmware(self, device, cmd):
 
     self.update_state(state="PROGRESS", meta={"progress": 0})
 
@@ -40,13 +40,13 @@ def update_firmware(self, device, fw_file, cmd):
             "-u", "ADMIN",
             "-p", device["password"],
             "-c", cmd,
-            "--file", fw_file
+            # "--file", fw_file
         ]
 
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         for line in iter(process.stdout.readline, ''):
             line = line.strip()
-            socketio.emit("update_log", {"log": line})
+            socketio.emit("update_log", {"log": line, "sn": device["system_sn"]})
         process.wait()
 
         if process.returncode == 0:

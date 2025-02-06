@@ -510,85 +510,91 @@ function getLockedFirmware() {
 
 // Update the firmware of the selected systems
 // Pass the system serial number, IP address, and password to the server
-btnUpdate.addEventListener("click", function() {
-    if (firmwareFilename === "") { // Check if the firmware is empty
+btnUpdate.addEventListener("click", function () {
+    if (firmwareFilename === "") {
         showAlert("Please select and lock a firmware to update!", "warning", "bi-exclamation-triangle-fill");
         return;
     }
-    let rows = Array.from(tableBody.rows);
-    rows.forEach(async row => {
-        if (row.querySelector('input').checked) {
-            let sn = row.cells[2].textContent;
-            let system = await getIpmiInfo(sn);
-            fetch('/start_update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({"system": system[0], "firmware": firmwareFilename})
-            })
-            .then(response => response.json())
-            // .then(data => {
-            //     showAlert(data.alertMessage, data.alertType, "bi-check-circle");
-            // })
 
-            socket.on("update_log", (data) => {
-                const rows = Array.from(tableBody.rows);
-                
-                rows.forEach(row => {
-                    if (row.dataset.machineId === data.machine_id) {  // Match the log to the correct row
-                        const collapseId = `collapse-${row.rowIndex}`;
-                        
-                        // Set up the row as the accordion toggle
-                        row.classList.add("accordion-header");
-                        row.dataset.bsToggle = "collapse";
-                        row.dataset.bsTarget = `#${collapseId}`;
-                        row.style.cursor = "pointer";
-            
-                        // Check if logRow already exists, otherwise create it
-                        let logRow = document.getElementById(collapseId);
-                        if (!logRow) {
-                            logRow = document.createElement('tr');
-                            logRow.id = collapseId;
-            
-                            let logCell = document.createElement('td');
-                            logCell.colSpan = row.cells.length;
-            
-                            logCell.innerHTML = `
-                                <div class="accordion-collapse collapse" id="${collapseId}">
-                                    <div class="accordion-body">
-                                        <pre id="log-content-${row.rowIndex}">${data.log}</pre>
-                                    </div>
-                                </div>
-                            `;
-                            
-                            logRow.appendChild(logCell);
-                            row.parentNode.insertBefore(logRow, row.nextSibling);
-                        } else {
-                            // Append new log instead of overwriting
-                            document.getElementById(`log-content-${row.rowIndex}`).innerText += `\n${data.log}`;
-                        }
-                    }
-                });
-            });           
-            
-    
-            socket.on("update_status", (data) => {
-                row.cells[7].textContent = data.status;
-                row.cells[6].textContent = data.result;
-                console.log(data.status, data.result);
+    let rows = Array.from(tableBody.rows);
+
+    rows.forEach(async (row) => {
+        if (row.querySelector("input").checked) {
+            let sn = row.cells[2].textContent; // Get the serial number
+            let system = await getIpmiInfo(sn);
+
+            // Unique log row ID
+            let logRowId = `log-row-${sn}`;
+            let logContentId = `log-content-${sn}`;
+
+            // Check if the log row already exists
+            if (!document.getElementById(logRowId)) {
+                let logRow = document.createElement("tr");
+                logRow.id = logRowId;
+                logRow.style.display = "none"; // Initially hidden
+                logRow.classList.add("log-row");
+
+                let logCell = document.createElement("td");
+                logCell.colSpan = row.cells.length; // Span all columns
+                logCell.innerHTML = `<pre id="${logContentId}" class="log-content p-2"></pre>`;
+
+                logRow.appendChild(logCell);
+
+                // Append log row **AFTER** the current row safely
+                if (row.nextSibling) {
+                    tableBody.insertBefore(logRow, row.nextSibling);
+                } else {
+                    tableBody.appendChild(logRow);
+                }
+            }
+
+            // Toggle log row when clicking the original row
+            row.style.cursor = "pointer";
+            row.addEventListener("click", function () {
+                let logRow = document.getElementById(logRowId);
+                logRow.style.display = logRow.style.display === "none" ? "table-row" : "none";
             });
 
-
-            // let status = row.cells[7].textContent;
-            // if (status === "In Queue") {
-            //     row.cells[7].textContent = "Updating";
-            //     runFirmwareUpdate(row);
-            // }
-
+            // Send update request
+            fetch("/start_update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ system: system[0], firmware: firmwareFilename }),
+            }).then((response) => response.json());
         }
     });
 });
+
+// Listen for real-time logs and update the correct row
+socket.on("update_log", (data) => {
+    let logElement = document.getElementById(`log-content-${data.sn}`);
+    if (logElement) {
+        logElement.innerHTML += `${data.log}\n`;
+        logElement.style.textAlign = "left"; 
+    }
+});
+
+// socket.on("update_log", (data) => {
+//     let logElement = document.getElementById(`log-content-${data.sn}`);
+//     let mainRow = document.querySelector(`tr[data-sn="${data.sn}"]`); // Find the row
+
+//     if (logElement) {
+//         logElement.innerHTML += `${data.log}\n`;
+//         logElement.style.textAlign = "left"; // Ensure left alignment
+//     }
+
+//     // Enable click-to-expand if logs exist
+//     if (mainRow) {
+//         mainRow.style.cursor = "pointer";
+//         mainRow.addEventListener("click", function () {
+//             let logRow = document.getElementById(`log-row-${data.sn}`);
+//             if (logRow) {
+//                 logRow.style.display = logRow.style.display === "none" ? "table-row" : "none";
+//             }
+//         });
+//     }
+// });
+
 
 
 // Dummy function to simulate firmware update

@@ -327,13 +327,13 @@ def start_update():
     data = request.get_json() # data = {"system": system:dict, "firmware": firmware:str}
     if not data:
         return jsonify({"alertMessage": "Invalid input", "alertType": "danger"}), 400
-    
     system = data.get("system")
     firmware = data.get("firmware")
     firmware_path = os.path.join(config.Config.FIRMWARE_FOLDER, firmware)
     # Call the celery task to update the firmware
-    # task = celery.send_task("tasks.update_firmware", args=[system, firmware_path, "UpdateBios"])
-    task = celery.send_task("tasks.multiplication", args=[10, 100])
+    print("task has been called.")
+    task = celery.send_task("tasks.update_firmware", args=[system, "GetBiosInfo"])
+    # task = celery.send_task("tasks.multiplication", args=[10, 100])
 
     return jsonify({"task_id": task.id}), 200
         
