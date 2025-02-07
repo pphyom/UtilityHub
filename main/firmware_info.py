@@ -14,6 +14,9 @@ ipmitool_cmd = {
 }
 
 
+
+
+
 def sum_bios_ipmi_ver(device, cmd):
     """ Get the firmware version of the DEVICE using SUM tool. """
 

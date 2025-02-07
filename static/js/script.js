@@ -384,7 +384,7 @@ async function updateTable(serialNumberID) {
         let item = await getIpmiInfo(systemSn);
         let ipAddress = item[0].ip_address;
         let motherboard = item[0].mbd;
-        let mo = item[0].mo;
+        // let mo = item[0].mo;
         let passwd = item[0].password;
         progress += 100 / validated_items.length;
         progressPB.style.width = `${progress}%`;
@@ -396,7 +396,7 @@ async function updateTable(serialNumberID) {
             <td>${idx + 1}</td>
             <td>${ipAddress}</td>
             <td>${systemSn}</td>
-            <td>${mo}</td>
+            <td>${passwd}</td>
             <td>${motherboard}</td>
             <td>
                 <div class="progress">
@@ -443,8 +443,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Delete selected rows from the table
 btnDeleteRow.addEventListener("click", function() {
-    let rows = Array.from(tableBody.rows);
-    rows.forEach(row => {
+    Array.from(tableBody.rows).forEach(row => {
         if (row.querySelector('input').checked) {
             row.remove();
         }
@@ -574,26 +573,38 @@ socket.on("update_log", (data) => {
     }
 });
 
-// socket.on("update_log", (data) => {
-//     let logElement = document.getElementById(`log-content-${data.sn}`);
-//     let mainRow = document.querySelector(`tr[data-sn="${data.sn}"]`); // Find the row
 
-//     if (logElement) {
-//         logElement.innerHTML += `${data.log}\n`;
-//         logElement.style.textAlign = "left"; // Ensure left alignment
-//     }
+socket.on("update_status", (data) => {
+    let rows = Array.from(tableBody.rows);
+    rows.forEach((row) => {
+        let sn = row.cells[2].textContent; // Get serial number from row
+        if (sn === data.sn) {  // Match the correct row
+            let statusCell = row.cells[7];
+            statusCell.textContent = data.status;
 
-//     // Enable click-to-expand if logs exist
-//     if (mainRow) {
-//         mainRow.style.cursor = "pointer";
-//         mainRow.addEventListener("click", function () {
-//             let logRow = document.getElementById(`log-row-${data.sn}`);
-//             if (logRow) {
-//                 logRow.style.display = logRow.style.display === "none" ? "table-row" : "none";
-//             }
-//         });
-//     }
-// });
+            // Update progress bar in Cell 5
+            let progressBar = row.cells[5].querySelector(".progress-bar");
+            if (progressBar) {
+                let progressMatch = data.progress.match(/\((\d+)%\)/);
+                if (progressMatch) {
+                    
+                    let progressValue = parseInt(progressMatch[1]);
+                    
+                    if (data.status === "Failed") {
+                        progressBar.classList.remove("progress-bar-animated");
+                        progressBar.classList.add("bg-danger");
+                    } else if (progressValue === 100 || data.status === "Success") {
+                        progressBar.classList.remove("progress-bar-animated");
+                        progressBar.classList.add("bg-success");
+                    }
+
+                    progressBar.style.width = `${progressValue}%`;
+                    progressBar.textContent = `${progressValue}%`;
+                }
+            }
+        }
+    });
+});
 
 
 
