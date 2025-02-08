@@ -277,14 +277,19 @@ def upload_firmware():
         fwtype = request.cookies.get("fw-type")
         fw = request.files["file"]  # Get the file from the request
         filename = secure_filename(fw.filename)  # Secure the filename
+
+        if not fwtype.upper() in filename.upper():
+            response = make_response(jsonify({"alertMessage": "Invalid file type!", "alertType": "danger"}), 400)
+            return response
+
         filepath = os.path.join(config.Config.FIRMWARE_FOLDER, filename)
         response_message = ""
-        
         # Check if the file already exists in the database and filesystem
         existing_file_in_db = Firmware.query.filter_by(filename=filename).first()
 
         # Check if the file already exists on the server
         if os.path.exists(filepath):
+            # File exists on the database
             if existing_file_in_db:
                 response_message = {"alertMessage": "File already exists.", "alertType": "warning"}
             else:
@@ -308,7 +313,7 @@ def upload_firmware():
         return response
     
     except Exception as e:
-        response = make_response(jsonify({"alertMessage": "Upload failed", "error": str(e)}), 500)
+        response = make_response(jsonify({"alertMessage": "Upload failed.", "error": str(e)}), 500)
         return response
 
 
@@ -329,10 +334,17 @@ def start_update():
         return jsonify({"alertMessage": "Invalid input", "alertType": "danger"}), 400
     system = data.get("system")
     firmware = data.get("firmware")
+    fwtype = request.cookies.get("fw-type")
+    
+    print(fwtype.upper() in firmware.upper())
+    if not fwtype.upper() in firmware.upper():
+        print(f"Invalid firmware type: {fwtype}")
+        return jsonify({"alertMessage": "Invalid firmware type", "alertType": "danger"}), 400
+
     firmware_path = os.path.join(config.Config.FIRMWARE_FOLDER, firmware)
     # Call the celery task to update the firmware
+    print("Executing the task...")
     task = celery.send_task("tasks.update_firmware", args=[system, firmware_path, "UpdateBios"])
-    # task = celery.send_task("tasks.multiplication", args=[10, 100])
 
     return jsonify({"task_id": task.id}), 200
 

@@ -127,9 +127,9 @@ function toggleFirmwareUpload() {
 // Event listener for the firmware upload switch
 selectedFirmware.addEventListener("change", () => {
     if (selectedFirmware.value) {
-        btnLockFw.removeAttribute("disabled");
+        btnLockFw.disabled = false;
     } else {    
-        btnLockFw.setAttribute("disabled", "true");
+        btnLockFw.disabled = true;
     }
 });
 
@@ -178,14 +178,14 @@ btnUploadFw.addEventListener("click", function() {
         if (request.status === 200) {
             showAlert(`${request.response.alertMessage}`, "success", "bi-check-circle");
         } else {
-            showAlert(`File upload failed! Error ${request.status}`, "danger", "bi-exclamation-triangle-fill");
+            showAlert(`Upload failed! Error ${request.status}. ${request.response.alertMessage}`, "danger", "bi-exclamation-triangle-fill");
         }
         resetUploadUI();
         loadFirmwareList();
     });
     
     request.addEventListener("error", () => {
-        showAlert(`File upload failed! Error ${request.status}`, "danger", "bi-exclamation-triangle-fill");
+        showAlert(`Upload failed! Error ${request.status}. ${request.response.alertMessage}`, "danger", "bi-exclamation-triangle-fill");
         resetUploadUI();
     });
 
@@ -221,7 +221,7 @@ btnUploadFw.addEventListener("click", function() {
             `;
             showAlert(fwData["response_message"].alertMessage, fwData["response_message"].alertType, "bi-check-circle");
         } else {
-            showAlert(`File upload failed! Error ${request.status}`, "danger", "bi-exclamation-triangle-fill");
+            showAlert(`Upload failed! Error ${request.status}. ${request.response.alertMessage}`, "danger", "bi-exclamation-triangle-fill");
             resetUploadUI();
         }
     };
@@ -393,22 +393,24 @@ async function updateTable(serialNumberID) {
         idx = tableBody.rows.length; // Set the index to the total number of rows
         let newRow = tableBody.insertRow();
         newRow.innerHTML = `
-            <td>${idx + 1}</td>
-            <td>${ipAddress}</td>
-            <td>${systemSn}</td>
-            <td>${passwd}</td>
-            <td>${motherboard}</td>
-            <td>
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                    role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </td>
-            <td>NA</td>
-            <td>In Queue</td>
-            <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${idx}"></td>
-            <td class="d-none">${passwd}</td>
-        `;
+                            <td>${idx + 1}</td>
+                            <td>${ipAddress}</td>
+                            <td>${systemSn}</td>
+                            <td>${passwd}</td>
+                            <td>${motherboard}</td>
+                            <td>
+                                <div class="progress mt-1">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                    role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                            <td>NA</td>
+                            <td style="color: ${ipAddress === "NA" ? "red" : "inherit"};">
+                                ${ipAddress === "NA" ? "Disconnected" : "In Queue"}
+                            </td>
+                            <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${idx}"></td>
+                            <td class="d-none">${passwd}</td>
+                        `;
 
         // Select individual checkboxes
         let checkbox = document.getElementById(`checkbox-${idx}`);
@@ -581,6 +583,20 @@ socket.on("update_status", (data) => {
         if (sn === data.sn) {  // Match the correct row
             let statusCell = row.cells[7];
             statusCell.textContent = data.status;
+            switch (data.status) {
+                case "Failed":
+                    statusCell.style.color = "red";
+                    statusCell.style.fontWeight = "bold";
+                    break;
+                case "Completed":
+                    statusCell.style.color = "green";
+                    statusCell.style.fontWeight = "bold";
+                    break;
+                default:
+                    statusCell.style.color = "inherit";
+                    statusCell.style.fontWeight = "normal";
+                    break;
+            }
 
             // Update progress bar in Cell 5
             let progressBar = row.cells[5].querySelector(".progress-bar");
@@ -589,14 +605,6 @@ socket.on("update_status", (data) => {
                 if (progressMatch) {
                     
                     let progressValue = parseInt(progressMatch[1]);
-                    
-                    if (data.status === "Failed") {
-                        progressBar.classList.remove("progress-bar-animated");
-                        progressBar.classList.add("bg-danger");
-                    } else if (progressValue === 100 || data.status === "Success") {
-                        progressBar.classList.remove("progress-bar-animated");
-                        progressBar.classList.add("bg-success");
-                    }
 
                     progressBar.style.width = `${progressValue}%`;
                     progressBar.textContent = `${progressValue}%`;
