@@ -354,7 +354,7 @@ function listCommands(...args) {
                 if (selectInput && selectInput.options) {
                     data.forEach(command => {
                         // Check if the option already exists
-                        if (![selectInput.options].some(option => option.textContent === command.name)) {
+                        if (!Array.from(selectInput.options).some(option => option.textContent === command.name)) {
                             const option = document.createElement("option");
                             option.value = command.cmd;
                             option.textContent = command.name;
@@ -366,6 +366,12 @@ function listCommands(...args) {
         })
         .catch(error => console.error("Error fetching command data:", error));
 }
+
+// Refresh the options in the select element
+function refreshOptions() {
+    listCommands(selectedCommand);
+}
+
 
 window.onload = function() {
     loadFirmwareList();
@@ -631,9 +637,7 @@ socket.on("update_status", (data) => {
             if (progressBar) {
                 let progressMatch = data.progress.match(/\((\d+)%\)/);
                 if (progressMatch) {
-                    
                     let progressValue = parseInt(progressMatch[1]);
-
                     progressBar.style.width = `${progressValue}%`;
                     progressBar.textContent = `${progressValue}%`;
                 }
@@ -642,25 +646,6 @@ socket.on("update_status", (data) => {
     });
 });
 
-
-
-// Dummy function to simulate firmware update
-async function runFirmwareUpdate(row) {
-    let progressBar = row.querySelector('.progress-bar');
-    let progress = 0;
-    
-    // Simulate progress update with setInterval
-    let interval = setInterval(() => {
-        if (progress < 100) {
-            progress += 5;
-            progressBar.style.width = `${progress}%`;
-            progressBar.setAttribute('aria-valuenow', progress);
-            progressBar.innerText = `${progress}%`;
-        } else {
-            clearInterval(interval);
-        }
-    }, 500);  // Update progress every 0.5 seconds
-}
 
 // Reset progress bar if the checkbox is unchecked
 function resetProgressBar(row) {

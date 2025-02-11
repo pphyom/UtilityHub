@@ -50,11 +50,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade show"
-                            id="delete-command" role="tabpanel" aria-labelledby="ip-lookup" tabindex="0">
-                            <select class="form-select" id="selected-command-2" name="selected-command-2">
-                                <option value="" selected>Select a command to delete</option>
-                            </select>
+                        <div class="tab-pane fade show" id="delete-command" role="tabpanel" aria-labelledby="ip-lookup" tabindex="0">
+                            <div class="d-flex justify-content-center gap-2 mb-3">
+                                <button type="button" class="btn btn-secondary text-white" id="btn-refresh2" onclick="listCommands(selectedCmd)">
+                                    <i class="bi bi-arrow-clockwise fs-5"></i>
+                                </button>
+                                <select class="form-select" id="selected-command-2" name="selected-command-2">
+                                    <option value="" selected>Select a command to delete</option>
+                                </select>
+                            </div>
                             <div class="d-grid gap-2 mt-4 m-auto">
                                 <div class="d-flex justify-content-center gap-2">
                                     <button class="btn btn-dark" onclick="deleteCommand()">Delete</button>
@@ -122,8 +126,11 @@
         let selectedTool = toolRadios[0].checked ? 'ipmitool' : 'sum';
         let cmdName = document.getElementById('cmd-name').value;
         let cmdArgs = [];
-        if (!cmdName) {
-            alert('Command name is required!');
+        if (!cmdName || Array.from(addArgument.querySelectorAll('input')).some(input => input.value === '')) {
+            alert('Cmd name and at least 2 arguments are required!');
+            return;
+        } else if (Array.from(selectedCmd.options).some(option => option.textContent === cmdName)) {
+            alert('Command already exists!');
             return;
         }
         addArgument.querySelectorAll('input').forEach(input => {
@@ -164,6 +171,43 @@
     }
 
 
+    // Delete command from the list
+    function deleteCommand() {
+        let cmdName = selectedCmd.options[selectedCmd.selectedIndex].textContent;
+        if (!cmdName || selectedCmd.options[selectedCmd.selectedIndex].value === '') {
+            alert('Please select a command to delete!');
+            return;
+        }
+        fetch('/delete_command', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'cmdName': cmdName
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Command deleted successfully!');
+            } else {
+                alert(data.status);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        window.location.reload();
+    }
+
+
     // Reset input fields
     function resetInput() {
         document.getElementById('cmd-name').value = '';
@@ -179,11 +223,9 @@
 
     // Load listCommands() function from scripts.js
     document.getElementById("tab-delete-command").addEventListener('click', function() {
-        selectedCmd.options.forEach(option => {
-            if (![option.textContent].some(option => option.textContent)) {
-                listCommands(selectedCmd);
-            }
-        });
+        if (selectedCmd.options.length <= 1) { // Load options only if they do not exist
+            listCommands(selectedCmd);
+        }
     });
 
 

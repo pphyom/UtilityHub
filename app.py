@@ -346,6 +346,22 @@ def add_command():
     return jsonify({"status": "success"}), 200
 
 
+@app.route("/delete_command", methods=["POST"])
+def delete_command():
+    """ Delete a command from the command list. """
+    data = request.get_json()
+    if not data or "cmdName" not in data:
+        return jsonify({"status": "Invalid input."}), 400
+    
+    command = Commands.query.filter_by(name=data["cmdName"]).first()
+    if not command:
+        return jsonify({"status": "Command not found."}), 404
+    
+    db.session.delete(command)
+    db.session.commit()
+    return jsonify({"status": "success"}), 200
+
+
 @app.route("/list_commands", methods=["GET"])
 def list_commands():
     """ List the commands in the database. """

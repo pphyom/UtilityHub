@@ -18,17 +18,17 @@
                             <div class="col-12 col-xl-7 col-lg-7 col-md-12 col-sm-12">
                                 <div class="col-12 d-flex flex-column flex-md-row mb-2">
                                     <div class="flex-grow-1 d-grid gap-2 mb-2">
-                                        <input type="text" id="serial-number-input" class="form-control" placeholder="Insert system serial number/s...">
+                                        <input type="text" id="serial-number-input-util" class="form-control" placeholder="Insert system serial number/s...">
                                     </div>
                                     <div id="custom-btn" class="d-grid gap-2 mb-2 ms-md-2 ms-lg-2 ms-xl-2">
                                         <!-- Button trigger modal -->
                                         <button type="button" id="custom-btn" class="btn"
-                                            data-bs-toggle="modal" data-bs-target="#multi-input-modal">
+                                            data-bs-toggle="modal" data-bs-target="#multi-input-modal-util">
                                             <i class="bi bi-three-dots"></i>
                                         </button>
 
                                         <!-- Modal: Bulk input -->
-                                        <div class="modal fade" id="multi-input-modal"
+                                        <div class="modal fade" id="multi-input-modal-util"
                                             data-bs-backdrop="static" data-bs-keyboard="false"
                                             tabindex="-1" aria-labelledby="staticBackdropLabel"
                                             aria-hidden="true">
@@ -41,7 +41,7 @@
                                                             aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <textarea id="multi-serial-number-input"
+                                                        <textarea id="multi-serial-number-input-util"
                                                             class="form-control"
                                                             style="min-width: 100%; resize: none;"
                                                             rows="12"
@@ -52,7 +52,9 @@
                                                             class="btn">Reset</button>
                                                         <button type="button" class="btn btn-primary"
                                                             data-bs-dismiss="modal"
-                                                            onclick="passData()">Insert</button>
+                                                            onclick="passData('serial-number-input-util', 'multi-serial-number-input-util')">
+                                                            Insert
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -67,6 +69,11 @@
                                 </div>
 
                                 <div class="col-12 d-flex flex-column flex-md-row mb-2">
+                                    <div id="custom-btn" class="d-grid gap-2 mb-2 me-md-2 me-lg-2 me-xl-2">
+                                        <button type="button" class="btn text-white" id="btn-refresh" onclick="refreshOptions()">
+                                            <i class="bi bi-arrow-clockwise fs-5"></i>
+                                        </button>
+                                    </div>
                                     <div class="flex-grow-1 d-grid gap-2 mb-2 me-md-2 me-lg-2 me-xl-2">
                                         <select class="form-select" id="selected-command" name="selected-command">
                                             <option value="" selected>Choose task</option>
@@ -90,7 +97,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="card-body text-start align-middle" id="firmware-details">
+                                    <div class="card-body text-start align-middle" id="command-details">
                                         <div class="row row-cols-1 row-cols-md-3 g-2">
                                             
                                         </div>
