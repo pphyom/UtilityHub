@@ -14,7 +14,7 @@ from main.tools import *
 from main.firmware_info import *
 from make_celery import make_celery
 from main.extensions import db, sess, login_manager, socketio
-from models.models import User, Firmware # Import the User model
+from models.models import User, Firmware, Commands # Import the User model
 
 
 rburn_live = os.getenv("RBURN_SVR40_LIVE")
@@ -323,6 +323,35 @@ def list_firmware():
     firmware_files = Firmware.query.all()
     firmware_list = [{"filename": file.filename, "filepath": file.filepath} for file in firmware_files]
     return jsonify(firmware_list)
+
+
+@app.route("/add_command", methods=["POST"])
+def add_command():
+    """ Add a command to the command list. """
+    data = request.get_json()
+    if not data or "cmdName" not in data or "cmdArgs" not in data or "tool" not in data:
+        return jsonify({"status": "Invalid input."}), 400
+    
+    existing_command = Commands.query.filter_by(name=data["cmdName"]).first()
+    if existing_command:
+        return jsonify({"status": "Command already exists."}), 400
+    
+    new_command = Commands(
+        tool=data["tool"], 
+        name=data["cmdName"], 
+        cmd=data["cmdArgs"]
+    )
+    db.session.add(new_command)
+    db.session.commit()
+    return jsonify({"status": "success"}), 200
+
+
+@app.route("/list_commands", methods=["GET"])
+def list_commands():
+    """ List the commands in the database. """
+    commands = Commands.query.all()
+    command_list = [{"tool": cmd.tool, "name": cmd.name, "cmd": cmd.cmd} for cmd in commands]
+    return jsonify(command_list)
 
 
 @app.route("/start_update", methods=["POST"])

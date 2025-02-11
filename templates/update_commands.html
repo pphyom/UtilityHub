@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block header %} Add Commands {% endblock %}
+{% block header %} Update Commands {% endblock %}
 
 {% block contents %}
 
@@ -9,14 +9,14 @@
         <div class="row">
             <div class="col-12 col-sm-8 col-md-8 col-lg-8 m-auto">
                 <div class="card border-0 shadow p-3">
-                    <ul class="nav nav-underline nav-justified justify-content-center mb-5">
+                    <ul class="nav nav-underline nav-justified justify-content-center mb-4">
                         <li class="nav-item">
                             <button class="nav-link active tab-btn" data-bs-toggle="tab" data-bs-target="#add-command" type="button" role="tab">
                                 Add Command
                             </button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#delete-command" type="button" role="tab">
+                            <button id="tab-delete-command" class="nav-link" data-bs-toggle="tab" data-bs-target="#delete-command" type="button" role="tab">
                                 Delete Command
                             </button>
                         </li>
@@ -27,6 +27,13 @@
                         <div class="tab-pane fade show active"
                             id="add-command" role="tabpanel" aria-labelledby="ip-lookup" tabindex="0">
                             
+                            <div class="d-flex justify-content-center gap-2 mb-3">
+                                <input type="radio" id="ipmitool" name="tool" value="ipmi" checked>
+                                <label for="ipmitool">IPMI Tool</label>
+                                <input type="radio" id="sumtool" name="tool" value="sum">
+                                <label for="ipmitool">SUM Tool</label>
+                            </div>
+
                             <input type="text" class="form-control" id="cmd-name" placeholder="Name your command...">
                             <div id="add-argument" class="d-flex flex-column flex-md-row my-3 gap-2">
                                 <input type="text" class="form-control mb-2 mb-md-0" placeholder="-c">
@@ -45,8 +52,8 @@
                         </div>
                         <div class="tab-pane fade show"
                             id="delete-command" role="tabpanel" aria-labelledby="ip-lookup" tabindex="0">
-                            <select class="form-select" id="selected-command" name="selected-command">
-                                <option value="" selected>Choose task</option>
+                            <select class="form-select" id="selected-command-2" name="selected-command-2">
+                                <option value="" selected>Select a command to delete</option>
                             </select>
                             <div class="d-grid gap-2 mt-4 m-auto">
                                 <div class="d-flex justify-content-center gap-2">
@@ -69,11 +76,16 @@
     const btnAddCmd = document.getElementById('btn-add-cmd');
     const addArgument = document.getElementById('add-argument');
     const exampleCmd = document.getElementById('example-cmd');
-    const preDefinedText = 'Example: tool -U ADMIN -P PASSWORD ';
-
+    let selectedCmd = document.getElementById('selected-command-2');
+    let toolRadios = document.querySelectorAll('input[name="tool"]');
+    
+    
     // Add each input value to the command 
     function updateExampleCmd() {
         let inputs = addArgument.querySelectorAll('input');
+        let selectedTool = toolRadios[0].checked ? 'ipmitool' : 'sum';
+        const preDefinedText = `Example: ${selectedTool} -U ADMIN -P PASSWORD `;
+
         let cmdText = '';
         inputs.forEach(input => {
             if (input.value.trim() !== '') {
@@ -107,19 +119,52 @@
 
     // Add command to the list
     function addCommand() {
+        let selectedTool = toolRadios[0].checked ? 'ipmitool' : 'sum';
         let cmdName = document.getElementById('cmd-name').value;
         let cmdArgs = [];
+        if (!cmdName) {
+            alert('Command name is required!');
+            return;
+        }
         addArgument.querySelectorAll('input').forEach(input => {
             if (input.value.trim() !== '') {
                 cmdArgs.push(input.value.trim());
             }
         });
-        console.log(cmdName, cmdArgs);
-        return {'cmdName': cmdName, 'cmdArgs': cmdArgs};
+        fetch('/add_command', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'tool': selectedTool,
+                'cmdName': cmdName,
+                'cmdArgs': cmdArgs
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Command added successfully!');
+                resetInput();
+            } else {
+                alert(data.status);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        listCommands(selectedCommand, selectedCmd);
     }
 
 
-    // Delete command from the list
+    // Reset input fields
     function resetInput() {
         document.getElementById('cmd-name').value = '';
         addArgument.querySelectorAll('input').forEach((input, index) => {
@@ -131,6 +176,15 @@
         });
         exampleCmd.textContent = "";
     }
+
+    // Load listCommands() function from scripts.js
+    document.getElementById("tab-delete-command").addEventListener('click', function() {
+        selectedCmd.options.forEach(option => {
+            if (![option.textContent].some(option => option.textContent)) {
+                listCommands(selectedCmd);
+            }
+        });
+    });
 
 
 </script>

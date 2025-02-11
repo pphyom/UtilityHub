@@ -104,6 +104,8 @@ let btnLockFw = document.getElementById("btn-lock-fw");
 let selectFw = document.getElementById("select-fw");
 let selectedFwType = selectFw.value;
 
+let selectedCommand = document.getElementById("selected-command");
+
 // Event listener for the firmware type dropdown
 selectFw.addEventListener("change", () => selectedFwType = selectFw.value);
 
@@ -342,7 +344,33 @@ function loadFirmwareList() {
         .catch(error => console.error("Error fetching firmware data:", error));
 }
 
-window.onload = loadFirmwareList();
+
+// Load the predefined commands from the server
+function listCommands(...args) {
+    fetch("/list_commands")
+        .then(response => response.json())
+        .then(data => {
+            args.forEach(selectInput => {
+                if (selectInput && selectInput.options) {
+                    data.forEach(command => {
+                        // Check if the option already exists
+                        if (![selectInput.options].some(option => option.textContent === command.name)) {
+                            const option = document.createElement("option");
+                            option.value = command.cmd;
+                            option.textContent = command.name;
+                            selectInput.appendChild(option);
+                        }
+                    });
+                }
+            });
+        })
+        .catch(error => console.error("Error fetching command data:", error));
+}
+
+window.onload = function() {
+    loadFirmwareList();
+    listCommands(selectedCommand);
+};
 
 /**
  * Asynchronously update the table with the IPMI information.
@@ -406,7 +434,7 @@ async function updateTable(serialNumberID) {
                             </td>
                             <td>NA</td>
                             <td style="color: ${ipAddress === "NA" ? "red" : "inherit"};">
-                                ${ipAddress === "NA" ? "Disconnected" : "In Queue"}
+                                ${ipAddress === "NA" ? "Disconnected" : "Queued"}
                             </td>
                             <td><input class="form-check-input" type="checkbox" value="" id="checkbox-${idx}"></td>
                             <td class="d-none">${passwd}</td>

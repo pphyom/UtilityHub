@@ -26,8 +26,15 @@ def update_firmware(self, device, fw_file, cmd):
         ]
 
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        
+        estimated_total_lines = 0
+        if "Bios" in cmd:
+            estimated_total_lines = 22
+        elif "Bmc" in cmd:
+            estimated_total_lines = 20
+        else:
+            estimated_total_lines = 18
 
-        estimated_total_lines = 22
         processed_lines = 0
 
         for line in iter(process.stdout.readline, ''):

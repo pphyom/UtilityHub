@@ -156,11 +156,14 @@ def user_input() -> list:
     param: none
     return: list of input data separated by a white space
     """
-    input_data: list = []
-    txt_ = request.form.get("serial_num").split(" ")
+    serial_numbers: list = []
+    user_input_text = request.form.get("serial_num")
+    if not user_input_text:
+        return serial_numbers
+    user_input_lines = user_input_text.split("\n")
     # remove all empty items in the list
-    temp = [sn.upper().replace("\t", "") for sn in txt_ if sn != "\t" and sn != ""]
+    cleaned_serial_numbers = [sn.upper().replace("\t", "") for sn in user_input_lines if sn != "\t" and sn != ""]
     # remove all duplicates and maintain the index order
-    [input_data.append(sn) for sn in temp if sn not in input_data]
+    [serial_numbers.append(sn) for sn in cleaned_serial_numbers if sn not in serial_numbers]
 
-    return input_data
+    return serial_numbers
