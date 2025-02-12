@@ -202,7 +202,7 @@ btnUploadFw.addEventListener("click", function() {
             firmwareDetails.innerHTML = "";
             document.getElementById("info-sec").innerText = "UPLOADED FIRMWARE INFO"
             firmwareDetails.innerHTML = `
-                <table class="table table-sm table-light align-middle text-start">
+                <table class="table table-sm align-middle text-start">
                     <tr>
                         <td><i class="bi bi-alphabet fs-3 pe-2"></i></td>
                         <td>${filename}</td>

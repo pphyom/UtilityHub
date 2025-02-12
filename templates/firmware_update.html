@@ -122,39 +122,89 @@
                                 </div>
                             </div>
                             <div class="col-12 col-xl-5 col-lg-5 col-md-12 col-sm-12">
-                                <div class="card bg-light">
-                                    <div class="card-header">
-                                        <div class="float-start">
-                                            <div>
-                                                <i class="bi bi-exclamation-triangle fs-small text-danger"></i>
-                                                <span id="info-sec">READ ME</span>
+                                <div class="accordion" id="addons-accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingOne">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#fw-detail-panel" 
+                                                aria-expanded="true" aria-controls="fw-detail-panel" style="background-color: #f8f9fa;">
+                                                <div class="float-start">
+                                                    <i class="bi bi-exclamation-triangle fs-small text-danger"></i>
+                                                    <span id="info-sec">READ ME</span>
+                                                </div>
+                                            </button>
+                                        </h2>
+                                        <div id="fw-detail-panel" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#addons-accordion">
+                                            <div class="accordion-body text-start align-middle" id="firmware-details">
+                                                <div class="row row-cols-1 row-cols-md-3 g-2">
+                                                    <div class="col">
+                                                        <div class="card h-100">
+                                                            <div class="card-body">
+                                                                <h6 class="card-title">STEP 1</h6>
+                                                                <p class="card-text text-wrap">Select firmware for update.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="card h-100">
+                                                            <div class="card-body">
+                                                                <h6 class="card-title">STEP 2</h6>
+                                                                <p class="card-text text-wrap">No firmware found? Toggle the switch to upload one.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="card h-100">
+                                                            <div class="card-body">
+                                                                <h6 class="card-title">STEP 3</h6>
+                                                                <p class="card-text text-wrap">Select, match, upload the desired firmware, then lock it.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>     
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="card-body text-start align-middle" id="firmware-details">
-                                        <div class="row row-cols-1 row-cols-md-3 g-2">
-                                            <div class="col">
-                                                <div class="card h-100">
-                                                    <div class="card-body">
-                                                        <h6 class="card-title">STEP 1</h6>
-                                                        <p class="card-text text-wrap">Select firmware for update.</p>
-                                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingTwo">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#utility-pane" 
+                                                aria-expanded="false" aria-controls="utility-pane" style="background-color: #f8f9fa;">
+                                                <div class="float-start">
+                                                    <i class="bi bi-wrench-adjustable-circle fs-5"></i>
+                                                    <span>UTILITIES</span>
                                                 </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="card h-100">
-                                                    <div class="card-body">
-                                                        <h6 class="card-title">STEP 2</h6>
-                                                        <p class="card-text text-wrap">No firmware found? Toggle the switch to upload one.</p>
+                                            </button>
+                                        </h2>
+                                        <div id="utility-pane" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#addons-accordion">
+                                            <div class="accordion-body">
+                                                <div class="d-flex flex-column flex-md-row">
+                                                    <!-- <div class="flex-grow-1 d-grid gap-2 mb-2 me-md-2 me-lg-2 me-xl-2">
+                                                        <select class="form-select" id="selected-command" name="selected-command">
+                                                            <option value="" selected>Choose task</option>
+                                                        </select>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="card h-100">
-                                                    <div class="card-body">
-                                                        <h6 class="card-title">STEP 3</h6>
-                                                        <p class="card-text text-wrap">Select, match, upload the desired firmware, then lock it.</p>
+                                                    <div id="custom-btn" class="d-grid gap-2 mb-2 me-md-2 me-lg-2 me-xl-2">
+                                                        <button type="button" class="btn text-white bg-secondary" id="btn-refresh" onclick="refreshOptions()">
+                                                            <i class="bi bi-arrow-clockwise fs-5"></i>
+                                                        </button>
+                                                    </div> -->
+
+                                                    <div class="input-group">
+                                                        <button class="btn btn-secondary" type="button" id="btn-refresh" onclick="refreshOptions()">
+                                                            <i class="bi bi-arrow-clockwise fs-5"></i>
+                                                        </button>
+                                                        <select class="form-select" id="selected-command" name="selected-command">
+                                                            <option value="" selected>Choose task</option>
+                                                        </select>
+                                                        <button class="btn btn-secondary" style="min-width: 100px;" id="btn-lock-fw">
+                                                            <span>Run</span>
+                                                        </button>
                                                     </div>
+
+                                                    <!-- <div id="custom-btn" class="d-grid gap-2 mb-2">
+                                                        <button type="button" class="btn text-white" style="min-width: 150px;" id="btn-lock-fw" disabled>
+                                                            <span>Run</span>
+                                                        </button>
+                                                    </div> -->
                                                 </div>
                                             </div>
                                         </div>
