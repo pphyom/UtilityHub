@@ -477,26 +477,43 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
-// Delete selected rows from the table
-btnDeleteRow.addEventListener("click", function() {
-    Array.from(tableBody.rows).forEach(row => {
-        if (row.querySelector('input').checked) {
-            row.remove();
-        }
-    });
-    // Rearrange the index after deletion
-    rows = Array.from(tableBody.rows);
+// Function to update row indices
+function updateRowIndices() {
+    let rows = Array.from(tableBody.rows);
     rows.forEach((row, index) => {
         row.cells[0].textContent = index + 1;
     });
+}
+
+// Delete selected rows from the table
+btnDeleteRow.addEventListener("click", function() {
+    let anySelected = false;
+    let rows = Array.from(tableBody.rows);
+    let newIndex = 1;
+
+    if (!anySelected) {
+        showAlert("No row selected for deletion!", "warning", "bi-exclamation-triangle-fill");
+    }
+
+    rows.forEach(row => {
+        if (row.querySelector('input').checked) {
+            anySelected = true;
+            row.remove();
+            dismissAlert();
+        } else {
+            row.cells[0].textContent = newIndex++;
+        }
+    });
+
+    updateRowIndices();
 
     if (tableBody.rows.length === 0) {
-        btnDeleteRow.disabled = true;
+        btnDeleteRow.classList.add("disabled");
+        btnUpdate.classList.add("disabled");
         selectAllCheckbox.checked = false;
-        selectAllCheckbox.setAttribute("disabled", "true");
+        selectAllCheckbox.setAttribute("disabled", "disabled");
     }
 });
-
 
 
 // Lock/Unlock the selected firmware for the update
@@ -655,13 +672,37 @@ function resetProgressBar(row) {
     progressBar.innerText = `0%`;
 }
 
-openControl.addEventListener("click", function() {
-    openControl.classList.add("d-none");
-    closeControl.classList.remove("d-none");
-});
+
+// Utility Scripts
+function executeCommand() {
+    // Remove commas from the command value if necessary
+    let cmdValue = selectedCommand.value.replace(/,/g, "");
+    let anySelected = false;
+    let rows = Array.from(tableBody.rows);
+
+    rows.forEach(async (row) => {
+        if (row.querySelector("input").checked) {
+            anySelected = true;
+            dismissAlert();
+            let sn = row.cells[2].textContent; // Get the serial number
+            let system = await getIpmiInfo(sn);
+
+            fetch("/execute_command", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ system: system, cmdValue: cmdValue }),
+            }).then((response) => response.json());
+        }
+
+        if (!anySelected) {
+            showAlert("No system is selected!", "warning", "bi-exclamation-triangle-fill");
+        }
+    });
 
 
-closeControl.addEventListener("click", function() {
-    closeControl.classList.add("d-none");
-    openControl.classList.remove("d-none");
-});
+    // fetch("/execute_command", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({ cmdValue: cmdValue }),
+    // }).then((response) => response.json());
+}

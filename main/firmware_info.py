@@ -14,7 +14,27 @@ ipmitool_cmd = {
 }
 
 
+def execute_command(device, tool, cmd):
+    """ Execute a command on the DEVICE using the specified TOOL. """
+    ip_address = device["ip_address"]
+    passwd = device["password"]
+    tool = ipmi_tool if tool == "ipmitool" else sum_tool
 
+    if ip_address != "NA" and check_connectivity(ip_address):
+        try:
+            output = subprocess.Popen([tool] +
+                                    [ip_address, "ADMIN", passwd] + cmd,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE,
+                                    text=True)
+            stdout, stderr = output.communicate(timeout=20)
+            return stdout
+
+        except subprocess.SubprocessError as e:
+            print(f"Error occurred: {e}")
+            return None
+    else:
+        print("Not connected!")
 
 
 def sum_bios_ipmi_ver(device, cmd):

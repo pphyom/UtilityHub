@@ -126,6 +126,7 @@
         let selectedTool = toolRadios[0].checked ? 'ipmitool' : 'sum';
         let cmdName = document.getElementById('cmd-name').value;
         let cmdArgs = [];
+        let cmdValue = '';
         if (!cmdName || Array.from(addArgument.querySelectorAll('input')).some(input => input.value === '')) {
             alert('Cmd name and at least 2 arguments are required!');
             return;
@@ -138,6 +139,9 @@
                 cmdArgs.push(input.value.trim());
             }
         });
+
+        cmdValue = cmdArgs.join('');
+
         fetch('/add_command', {
             method: 'POST',
             headers: {
@@ -146,7 +150,8 @@
             body: JSON.stringify({
                 'tool': selectedTool,
                 'cmdName': cmdName,
-                'cmdArgs': cmdArgs
+                'cmdArgs': cmdArgs,
+                'cmdValue': cmdValue,
             })
         })
         .then(response => {

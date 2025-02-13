@@ -210,7 +210,6 @@ def cburn_log():
 
 @socketio.on("connect")
 def on_connect():
-    print("Connected to the server.")
     if not current_user or not current_user.is_authenticated:
         socketio.emit("error", {"message": "User not authenticated."})
         return
@@ -266,6 +265,27 @@ def get_ipmi_info():
     serial_num = asyncio.run(ftu.validation([input_data["system_sn"]], scan_log)) # change input to list for function requirement
     sys_list = get_bmc_info_helper(serial_num)
     return jsonify(sys_list)
+
+
+@app.route("/execute_command", methods=["POST"])
+def execute_command_helper():
+    """ Execute a command on the system. """
+    data = request.get_json()
+    if not data:
+        response = make_response(jsonify({"alertMessage": "Invalid input.", "alertType": "danger"}), 400)
+        return response
+    
+    device = data["system"][0]
+    # Retrieve the existing command from the database
+    retrieve_cmd = Commands.query.filter_by(cmd_value=data["cmdValue"]).first()
+    if retrieve_cmd:
+        cmd = retrieve_cmd.cmd
+        tool = retrieve_cmd.tool
+        result = execute_command(device, tool, cmd)
+        print(result)
+        return jsonify(result)
+    else:
+        return jsonify({"status": "Command not found."}), 404
 
 
 @app.route("/upload_firmware", methods=["POST"])
@@ -339,7 +359,8 @@ def add_command():
     new_command = Commands(
         tool=data["tool"], 
         name=data["cmdName"], 
-        cmd=data["cmdArgs"]
+        cmd=data["cmdArgs"],
+        cmd_value=data["cmdValue"],
     )
     db.session.add(new_command)
     db.session.commit()
@@ -395,6 +416,7 @@ def start_update():
 
 
 @app.route("/update_commands", methods=["GET", "POST"])
+@login_required
 def update_commands():
     """ Update the commands to the command list. """
     return render_template("update_commands.html")

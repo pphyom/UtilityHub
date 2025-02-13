@@ -1,13 +1,13 @@
 <div class="row">
     <div class="col">
-        <form method="post" enctype="multipart/form-data">
+        <form>
             <div class="card special-card mb-2">
                 <div class="card-header bg-custom-grayblue pb-1">
                     <div class="d-flex justify-content-between">
                         <div class="h6">
                             <div>
-                                <i class="bi bi-collection-fill fs-small"></i>
-                                <span>FIRMWARE UPDATE</span>
+                                <i class="bi bi-app-indicator fs-small"></i>
+                                <span>ADDONS</span>
                             </div>
                         </div>
                         <!-- <div class="d-flex mb-2">
@@ -133,7 +133,7 @@
                                                 </div>
                                             </button>
                                         </h2>
-                                        <div id="fw-detail-panel" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#addons-accordion">
+                                        <div id="fw-detail-panel" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                                             <div class="accordion-body text-start align-middle" id="firmware-details">
                                                 <div class="row row-cols-1 row-cols-md-3 g-2">
                                                     <div class="col">
@@ -174,20 +174,9 @@
                                                 </div>
                                             </button>
                                         </h2>
-                                        <div id="utility-pane" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#addons-accordion">
+                                        <div id="utility-pane" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                                             <div class="accordion-body">
                                                 <div class="d-flex flex-column flex-md-row">
-                                                    <!-- <div class="flex-grow-1 d-grid gap-2 mb-2 me-md-2 me-lg-2 me-xl-2">
-                                                        <select class="form-select" id="selected-command" name="selected-command">
-                                                            <option value="" selected>Choose task</option>
-                                                        </select>
-                                                    </div>
-                                                    <div id="custom-btn" class="d-grid gap-2 mb-2 me-md-2 me-lg-2 me-xl-2">
-                                                        <button type="button" class="btn text-white bg-secondary" id="btn-refresh" onclick="refreshOptions()">
-                                                            <i class="bi bi-arrow-clockwise fs-5"></i>
-                                                        </button>
-                                                    </div> -->
-
                                                     <div class="input-group">
                                                         <button class="btn btn-secondary" type="button" id="btn-refresh" onclick="refreshOptions()">
                                                             <i class="bi bi-arrow-clockwise fs-5"></i>
@@ -195,16 +184,10 @@
                                                         <select class="form-select" id="selected-command" name="selected-command">
                                                             <option value="" selected>Choose task</option>
                                                         </select>
-                                                        <button class="btn btn-secondary" style="min-width: 100px;" id="btn-lock-fw">
+                                                        <button class="btn btn-secondary" type="button" style="min-width: 100px;" id="execute-command" onclick="executeCommand()">
                                                             <span>Run</span>
                                                         </button>
                                                     </div>
-
-                                                    <!-- <div id="custom-btn" class="d-grid gap-2 mb-2">
-                                                        <button type="button" class="btn text-white" style="min-width: 150px;" id="btn-lock-fw" disabled>
-                                                            <span>Run</span>
-                                                        </button>
-                                                    </div> -->
                                                 </div>
                                             </div>
                                         </div>
