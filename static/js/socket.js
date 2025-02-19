@@ -1,3 +1,3 @@
 
 // Connect to the server
-socket = io({ autoConnect: false });
+var socket = io({ autoConnect: false });

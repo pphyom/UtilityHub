@@ -471,7 +471,9 @@ document.addEventListener("DOMContentLoaded", function() {
         checkboxes.forEach(checkbox => {
             checkbox.checked = selectAllCheckbox.checked;
             let row = checkbox.closest('tr');
-            checkbox.checked ? row.classList.add('table-secondary') : row.classList.remove('table-secondary');
+            if (row) {
+                checkbox.checked ? row.classList.add('table-secondary') : row.classList.remove('table-secondary');
+            }
         });
     });
 });
