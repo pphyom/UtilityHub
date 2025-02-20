@@ -693,18 +693,16 @@ function executeCommand() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ system: system, cmdValue: cmdValue }),
-            }).then((response) => response.json());
+            })
+            .then((response) => response.json())
+            .then(data => {
+                console.log(data);
+            });
+
         }
 
         if (!anySelected) {
             showAlert("No system is selected!", "warning", "bi-exclamation-triangle-fill");
         }
     });
-
-
-    // fetch("/execute_command", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ cmdValue: cmdValue }),
-    // }).then((response) => response.json());
 }

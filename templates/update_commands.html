@@ -30,8 +30,8 @@
                             <div class="d-flex justify-content-center gap-2 mb-3">
                                 <input type="radio" id="ipmitool" name="tool" value="ipmi" checked>
                                 <label for="ipmitool">IPMI Tool</label>
-                                <input type="radio" id="sumtool" name="tool" value="sum">
-                                <label for="ipmitool">SUM Tool</label>
+                                <input type="radio" id="saatool" name="tool" value="saa">
+                                <label for="saatool">SAA</label>
                             </div>
 
                             <input type="text" class="form-control" id="cmd-name" placeholder="Name your command...">
@@ -87,7 +87,7 @@
     // Add each input value to the command 
     function updateExampleCmd() {
         let inputs = addArgument.querySelectorAll('input');
-        let selectedTool = toolRadios[0].checked ? 'ipmitool' : 'sum';
+        let selectedTool = toolRadios[0].checked ? 'ipmitool' : 'saatool';
         const preDefinedText = `Example: ${selectedTool} -U ADMIN -P PASSWORD `;
 
         let cmdText = '';
@@ -123,7 +123,7 @@
 
     // Add command to the list
     function addCommand() {
-        let selectedTool = toolRadios[0].checked ? 'ipmitool' : 'sum';
+        let selectedTool = toolRadios[0].checked ? 'ipmitool' : 'saatool';
         let cmdName = document.getElementById('cmd-name').value;
         let cmdArgs = [];
         let cmdValue = '';

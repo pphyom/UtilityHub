@@ -1,12 +1,14 @@
 # This file contains functions to get firmware information of a device.
 
 import subprocess
+from flask import jsonify
 from main.cburn_helper import *
 from main.tools import check_connectivity
 
 
 ipmi_tool = "tools/SMCIPMITool_2.28.0/SMCIPMITool.exe"
 sum_tool = "tools/SUM_2.14.0/sum.exe"
+saa = "tools/SAA_1.1.0/saa.exe"
 
 ipmitool_cmd = {
     "ipmi_ver": " ipmi ver",
@@ -18,23 +20,27 @@ def execute_command(device, tool, cmd):
     """ Execute a command on the DEVICE using the specified TOOL. """
     ip_address = device["ip_address"]
     passwd = device["password"]
-    tool = ipmi_tool if tool == "ipmitool" else sum_tool
+    tool = ipmi_tool if tool == "ipmitool" else saa
+    argument = ["-i", ip_address, "-U", "ADMIN", "-P", passwd] if tool == saa else [ip_address, "ADMIN", passwd]
+    status = "Started"
 
     if ip_address != "NA" and check_connectivity(ip_address):
         try:
             output = subprocess.Popen([tool] +
-                                    [ip_address, "ADMIN", passwd] + cmd,
+                                    argument + cmd,
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE,
                                     text=True)
             stdout, stderr = output.communicate(timeout=20)
-            return stdout
+            status = "Success" if output.returncode == 0 else "Failed"
+            return {"status": status, "output": stdout}
 
         except subprocess.SubprocessError as e:
             print(f"Error occurred: {e}")
-            return None
+            return {"status": "Failed", "output": f"Error occurred: {e}"}
     else:
         print("Not connected!")
+        return {"status": "Failed", "output": "Not connected!"}
 
 
 def sum_bios_ipmi_ver(device, cmd):
