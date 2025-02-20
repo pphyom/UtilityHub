@@ -22,7 +22,7 @@ def execute_command(device, tool, cmd):
     passwd = device["password"]
     tool = ipmi_tool if tool == "ipmitool" else saa
     argument = ["-i", ip_address, "-U", "ADMIN", "-P", passwd] if tool == saa else [ip_address, "ADMIN", passwd]
-    status = "Started"
+    status = "Started..."
 
     if ip_address != "NA" and check_connectivity(ip_address):
         try:
@@ -32,15 +32,14 @@ def execute_command(device, tool, cmd):
                                     stderr=subprocess.PIPE,
                                     text=True)
             stdout, stderr = output.communicate(timeout=20)
-            status = "Success" if output.returncode == 0 else "Failed"
-            return {"status": status, "output": stdout}
+
+            return stdout
 
         except subprocess.SubprocessError as e:
             print(f"Error occurred: {e}")
-            return {"status": "Failed", "output": f"Error occurred: {e}"}
+            return status
     else:
-        print("Not connected!")
-        return {"status": "Failed", "output": "Not connected!"}
+        return status
 
 
 def sum_bios_ipmi_ver(device, cmd):

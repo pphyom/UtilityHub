@@ -282,6 +282,7 @@ def execute_command_helper():
         cmd = retrieve_cmd.cmd
         tool = retrieve_cmd.tool
         result = execute_command(device, tool, cmd)
+        print(result)
         return jsonify(result)
     else:
         return jsonify({"status": "Command not found."}), 404

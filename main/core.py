@@ -1,6 +1,6 @@
 import os
 import aiohttp
-import requests
+import requests, asyncio
 import pandas as pd
 from flask import request
 from bs4 import BeautifulSoup
@@ -87,7 +87,7 @@ class RackBurn:
     def fetch_live_data(self) -> None:
         try:
             self.live_data.clear()
-            temp = []
+            temp: list = []
             response = requests.get(self.url)
 
             soup = BeautifulSoup(response.text, "html.parser")
@@ -95,7 +95,7 @@ class RackBurn:
             table = soup.find("table", attrs={"id": "heckintable"})
             rows = table.find_all("tr")
             for row in rows:
-                raw_data = []
+                raw_data: list = []
                 cols = row.find_all("td")
                 # Test logs
                 logs = [link.get("href") for link in cols[-1].find_all("a")]
@@ -104,6 +104,7 @@ class RackBurn:
                 for log in logs:
                     raw_data.append(log)
                 temp.append(raw_data)
+
             # Sliced unnecessary columns from the original table
             for elem in range(1, len(temp)):
                 self.live_data.append(list(itemgetter(1, 3, 0, 6, 7)(temp[elem])))
@@ -127,11 +128,12 @@ class RackBurn:
 
     def filtered_data(self, input_list) -> list:
         data_set = []
-        live_data_dict = {sn_list[0]: sn_list for sn_list in self.live_data}
-
         for idx, serial_n in enumerate(input_list):
-            if serial_n in live_data_dict:
-                data_set.append([idx + 1] + live_data_dict[serial_n])
+            for sn_list in self.live_data:
+                # if user input sn is in the database
+                if serial_n in sn_list[0]:
+                    # append into a new list along with its index
+                    data_set.append([idx + 1] + sn_list)
 
         # Sort items per conditions
         # data_set.sort(key=lambda item: (
@@ -156,14 +158,11 @@ def user_input() -> list:
     param: none
     return: list of input data separated by a white space
     """
-    serial_numbers: list = []
-    user_input_text = request.form.get("serial_num")
-    if not user_input_text:
-        return serial_numbers
-    user_input_lines = user_input_text.split("\n")
+    input_data: list = []
+    txt_ = request.form.get("serial_num").split(" ")
     # remove all empty items in the list
-    cleaned_serial_numbers = [sn.upper().replace("\t", "") for sn in user_input_lines if sn != "\t" and sn != ""]
+    temp = [sn.upper().replace("\t", "") for sn in txt_ if sn != "\t" and sn != ""]
     # remove all duplicates and maintain the index order
-    [serial_numbers.append(sn) for sn in cleaned_serial_numbers if sn not in serial_numbers]
+    [input_data.append(sn) for sn in temp if sn not in input_data]
 
-    return serial_numbers
+    return input_data
