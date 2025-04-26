@@ -70,3 +70,12 @@ https://github.com/user-attachments/assets/5e4ce1ac-4748-46b9-b98a-a03caffea614
 
 https://github.com/user-attachments/assets/462366e0-694d-4b59-8580-d7f2093f0ef6
 
+### Tools Page Demo - Error Handling and File Validation
+
+https://github.com/user-attachments/assets/eb851169-3e22-4446-9310-69a0277e4b71
+
+### Tools Page Demo - 3rd Party Tools Integration and Usage
+
+https://github.com/user-attachments/assets/a7b574ba-7bf5-408e-9354-4887f43a4125
+
+---
