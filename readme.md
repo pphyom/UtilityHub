@@ -5,6 +5,7 @@
 │   ├── __init__.py
 │   ├── core.py
 │   ├── extensions.py
+│   ├── firmware_info.py
 │   ├── ftu_helper.py
 │   ├── cburn_helper.py
 │   ├── rburn_helper.py
@@ -21,15 +22,16 @@
 │   ├── input_form.html
 │   ├── ip_lookup.html
 │   ├── nodata.html
-│   └── xxxx.html
+│   ├── unauthorized.html
+│   └── update_commands.html
 ├── static
 │   ├── css
 │   ├── js
 │   └── images
 ├── instance
 │   └── database.db
-├── rack_data
-│   └── database.db
+├── models
+│   └── models.py
 ├── config.py
 ├── app.py
 ```
