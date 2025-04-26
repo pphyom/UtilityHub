@@ -40,20 +40,20 @@
 
 ### Home - Live
 
-![Home Page](media\home_page.jpg)
+![Home Page](media/home_page.jpg)
 
 ### Tools - User Authentication
 
-![Tools - Auth](media\user_auth.jpg)
+![Tools - Auth](media/user_auth.jpg)
 
-![Tools - Auth](media\user_login.jpg)
+![Tools - Auth](media/user_login.jpg)
 
 ### Tools - IP LOOKUP
 
-![Tools - IP_lookup](media\tool_1.jpg)
+![Tools - IP_lookup](media/tool_1.jpg)
 
 ### Tools - ADDONS
 
-![Tools - Addons](media\tool_2.jpg)
+![Tools - Addons](media/tool_2.jpg)
 
 ---
