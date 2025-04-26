@@ -68,6 +68,5 @@ https://github.com/user-attachments/assets/5e4ce1ac-4748-46b9-b98a-a03caffea614
 
 ### Tools Page Demo - Custom Firmware Uploading and Updating
 
-https://github.com/user-attachments/assets/a4347ba7-0e05-4c89-b3fd-a138d1bd65ae
-
+https://github.com/user-attachments/assets/462366e0-694d-4b59-8580-d7f2093f0ef6
 
