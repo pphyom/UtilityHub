@@ -1,6 +1,6 @@
 ## DESCRIPTION
 
-- Summarized daily test data from AI-optimized servers,
+- Summarized daily test log status from AI-optimized servers,
 - Managed firmware upgrades/downgrades such as BIOS, BMC, and drivers,
 - Integrated third-party utilities (e.g., IPMI tools) to debug and manage remote servers.
 
