@@ -4,7 +4,7 @@
 - Managed firmware upgrades/downgrades such as BIOS, BMC, and drivers,
 - Integrated third-party utilities (e.g., IPMI tools) to debug and manage remote servers.
 
-> Tools: Python, Flask, JavaScript, Bootstrap, HTML, CSS, Nginx
+> Tools: Python, Flask, JavaScript, Bootstrap, HTML, CSS, Nginx, Redis
 
 
 ## PROJECT STRUCTURE
